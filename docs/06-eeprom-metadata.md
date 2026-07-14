@@ -40,9 +40,9 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 
 ### AES-EEPROM-002: Deterministic Validation Order
 
-**Requirement:** Modules SHALL validate EEPROM metadata in this order before enabling dependent functions: physical presence, readable bus, magic, length bounds, CRC, schema compatibility, AOID format, Unit Interface compatibility, Unit capability limits, calibration validity where applicable.
+**Requirement:** Modules SHALL validate EEPROM metadata in this order before enabling dependent functions: bus availability, EEPROM acknowledgement / readable device, magic, length bounds, CRC, schema compatibility, AOID format, Unit Interface (profile) compatibility, Unit API compatibility where applicable, Unit capability limits, power validation, calibration validity where applicable. The Unit has no dedicated presence signal; physical presence is established by successful EEPROM discovery (a readable, acknowledging device), not as a separately known step before it.
 
-**Rationale:** A deterministic validation order produces consistent faults and safer default behavior.
+**Rationale:** A deterministic validation order produces consistent faults and safer default behavior. Presence is discovery: there is nothing to check before the bus responds.
 
 ### AES-EEPROM-003: Forward-Compatible Extensions
 
@@ -73,6 +73,29 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 **Requirement:** Modules SHALL treat EEPROM metadata as unauthenticated input. The CRC is an integrity check, not proof of origin. Module-level safety limits SHALL be enforced regardless of what a Unit declares. Applications where counterfeit or tampered Units are a credible risk SHOULD document additional verification.
 
 **Rationale:** A corrupted, cloned or maliciously programmed EEPROM can claim anything; the Module must remain safe even when the metadata lies.
+
+### AES-EEPROM-008: Execution Model, Profile and API Metadata
+
+**Requirement:** Where a Unit declares its execution model, Unit Interface Profile, Unit API or power characteristics electronically, it SHALL do so through optional, versioned TLV extension records (per [AES-EEPROM-003](#aes-eeprom-003-forward-compatible-extensions)), not by expanding the fixed header. The following optional fields are defined for this purpose:
+
+| Field | Purpose |
+|---|---|
+| Execution Model | Passive or Managed. |
+| Unit Interface Profile Identifier | The profile the Unit implements (e.g. `UIF-I2C-6`). |
+| Unit Interface Profile Version | `MAJOR.MINOR` of the implemented profile. |
+| Unit API Identifier | Managed Unit API family identifier. |
+| Unit API Version | `MAJOR.MINOR` of the Unit API (Managed Units). |
+| Capability Flags | Declared features and supported operations. |
+| Required / Supported Input Voltage | Required input voltage or supported voltage range. |
+| Maximum Startup Current | Worst-case current during Unit start-up. |
+| Maximum Operating Current | Worst-case current in normal operation. |
+| Maximum Discovery-State Current | Worst-case current drawn from `UIF_PWR_VIN` while `UIF_PWR_EN` is LOW, where applicable. |
+
+These extension records are optional at the schema level, but they become mandatory when required by the Unit's execution model or interface profile. A **Managed Unit** SHALL provide the execution model, Unit Interface Profile identifier and version, Unit API identifier and version, capability flags, and all applicable power requirement fields the host needs to validate compatibility before activation. A **Passive Unit** SHALL NOT be required to provide Managed Unit API metadata (Unit API identifier or version); it provides the execution model, profile identity and applicable power fields relevant to its function.
+
+A host SHALL be able to reject a Unit whose profile or API version it does not support before asserting `UIF_PWR_EN`, and SHALL verify the Unit's power metadata against its own capability before asserting `UIF_PWR_EN` (see [AES-UNIT-007](./03-architecture.md#aes-unit-007-deterministic-discovery-and-activation-sequence)). Unknown optional records remain forward-compatible per [AES-EEPROM-003](#aes-eeprom-003-forward-compatible-extensions).
+
+**Rationale:** Execution model, profile, API and power draw are exactly the facts a host needs to decide *before* powering a Unit. Keeping the records optional at schema level preserves older readers, while making them mandatory per execution model and profile guarantees the host actually gets what it needs to validate a Managed Unit.
 
 ## 4. Standard Binary Header
 

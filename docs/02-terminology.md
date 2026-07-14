@@ -26,13 +26,15 @@ A dedicated controller designed for a Module. A Controller implements control, s
 
 A replaceable functional building block connected to a Module. A Unit may provide sensing, stimulation, optical, acoustic, environmental, mechanical, electrical or identity functionality. A Unit SHALL be identifiable electronically when replaceability or compatibility matters (see [Architecture](./03-architecture.md) for the scope of this rule).
 
+A Unit is realized as one of two *execution models* — Passive Unit or Managed Unit (defined in Section 3). These are implementation models of a Unit, not separate top-level objects: both remain Units and use the same vocabulary, identity and interface rules.
+
 ### Host Interface
 
 The standard developer and integration interface exposed by Modules. A Host Interface is used by computers, scripts, test systems, data acquisition workflows or developer tools.
 
 ### Unit Interface
 
-The standard interface connecting Units to a Module. A Unit Interface includes physical connection, electrical behavior, communication, identity, compatibility and replacement rules.
+The standard interface connecting Units to a Module. A Unit Interface includes physical connection, electrical behavior, communication, identity, compatibility and replacement rules. A Unit Interface is realized through one or more versioned Unit Interface Profiles (defined in Section 3); externally visible Unit Interface signals use the `UIF_` prefix ([Interfaces and Versioning](./05-interfaces-and-versioning.md)).
 
 ### Product Family
 
@@ -42,6 +44,10 @@ A durable AURIORA engineering family identified by a stable family identifier su
 
 | Term | Definition |
 |---|---|
+| Passive Unit | A Unit execution model in which the Unit has no independently executing application firmware; the host Module drives the Unit's sensors, actuators, converters or other functional circuits directly through the Unit Interface. A Passive Unit is not required to contain a microcontroller. |
+| Managed Unit | A Unit execution model in which the Unit contains one or more programmable controllers and exposes a versioned, high-level Unit API. The host Module operates the Unit through that API and is not required to know or control the Unit's internal components, register-level interfaces or radio/GNSS/sensor configuration. |
+| Unit API | The versioned, high-level application interface a Managed Unit exposes to its host Module: capabilities, operations, status and errors — not internal component types or register-level protocols. |
+| Unit Interface Profile | A versioned realization of the Unit Interface with a defined connector, pinout, signal set and electrical/timing behavior (for example `AURIORA UIF-I2C-6`). Multiple profiles may exist concurrently; each is versioned independently. |
 | Artifact | Any designed object governed by AES, including hardware, firmware, documents, tools and release packages. |
 | Family Identifier | A short stable AURIORA architectural identifier assigned to a Product Family and used across documents, PCB markings, firmware, repositories and manufacturing. |
 | Product | A released or release-intended realization within a Product Family. |

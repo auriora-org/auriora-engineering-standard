@@ -71,9 +71,28 @@ A Unit is the Platform mechanism for concentrating reusable engineering investme
 
 For Active Development and Released Units, keep visible: Unit class and function, supported Unit Interface version, electrical limits, mechanical envelope, EEPROM metadata fields, and calibration ownership.
 
+### 5.1 Execution Models
+
+Every Unit is realized as one of two execution models. Both remain Units under the same identity, interface and compatibility rules — these are execution models, not separate top-level product categories.
+
+- **Passive Unit.** A Unit without independently executing application firmware. The host Module directly controls the Unit's sensors, actuators, converters or other functional circuits through the Unit Interface. A Passive Unit is not required to contain a microcontroller.
+- **Managed Unit.** A Unit containing one or more programmable controllers and exposing a versioned, high-level Unit API. The host Module operates the Unit through that API and is not required to know or control the Managed Unit's internal components, register-level interfaces, radio configuration, GNSS configuration, sensor configuration or other implementation details. A Managed Unit is therefore designed and documented as a capability provider, not as a collection of low-level peripheral drivers exposed to the host.
+
+### AES-UNIT-006: Declared Execution Model
+
+**Requirement:** A Unit SHALL declare its execution model — Passive or Managed — in its documentation, and a Managed Unit SHALL additionally expose, through the Unit discovery mechanism, its supported capabilities and Unit API version. A host Module SHALL NOT be required to know or control a Managed Unit's internal components or register-level interfaces to operate it through its declared Unit API.
+
+**Rationale:** The host contract differs by model: a Passive Unit is driven directly, a Managed Unit is driven through a high-level API. Making the model discoverable lets the host apply the right contract without hard-coded assumptions.
+
+### AES-UNIT-007: Deterministic Discovery and Activation Sequence
+
+**Requirement:** A Module SHALL activate a Unit in this order: (1) supply `UIF_PWR_VIN`; (2) discover the Unit through the Unit EEPROM on the Unit Interface I²C bus; (3) read and validate the Unit descriptor; (4) check Unit type, interface profile, hardware compatibility, API compatibility, capabilities and power requirements; (5) if the Unit is supported, assert `UIF_PWR_EN`; (6) wait for `UIF_READY`; (7) begin functional communication only after `UIF_READY` is HIGH. If the Unit is unsupported, incompatible, invalid, or exceeds the host power capability, `UIF_PWR_EN` SHALL remain LOW. The Unit EEPROM and the minimum circuitry required for discovery MAY remain powered from `UIF_PWR_VIN` while `UIF_PWR_EN` is LOW.
+
+**Rationale:** A single deterministic sequence keeps unknown or incompatible Units unpowered and un-commanded until compatibility and power are validated (see [AES-IF-007](./05-interfaces-and-versioning.md#aes-if-007-safe-default-state) and [AES-EEPROM-002](./06-eeprom-metadata.md#aes-eeprom-002-deterministic-validation-order)). Physical presence is established by successful EEPROM discovery, so no separate presence signal is required.
+
 ### AES-UNIT-001: Electronic Identity
 
-**Requirement:** A Released replaceable Unit whose replacement affects electrical behavior, data interpretation, safety, calibration or compatibility SHALL provide electronic identity using the [AES EEPROM metadata specification](./06-eeprom-metadata.md) or a documented equivalent. Experimental and passive Units are exempt; Active Development Units SHOULD design the identity in early, because it is hard to retrofit.
+**Requirement:** A Released replaceable Unit whose replacement affects electrical behavior, data interpretation, safety, calibration or compatibility SHALL provide electronic identity using the [AES EEPROM metadata specification](./06-eeprom-metadata.md) or a documented equivalent. Experimental Units, and Units whose replacement affects none of those, are exempt; Active Development Units SHOULD design the identity in early, because it is hard to retrofit. This exemption is about the identity contract, not the execution model: a Passive Unit that participates in discovery still carries the EEPROM used by the activation sequence ([AES-UNIT-007](#aes-unit-007-deterministic-discovery-and-activation-sequence)).
 
 **Rationale:** Human labels cannot support automated compatibility and calibration decisions (see [EDR-002](./edr/EDR-002-runtime-unit-identity.md)).
 
