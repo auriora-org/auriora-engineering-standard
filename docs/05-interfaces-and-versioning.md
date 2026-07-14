@@ -41,6 +41,35 @@ Maturity scaling: an Experimental connection between two of your own boards need
 
 **Rationale:** Replaceable hardware fails when engineers treat pinout as the entire interface.
 
+### 3.1 Unit Interface Signals and Profiles
+
+`UIF` denotes the **AURIORA Unit Interface**. Externally visible signals belonging to a standardized Unit Interface use the `UIF_` prefix. Standard signal names, where applicable, are:
+
+- `UIF_PWR_VIN` — Unit input power supplied by the host
+- `UIF_PWR_EN` — host-asserted enable for the Unit's functional power domain
+- `UIF_READY` — Unit-functional-ready indication (see below)
+- `UIF_I2C_SCL`, `UIF_I2C_SDA` — discovery/identity I²C bus
+- `UIF_SPI_SCK`, `UIF_SPI_MOSI`, `UIF_SPI_MISO`, `UIF_SPI_CS_N` — Managed Unit SPI transport
+- `UIF_IRQ_N`, `UIF_RESET_N` — interrupt and reset
+- profile-defined synchronization or auxiliary signals
+
+Physical presence is determined through successful EEPROM discovery, not through a dedicated presence pin. A Unit-presence signal (`UIF_PRESENT`, `UIF_PRESENT_N` or equivalent) SHALL NOT be defined; the connector SHALL NOT require separate discovery and functional power pins — the Unit locally switches or enables the power of its functional circuitry from `UIF_PWR_EN`.
+
+`UIF_READY` is an **active-HIGH** functional-readiness signal:
+
+- **LOW:** the Unit is disabled, starting, not initialized, faulty, or otherwise unavailable.
+- **HIGH:** the Unit is powered, initialized, and its functional interface is ready for use.
+
+For a Passive Unit, `UIF_READY` MAY be generated from the switched functional power domain (hardware pull-up or equivalent). For a Managed Unit, `UIF_READY` SHOULD be controlled by the Unit controller and asserted only after successful firmware initialization, and deasserted before shutdown or on entering an unrecoverable fault. The host MUST provide a defined LOW state when no Unit is connected or the Unit functional domain is disabled. `UIF_READY` is a readiness signal, not a physical-presence signal.
+
+A Unit Interface is realized through one or more versioned **Unit Interface Profiles**. Rather than forcing every Unit onto one universal connector, the Platform supports multiple profiles (for example a small I²C profile for Passive Units and a larger profile for Managed Units), each versioned independently. Concrete connector pinouts, electrical limits and timing live in the versioned profile specifications under [`docs/interfaces/`](./interfaces/); this chapter defines only the profile-independent rules.
+
+### AES-IF-008: Versioned Unit Interface Profiles
+
+**Requirement:** A standardized Unit Interface SHALL be defined as one or more named, independently versioned Unit Interface Profiles, each specifying its connector, pinout, `UIF_` signal set, electrical limits and timing in a versioned profile specification. A Released Unit and its host SHALL declare the profile identifier and profile version they implement (see [EEPROM Metadata](./06-eeprom-metadata.md)), and a host SHALL reject a Unit whose profile or profile version it does not support, leaving `UIF_PWR_EN` LOW. Profiles version per the semantic rules of this chapter; changing a profile's defined signals is a breaking change unless it resolves a documented electrical conflict without altering existing signal meaning.
+
+**Rationale:** Different Unit classes have genuinely different connector needs; one universal connector either over-provisions simple Units or under-serves complex ones. Independent versioning lets each profile evolve without forcing a Platform-wide connector change, while explicit profile declaration keeps incompatible Units from being powered.
+
 ### AES-IF-007: Safe Default State
 
 **Requirement:** Unit Interfaces SHALL define safe default states for power, outputs and communication lines before Unit identity and compatibility are validated. This applies at every maturity level where the interface can energize anything.

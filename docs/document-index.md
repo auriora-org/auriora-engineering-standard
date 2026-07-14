@@ -23,6 +23,15 @@ This index records the AES documents and reserved companion document IDs, and ho
 | `AES-REG-DOC` | Document Index | `docs/document-index.md` |
 | `AES-EXAMPLE-MODULE-LIFECYCLE` | Worked Example (informative) | `examples/worked-example-module-lifecycle.md` |
 
+## Unit Interface Profile Specifications
+
+Concrete, independently versioned Unit Interface Profiles (see [AES-IF-008](./05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)):
+
+| Profile | Version | Status | Source Path |
+|---|---|---|---|
+| `AURIORA UIF-I2C-6` | 0.1 | Draft | `docs/interfaces/uif-i2c-6.md` |
+| AURIORA Managed SPI Profile | 0.1 | Draft | `docs/interfaces/managed-spi.md` |
+
 ## Companion Document IDs (reserved)
 
 | Document ID | Title | Repository |
@@ -34,8 +43,8 @@ This index records the AES documents and reserved companion document IDs, and ho
 
 ## AOID Assignments
 
-No AOIDs have been assigned yet. When Released artifacts need them ([AES-ID-006](./04-naming-and-identity.md#aes-id-006-aoid-assignment)), list them here:
+Released artifacts that participate in machine-readable identity need an AOID ([AES-ID-006](./04-naming-and-identity.md#aes-id-006-aoid-assignment)); assignments are listed here to prevent collisions. Pre-Release entries may appear provisionally so identifiers cited in draft specs are reserved.
 
 | AOID | Artifact | Maturity |
 |---|---|---|
-| — | — | — |
+| `AOID:PUB:UNIT:ENV:AEU:001` | AURIORA Environmental Sensor Unit (AEU-01); first realization of the `UIF-I2C-6` profile | Pre-Release (provisional) |
