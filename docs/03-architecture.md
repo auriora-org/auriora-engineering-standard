@@ -114,7 +114,30 @@ Every Unit is realized as one of two execution models. Both remain Units under t
 
 **Rationale:** Ambiguous calibration ownership causes invalid data and irreproducible experiments.
 
-## 6. Guidance (non-normative)
+## 6. Default Controller Platform Strategy
+
+AURIORA concentrates its firmware, tooling and reuse investment on a small number of controller platforms. This section states the Platform's *default* choice; it does not restrict what a design may use.
+
+Two workload profiles carry the default:
+
+| Workload profile | Characteristics | Default platform |
+|---|---|---|
+| **Bounded low-power function** | One well-bounded sensor, actuator or interface function; local device control; Unit Interface or Host Interface communication; low to moderate compute; low power as a priority; simple firmware; integrated program Flash and minimal external part count. | Low-power **STM32-class** MCU (e.g. the STM32U0 or STM32L0 families). |
+| **Local processing** | Sustained or high-rate data flow; significant DMA and buffering demand; DSP or signal generation; several concurrent time-critical tasks; peripheral behavior that benefits from programmable I/O, a second core or larger SRAM. | **RP2040-class** MCU. |
+
+Most Units fall in the first profile, and Modules that perform substantial local processing fall in the second — but the profile, not the architectural role, selects the platform. A Managed Unit doing continuous DSP belongs in the second profile; a thin Module belongs in the first.
+
+Examples, illustrative only: the Environmental, Spectral, Communication & Timing, Soil and Geophysical Units are STM32-class (the Spectral and Communication & Timing Units on STM32U031); the Plant Electrophysiology and Audio Modules are RP2040-class.
+
+### AES-ARCH-001: Default Controller Platform
+
+**Requirement:** A new AURIORA Controller or Managed Unit controller SHOULD use the default platform for its workload profile: a low-power STM32-class MCU for a bounded low-power function, and an RP2040-class MCU where higher local processing, buffering, DSP or parallel real-time workloads justify it. A design MAY use another platform where its technical requirements warrant it; the choice and its reasons SHALL then be stated in the project's design notes or an ADR.
+
+**Rationale:** Converging on two platforms concentrates firmware reuse, HAL work, toolchain support and part familiarity, and makes controller substitution predictable across product families. It is a default, not a restriction: naming the two defaults is what makes a departure from them a visible, reasoned decision rather than an accident (see [EDR-004](./edr/EDR-004-default-controller-platforms.md)).
+
+This is the one place where AES names vendor platforms. Everything else about a Controller — peripheral choice, part numbers, packages, memory sizing — remains routine engineering judgment, recorded per [Decisions and Governance §3](./08-decisions-and-governance.md#3-when-a-decision-needs-a-record).
+
+## 7. Guidance (non-normative)
 
 - **Dependency direction.** Units and reusable Controllers should depend on declared interfaces, not on private Module internals. A Unit that needs one Module's undocumented boot timing is not reusable.
 - **Keying.** Prefer mechanical, electrical or metadata keying so incompatible installation is impossible or detectable. Users will try invalid combinations.

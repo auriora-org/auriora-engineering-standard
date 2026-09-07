@@ -4,6 +4,18 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [1.2.0] - 2026-09-07
+
+### Added
+
+- Default controller platform strategy (Architecture §6): two workload profiles — *bounded low-power function* and *local processing* — each with a default MCU platform. New requirement `AES-ARCH-001` (default controller platform): a low-power STM32-class MCU (STM32U0 / STM32L0) for a bounded low-power sensing, actuation or interface function; an RP2040-class MCU where higher local processing, buffering, DSP or parallel real-time workloads justify it. `SHOULD` strength — another platform MAY be used where technical requirements warrant it, with reasons stated in the project's design notes or an ADR. Selection is keyed to the workload profile, not to the Unit/Module role.
+- [EDR-004: Default Controller Platforms](./docs/edr/EDR-004-default-controller-platforms.md), recording the platform-wide decision, the alternatives (no default, single platform, role-keyed selection, mandatory strength) and its consequences — including that Architecture §6 is the one place AES names vendor platforms, and that the companion guides remain technology-neutral.
+- [EDR-003: UIF-MSPI Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md) fixing the Managed SPI profile's connector and pinout, indexed in `STANDARD.md`. The profile remains Draft: the remaining electrical limits are still open.
+
+### Changed
+
+- *Editorial:* the Architecture row of the Canonical Documents table in `STANDARD.md` now names the default controller platform strategy.
+
 ## [1.1.0] - 2026-07-14
 
 ### Added

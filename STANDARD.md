@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 1.1.0
+**Version:** 1.2.0
 **Status:** Normative
 **Language:** English
 
@@ -67,7 +67,7 @@ There are no conformance certificates, conformance statements or traceability ma
 |---|---|
 | [01 Principles](./docs/01-principles.md) | The engineering posture: platform thinking, explicitness, honest documentation. |
 | [02 Terminology](./docs/02-terminology.md) | Canonical AURIORA vocabulary. Frozen core terms. |
-| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules. |
+| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; default controller platform strategy. |
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
 | [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution. |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
@@ -184,3 +184,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-001: Controllers Are Separated from Modules](./docs/edr/EDR-001-controller-module-separation.md)
 - [EDR-002: Unit Identity Is Electronic and Runtime-Discoverable](./docs/edr/EDR-002-runtime-unit-identity.md)
 - [EDR-003: UIF-MSPI Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md)
+- [EDR-004: Default Controller Platforms](./docs/edr/EDR-004-default-controller-platforms.md)
