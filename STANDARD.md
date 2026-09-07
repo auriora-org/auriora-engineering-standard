@@ -183,3 +183,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 
 - [EDR-001: Controllers Are Separated from Modules](./docs/edr/EDR-001-controller-module-separation.md)
 - [EDR-002: Unit Identity Is Electronic and Runtime-Discoverable](./docs/edr/EDR-002-runtime-unit-identity.md)
+- [EDR-003: UIF-MSPI Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md)
