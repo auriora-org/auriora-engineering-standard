@@ -89,10 +89,14 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 | Capability Flags | Declared features and supported operations. |
 | Required / Supported Input Voltage | Required input voltage or supported voltage range. |
 | Maximum Startup Current | Worst-case current during Unit start-up. |
+| Startup Peak Duration | How long the Unit may draw more than its maximum operating current after `UIF_PWR_EN` is asserted. Informational. |
 | Maximum Operating Current | Worst-case current in normal operation. |
+| Nominal Operating Current | Typical current in normal operation, for energy and runtime estimation. Informational. |
 | Maximum Discovery-State Current | Worst-case current drawn from `UIF_PWR_VIN` while `UIF_PWR_EN` is LOW, where applicable. |
 
 These extension records are optional at the schema level, but they become mandatory when required by the Unit's execution model or interface profile. A **Managed Unit** SHALL provide the execution model, Unit Interface Profile identifier and version, Unit API identifier and version, capability flags, and all applicable power requirement fields the host needs to validate compatibility before activation. A Managed Unit on a profile whose Unit API shares an addressed transport with discovery SHALL additionally provide the Unit API Transport Address; the host SHALL take the address from this record and SHALL NOT infer or hard-code it ([AES-IF-009](./05-interfaces-and-versioning.md#aes-if-009-unit-interface-i2c-address-allocation)). A **Passive Unit** SHALL NOT be required to provide Managed Unit API metadata (Unit API identifier or version); it provides the execution model, profile identity and applicable power fields relevant to its function.
+
+Current fields are worst-case values in milliamperes and duration fields are in milliseconds, unless the record defines otherwise. The two fields marked informational describe expected rather than bounding behavior: they exist so a host that wants to estimate energy, log consumption or size a battery has better data than a worst-case figure. A host SHALL NOT substitute an informational field for a worst-case field in any decision that enforces a limit or authorizes power.
 
 A host SHALL be able to reject a Unit whose profile or API version it does not support before asserting `UIF_PWR_EN`, and SHALL verify the Unit's power metadata against its own capability before asserting `UIF_PWR_EN` (see [AES-UNIT-007](./03-architecture.md#aes-unit-007-deterministic-discovery-and-activation-sequence)). Unknown optional records remain forward-compatible per [AES-EEPROM-003](#aes-eeprom-003-forward-compatible-extensions).
 

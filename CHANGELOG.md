@@ -4,6 +4,24 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [1.4.0] - 2026-09-10
+
+### Added
+
+- EEPROM optional TLV fields **Startup Peak Duration** and **Nominal Operating Current** (`AES-EEPROM-008`). Both are informational: they let a host that wants to estimate energy, log consumption, size a battery or budget inrush work from better data than a worst-case figure, and a host `SHALL NOT` substitute either for a worst-case field in a decision that enforces a limit or authorizes power. The same paragraph fixes the units of the power records — currents in milliamperes, durations in milliseconds. Additive per `AES-EEPROM-003`; the schema major version is unchanged and existing readers are unaffected.
+- Terminology supporting term **Unit Interface Host**: whatever implements the host side of a Unit Interface port — normally a Module, but also an adapter, test fixture or third-party host. Interfaces and Versioning §3.1 states the consequence: where AES writes a Unit Interface obligation on "the Module", it binds whatever implements the port, which is what makes a Unit reusable outside the Module it was designed with. Product-level safety policy is not transferred by implementing a port and stays with the Module (`AES-MOD-004`).
+
+### Changed
+
+- `AES-UNIT-007`: the discovery domain `SHALL` — not `MAY` — remain powered and readable from `UIF_PWR_VIN` while `UIF_PWR_EN` is LOW. The sequence already validates a Unit before enabling it, so discovery power was never optional, and the companion AHDG §6.1 already required it as a `MUST`; AES was the weaker of the two on the same fact.
+- `AES-UNIT-007`: the wait for `UIF_READY` is now bounded. On expiry the host de-asserts `UIF_PWR_EN` and treats the Unit as failed rather than transacting with it. The bound is a profile or product property, not a Platform constant. This was previously stated only by `UIF-MI2C-8`, leaving the profile-independent sequence with one unbounded step.
+- `AES-MOD-003`: a Released Module that accepts Units now states, alongside its supported profiles and versions, how many ports of each profile it provides, what one port supplies, and any restriction on operating those ports simultaneously. A Unit is already required to declare what it needs with numbers (`AES-UNIT-004`, `AES-EEPROM-008`); this is the other side of the same contract. Port count is explicitly not a power promise.
+- [`UIF-MI2C-8`](./docs/interfaces/uif-mi2c-8.md) draft clarification: the `UIF_READY` timeout rule is referenced from `AES-UNIT-007` rather than restated, and the timeout value is added to the profile's open electrical items.
+
+### Compatibility
+
+No breaking change. The two EEPROM fields are optional TLV records; the Unit Interface Host term is a supporting term, not frozen core vocabulary (`AES-TERM-003`); the two `AES-UNIT-007` changes tighten a sequence no Released artifact yet implements, and the `AES-MOD-003` extension binds Released Modules, of which there are none. All three Unit Interface Profiles keep their signal sets, connectors and `0.1` Draft versions. No decision record is triggered: the change set touches no frozen vocabulary, no AOID taxonomy, no Released interface and no EEPROM schema major version (`AES-EDR-001`).
+
 ## [1.3.0] - 2026-09-10
 
 ### Added

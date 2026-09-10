@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 1.3.0
+**Version:** 1.4.0
 **Status:** Normative
 **Language:** English
 

@@ -55,7 +55,7 @@ The second ground earns its contact in the **cable**: metres of thin field wirin
 
 Concrete electrical limits are defined here when this profile is realized on specific hardware. This profile is **Draft**: it constrains the signal set, its meaning and its physical arrangement until these limits are finalized (see [AES-IF-006](../05-interfaces-and-versioning.md#aes-if-006-unit-interface-completeness)). It SHALL NOT be marked Normative or promoted to a `1.0` release until voltage limits, current limits, logic thresholds, I²C bus speed and capacitance budget, clock-stretch and timing bounds, ESD protection, cable limits and hot-plug behavior are finalized.
 
-**OPEN — needs hardware decision:** JST SH sub-series and part number; cable construction and ground-conductor arrangement; `UIF_PWR_VIN` tolerance band; per-rail current limits; I²C pull-up values, bus speed and total bus capacitance budget; `UIF_IRQ_N` pull-up value and thresholds; maximum clock-stretch time; minimum power-off time (Section 6); logic thresholds; ESD protection level; hot-plug behavior; maximum cable length.
+**OPEN — needs hardware decision:** JST SH sub-series and part number; cable construction and ground-conductor arrangement; `UIF_PWR_VIN` tolerance band; per-rail current limits; I²C pull-up values, bus speed and total bus capacitance budget; `UIF_IRQ_N` pull-up value and thresholds; maximum clock-stretch time; maximum time from `UIF_PWR_EN` to `UIF_READY`; minimum power-off time (Section 6); logic thresholds; ESD protection level; hot-plug behavior; maximum cable length.
 
 Baseline rules that apply regardless of the numbers:
 
@@ -108,7 +108,7 @@ The profile-independent sequence of [AES-UNIT-007](../03-architecture.md#aes-uni
 5. The host begins Unit API traffic only after `UIF_READY` is HIGH. Before that the Unit's functional I²C address MUST NOT acknowledge; discovery EEPROM access remains available throughout.
 6. On shutdown the Unit de-asserts `UIF_READY` before the host removes `UIF_PWR_EN`, where an orderly shutdown is requested through the Unit API.
 
-The host SHALL bound the wait for `UIF_READY` after asserting `UIF_PWR_EN`. On timeout the host SHALL de-assert `UIF_PWR_EN` and treat the Unit as failed rather than transacting on the bus.
+Bounding the wait for `UIF_READY` and the response on expiry are profile-independent ([AES-UNIT-007](../03-architecture.md#aes-unit-007-deterministic-discovery-and-activation-sequence)). The concrete bound belongs to this profile's electrical layer and is open (Section 3).
 
 ## 6. Reset and Recovery
 
@@ -167,3 +167,4 @@ Because pins 1–6 match `UIF-I2C-6`, a passive 6-to-8 adapter that leaves pin 7
 | Version | Change | Compatibility Impact |
 |---|---|---|
 | 0.1 (Draft) | Initial draft: eight-position Managed I²C Unit Interface for low-bandwidth Managed Units — `UIF-I2C-6` pins 1–6 plus generic `UIF_IRQ_N` and a second `GND`; no `UIF_RESET_N`; event notification optional in use, mandatory as a contact; shared-bus address allocation; clock-stretch contract. Electrical and mechanical limits left open. | Not release-binding |
+| 0.1 (Draft) | Clarification: the `UIF_READY` timeout rule moved to the profile-independent [AES-UNIT-007](../03-architecture.md#aes-unit-007-deterministic-discovery-and-activation-sequence) and is referenced rather than restated; the timeout value added to the open electrical items. | None (draft clarification) |
