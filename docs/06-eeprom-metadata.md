@@ -81,21 +81,22 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 | Field | Purpose |
 |---|---|
 | Execution Model | Passive or Managed. |
-| Unit Interface Profile Identifier | The profile the Unit implements (e.g. `UIF-I2C-6`). |
+| Unit Interface Profile Identifier | The profile the Unit implements (e.g. `UIF-I2C-6`, `UIF-MI2C-8`). |
 | Unit Interface Profile Version | `MAJOR.MINOR` of the implemented profile. |
 | Unit API Identifier | Managed Unit API family identifier. |
 | Unit API Version | `MAJOR.MINOR` of the Unit API (Managed Units). |
+| Unit API Transport Address | The address at which the Managed Unit serves its Unit API on an addressed shared transport — the 7-bit I²C address on an I²C-transport profile. Required where the transport is addressed and shared with discovery; see [AES-IF-009](./05-interfaces-and-versioning.md#aes-if-009-unit-interface-i2c-address-allocation). |
 | Capability Flags | Declared features and supported operations. |
 | Required / Supported Input Voltage | Required input voltage or supported voltage range. |
 | Maximum Startup Current | Worst-case current during Unit start-up. |
 | Maximum Operating Current | Worst-case current in normal operation. |
 | Maximum Discovery-State Current | Worst-case current drawn from `UIF_PWR_VIN` while `UIF_PWR_EN` is LOW, where applicable. |
 
-These extension records are optional at the schema level, but they become mandatory when required by the Unit's execution model or interface profile. A **Managed Unit** SHALL provide the execution model, Unit Interface Profile identifier and version, Unit API identifier and version, capability flags, and all applicable power requirement fields the host needs to validate compatibility before activation. A **Passive Unit** SHALL NOT be required to provide Managed Unit API metadata (Unit API identifier or version); it provides the execution model, profile identity and applicable power fields relevant to its function.
+These extension records are optional at the schema level, but they become mandatory when required by the Unit's execution model or interface profile. A **Managed Unit** SHALL provide the execution model, Unit Interface Profile identifier and version, Unit API identifier and version, capability flags, and all applicable power requirement fields the host needs to validate compatibility before activation. A Managed Unit on a profile whose Unit API shares an addressed transport with discovery SHALL additionally provide the Unit API Transport Address; the host SHALL take the address from this record and SHALL NOT infer or hard-code it ([AES-IF-009](./05-interfaces-and-versioning.md#aes-if-009-unit-interface-i2c-address-allocation)). A **Passive Unit** SHALL NOT be required to provide Managed Unit API metadata (Unit API identifier or version); it provides the execution model, profile identity and applicable power fields relevant to its function.
 
 A host SHALL be able to reject a Unit whose profile or API version it does not support before asserting `UIF_PWR_EN`, and SHALL verify the Unit's power metadata against its own capability before asserting `UIF_PWR_EN` (see [AES-UNIT-007](./03-architecture.md#aes-unit-007-deterministic-discovery-and-activation-sequence)). Unknown optional records remain forward-compatible per [AES-EEPROM-003](#aes-eeprom-003-forward-compatible-extensions).
 
-**Rationale:** Execution model, profile, API and power draw are exactly the facts a host needs to decide *before* powering a Unit. Keeping the records optional at schema level preserves older readers, while making them mandatory per execution model and profile guarantees the host actually gets what it needs to validate a Managed Unit.
+**Rationale:** Execution model, profile, API, transport address and power draw are exactly the facts a host needs to decide *before* powering a Unit. Keeping the records optional at schema level preserves older readers, while making them mandatory per execution model and profile guarantees the host actually gets what it needs to validate a Managed Unit.
 
 ## 4. Standard Binary Header
 

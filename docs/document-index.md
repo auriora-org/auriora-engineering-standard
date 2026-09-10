@@ -21,7 +21,8 @@ This index records the AES documents and reserved companion document IDs, and ho
 | `AES-GOV` | Decisions and Governance | `docs/08-decisions-and-governance.md` |
 | `AES-CHECK` | Review Checklists | `docs/09-review-checklists.md` |
 | `AES-REG-DOC` | Document Index | `docs/document-index.md` |
-| `AES-EXAMPLE-MODULE-LIFECYCLE` | Worked Example (informative) | `examples/worked-example-module-lifecycle.md` |
+| `AES-EXAMPLE-MODULE-LIFECYCLE` | Worked Example: Module Lifecycle (informative) | `examples/worked-example-module-lifecycle.md` |
+| `AES-EXAMPLE-UIF-SELECTION` | Worked Example: Choosing a Unit Interface Profile (informative) | `examples/worked-example-unit-interface-profile-selection.md` |
 
 ## Unit Interface Profile Specifications
 
@@ -30,7 +31,8 @@ Concrete, independently versioned Unit Interface Profiles (see [AES-IF-008](./05
 | Profile | Version | Status | Source Path |
 |---|---|---|---|
 | `AURIORA UIF-I2C-6` | 0.1 | Draft | `docs/interfaces/uif-i2c-6.md` |
-| AURIORA Managed SPI Profile | 0.1 | Draft | `docs/interfaces/managed-spi.md` |
+| `AURIORA UIF-MI2C-8` | 0.1 | Draft | `docs/interfaces/uif-mi2c-8.md` |
+| `AURIORA UIF-MSPI-14` | 0.1 | Draft | `docs/interfaces/uif-mspi-14.md` |
 
 ## Companion Document IDs (reserved)
 
@@ -47,4 +49,4 @@ Released artifacts that participate in machine-readable identity need an AOID ([
 
 | AOID | Artifact | Maturity |
 |---|---|---|
-| `AOID:PUB:UNIT:ENV:AEU:001` | AURIORA Environmental Sensor Unit (AEU-01); first realization of the `UIF-I2C-6` profile | Pre-Release (provisional) |
+| `AOID:PUB:UNIT:ENV:AEU:001` | AURIORA Environmental Sensor Unit (AEU-01); Managed Unit, first realization of the `UIF-MI2C-8` profile ([EDR-005](./edr/EDR-005-low-bandwidth-managed-unit-interface.md)) | Pre-Release (provisional) |

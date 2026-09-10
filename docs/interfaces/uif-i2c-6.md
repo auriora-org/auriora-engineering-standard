@@ -11,6 +11,8 @@ This is a versioned [Unit Interface Profile](../05-interfaces-and-versioning.md#
 
 `UIF-I2C-6` is the small, low-pin-count Unit Interface profile intended for **Passive Units** and simple I²C-based Units: sensor, identity and low-power functional Units that the host Module drives directly and that need only discovery, power control and a readiness indication.
 
+This profile is defined by its *management model*, not by its transport. A Unit that runs its own controller and exposes a versioned Unit API is a Managed Unit and belongs on [`UIF-MI2C-8`](./uif-mi2c-8.md) — the same I²C transport with an added generic event signal, a second ground and a distinct 8-position connector — or on [`UIF-MSPI-14`](./uif-mspi-14.md) where throughput or timing demands it. See the selection rule, [AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-selection).
+
 ## 2. Pin Assignment
 
 Six signals:
@@ -32,14 +34,15 @@ Concrete electrical limits — logic levels, `UIF_PWR_VIN` voltage, current limi
 
 **OPEN — needs hardware decision:** connector family/part number, mechanical format and keying, and the concrete current/timing numbers and VIN tolerance band.
 
-### First hardware realization (AEU-01)
+### Electrical baseline and first realization
 
-The first Unit realizing this profile is the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AEU:001`). Its power decisions inform, but do not yet finalize, the profile electrical layer:
+The profile was originally seeded by the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AEU:001`, AEU-01). AEU-01 has since been reworked as a **Managed Unit** and now realizes [`UIF-MI2C-8`](./uif-mi2c-8.md) ([EDR-005](../edr/EDR-005-low-bandwidth-managed-unit-interface.md)), so `UIF-I2C-6` currently has no committed hardware realization; its electrical layer is finalized when the first Passive Unit on this profile is designed.
 
-- `UIF_PWR_VIN`: nominally **+3V3**. The Unit carries no on-board regulator; the functional rail is `UIF_PWR_VIN` minus the reverse-protection FET drop. A host on this profile SHALL supply 3V3-class VIN until a wider range is fixed here.
-- The Unit's absolute-maximum ratings are governed by the post-protection rail, not by an internal regulator. Hosts SHALL NOT exceed the VIN range the Unit's EEPROM power metadata declares.
+The working assumption carried across all UIF profiles remains:
 
-These numbers are AEU-01-specific and are **not yet profile-normative**. Promotion to a normative range (with tolerance, current limits and logic thresholds) is required before `UIF-I2C-6` leaves Draft (see [AES-IF-006](../05-interfaces-and-versioning.md#aes-if-006-unit-interface-completeness)).
+- `UIF_PWR_VIN`: nominally **+3V3**. A host on this profile SHALL supply 3V3-class VIN until a wider range is fixed here, and SHALL NOT exceed the VIN range the Unit's EEPROM power metadata declares.
+
+These values are **not yet profile-normative**. Promotion to a normative range (with tolerance, current limits and logic thresholds) is required before `UIF-I2C-6` leaves Draft (see [AES-IF-006](../05-interfaces-and-versioning.md#aes-if-006-unit-interface-completeness)).
 
 Baseline rules that apply regardless of the numbers:
 
@@ -49,7 +52,7 @@ Baseline rules that apply regardless of the numbers:
 
 ## 4. Communication Layer
 
-Discovery and identity use I²C on `UIF_I2C_SCL`/`UIF_I2C_SDA`. The Unit EEPROM and its address range, and the metadata layout, follow [EEPROM Metadata](../06-eeprom-metadata.md). Functional communication for a Passive Unit is host-driven over the same I²C bus per the Unit's own device documentation; `UIF-I2C-6` standardizes discovery and activation, not the Unit's functional register map.
+Discovery and identity use I²C on `UIF_I2C_SCL`/`UIF_I2C_SDA`. The Unit EEPROM and its address range, and the metadata layout, follow [EEPROM Metadata](../06-eeprom-metadata.md) and the Platform address allocation rule [AES-IF-009](../05-interfaces-and-versioning.md#aes-if-009-unit-interface-i2c-address-allocation): the discovery EEPROM occupies `0x50`–`0x57`, and the Unit's functional devices SHALL respond outside that block. Functional communication for a Passive Unit is host-driven over the same I²C bus per the Unit's own device documentation; `UIF-I2C-6` standardizes discovery and activation, not the Unit's functional register map.
 
 ## 5. Identity and Discovery
 
@@ -69,3 +72,4 @@ Presence is established by successful EEPROM discovery ([AES-EEPROM-002](../06-e
 | Version | Change | Compatibility Impact |
 |---|---|---|
 | 0.1 (Draft) | Initial draft: six-signal Passive/simple-I²C Unit Interface; signal set and meaning defined, electrical and mechanical limits left open. | Not release-binding |
+| 0.1 (Draft) | Clarification: scope stated as management-model-based (Passive/simple Units) with Managed Units directed to `UIF-MI2C-8` or `UIF-MSPI-14`; AEU-01 recorded as having moved to `UIF-MI2C-8`; functional I²C addressing bound to `AES-IF-009`. | None (draft clarification) |

@@ -49,8 +49,9 @@ Maturity scaling: an Experimental connection between two of your own boards need
 - `UIF_PWR_EN` — host-asserted enable for the Unit's functional power domain
 - `UIF_READY` — Unit-functional-ready indication (see below)
 - `UIF_I2C_SCL`, `UIF_I2C_SDA` — discovery/identity I²C bus
-- `UIF_SPI_SCK`, `UIF_SPI_MOSI`, `UIF_SPI_MISO`, `UIF_SPI_CS_N` — Managed Unit SPI transport
-- `UIF_IRQ_N`, `UIF_RESET_N` — interrupt and reset
+- `UIF_SPI_SCK`, `UIF_SPI_MOSI`, `UIF_SPI_MISO`, `UIF_SPI_CS_N` — SPI transport, where a profile uses one
+- `UIF_IRQ_N` — generic asynchronous event notification from the Unit to the host
+- `UIF_RESET_N` — host-controlled Unit reset, where a profile defines one
 - profile-defined synchronization or auxiliary signals
 
 Physical presence is determined through successful EEPROM discovery, not through a dedicated presence pin. A Unit-presence signal (`UIF_PRESENT`, `UIF_PRESENT_N` or equivalent) SHALL NOT be defined; the connector SHALL NOT require separate discovery and functional power pins — the Unit locally switches or enables the power of its functional circuitry from `UIF_PWR_EN`.
@@ -62,13 +63,59 @@ Physical presence is determined through successful EEPROM discovery, not through
 
 For a Passive Unit, `UIF_READY` MAY be generated from the switched functional power domain (hardware pull-up or equivalent). For a Managed Unit, `UIF_READY` SHOULD be controlled by the Unit controller and asserted only after successful firmware initialization, and deasserted before shutdown or on entering an unrecoverable fault. The host MUST provide a defined LOW state when no Unit is connected or the Unit functional domain is disabled. `UIF_READY` is a readiness signal, not a physical-presence signal.
 
-A Unit Interface is realized through one or more versioned **Unit Interface Profiles**. Rather than forcing every Unit onto one universal connector, the Platform supports multiple profiles (for example a small I²C profile for Passive Units and a larger profile for Managed Units), each versioned independently. Concrete connector pinouts, electrical limits and timing live in the versioned profile specifications under [`docs/interfaces/`](./interfaces/); this chapter defines only the profile-independent rules.
+A Unit Interface is realized through one or more versioned **Unit Interface Profiles**. Rather than forcing every Unit onto one universal connector, the Platform supports multiple profiles, each versioned independently. Concrete connector pinouts, electrical limits and timing live in the versioned profile specifications under [`docs/interfaces/`](./interfaces/); this chapter defines only the profile-independent rules.
+
+Profile identifiers follow the pattern `UIF-[M]<transport>-<positions>`: an optional `M` marking a Managed-Unit profile, the transport, and the connector position count — for example `UIF-I2C-6` and `UIF-MI2C-8`. The position count is part of the identifier because it is the discriminator that prevents cross-profile mating.
 
 ### AES-IF-008: Versioned Unit Interface Profiles
 
 **Requirement:** A standardized Unit Interface SHALL be defined as one or more named, independently versioned Unit Interface Profiles, each specifying its connector, pinout, `UIF_` signal set, electrical limits and timing in a versioned profile specification. A Released Unit and its host SHALL declare the profile identifier and profile version they implement (see [EEPROM Metadata](./06-eeprom-metadata.md)), and a host SHALL reject a Unit whose profile or profile version it does not support, leaving `UIF_PWR_EN` LOW. Profiles version per the semantic rules of this chapter; changing a profile's defined signals is a breaking change unless it resolves a documented electrical conflict without altering existing signal meaning.
 
 **Rationale:** Different Unit classes have genuinely different connector needs; one universal connector either over-provisions simple Units or under-serves complex ones. Independent versioning lets each profile evolve without forcing a Platform-wide connector change, while explicit profile declaration keeps incompatible Units from being powered.
+
+### 3.2 Profile Family and Selection
+
+Two independent axes describe a Unit Interface. Conflating them over-provisions simple Units and under-serves demanding ones.
+
+- **Management model** — Passive or Managed ([Architecture §5.1](./03-architecture.md#51-execution-models-and-transport)). It determines the *host contract*: whether the host drives the Unit's peripherals directly or operates the Unit through a versioned Unit API. It does not determine the transport.
+- **Transport** — the bus carrying functional traffic. It is selected by throughput, latency, timing determinism and streaming behavior, not by whether a controller sits behind the interface.
+
+The current profile family:
+
+|  | Low bandwidth | High bandwidth |
+|---|---|---|
+| **Passive / simple Unit** | [`UIF-I2C-6`](./interfaces/uif-i2c-6.md) — 6 positions | Normally not applicable: a Unit needing high-bandwidth host-driven register access is usually better designed as a Managed Unit. |
+| **Managed Unit** | [`UIF-MI2C-8`](./interfaces/uif-mi2c-8.md) — 8 positions, generic `UIF_IRQ_N` | [`UIF-MSPI-14`](./interfaces/uif-mspi-14.md) — 14 positions, SPI transport, `UIF_RESET_N` |
+
+A Managed Unit is therefore not required to use SPI. Discovery, `UIF_READY` semantics, the activation sequence and event semantics are identical across all profiles, so a Unit API and its host software port between transports.
+
+### AES-IF-009: Unit Interface I2C Address Allocation
+
+**Requirement:** Every UIF profile carries the discovery I²C bus, so I²C addresses on it are allocated Platform-wide. The address block `0x50`–`0x57` (7-bit) SHALL be reserved for Unit discovery EEPROMs, with `0x50` as the default. A Unit's functional target address — the address at which a Managed Unit serves its Unit API, or at which a Passive Unit's functional devices respond — SHALL lie outside that block and outside the addresses reserved by the I²C specification (`0x00`–`0x07` and `0x78`–`0x7F`). A Managed Unit SHALL declare its Unit API address in EEPROM metadata ([AES-EEPROM-008](./06-eeprom-metadata.md#aes-eeprom-008-execution-model-profile-and-api-metadata)); a host SHALL NOT infer, default to or hard-code it. A Unit SHALL NOT acknowledge any address other than its discovery EEPROM address and its declared functional address or addresses. A host that shares one Unit Interface I²C bus across multiple Unit ports SHALL provide a means of resolving address collisions — a per-port bus, a bus switch or an addressable segment — and SHALL leave `UIF_PWR_EN` LOW for any Unit whose declared functional address collides with an already-active device.
+
+**Rationale:** Once a Managed Unit's controller shares the discovery bus with its EEPROM, address allocation stops being a local implementation choice. Fixing the discovery block and requiring the functional address to be declared rather than assumed keeps discovery uniform across profiles and makes a collision a pre-power validation failure instead of a field fault that appears when the second Unit type ships.
+
+### AES-IF-010: Unit Interface Profile Selection
+
+**Requirement:** A Unit SHALL declare one Unit Interface Profile, selected by its management model and its transport requirements. A Managed Unit SHOULD use `UIF-MI2C-8` by default. A Managed Unit SHOULD use `UIF-MSPI-14` where throughput, latency, deterministic transfer timing or continuous data streaming makes an I²C transport unsuitable. A Passive or simple Unit SHOULD use `UIF-I2C-6`. Where the choice is not obvious from the criteria below, the Unit's design notes SHALL record which criterion decided it. A Unit SHALL NOT add Unit-specific signals to a profile; a genuinely unmet interface need is a versioned profile change ([AES-IF-008](#aes-if-008-versioned-unit-interface-profiles)), not a local pin.
+
+**Rationale:** Without a stated default, the largest profile becomes the safe-looking choice and simple Units inherit connector, power and board-area cost they never use. A default plus explicit escalation criteria makes the larger profile a reasoned decision.
+
+The criteria, in decreasing order of how often they decide the answer. None of them is a fixed byte-rate threshold: throughput alone rarely decides, and an arbitrary number would be wrong for most Units in both directions.
+
+| Criterion | Points to `UIF-MI2C-8` | Points to `UIF-MSPI-14` |
+|---|---|---|
+| Deterministic transfer timing | Transfers may be delayed by bus arbitration, clock stretching or host scheduling. | A transfer must complete within a bounded, repeatable time. |
+| Continuous streaming | Discrete request/response transactions. | Sustained or block-continuous data flow, or DMA-paced transfer. |
+| Latency | Response needed in milliseconds or slower. | Sub-millisecond response required. |
+| Payload size and update rate | Bytes to a few hundred bytes, at hertz or slower. | Kilobytes per transfer, or high repetition rate. |
+| Event frequency | Occasional events, or none — a single generic `UIF_IRQ_N`, or polling, suffices. | Frequent events whose servicing must not contend with the data path. |
+| Host transaction count | Few transactions per measurement or command. | Many transactions per unit of work, so per-transaction overhead dominates. |
+| Power | Low average power matters; the Unit is idle or asleep most of the time. | Power is secondary to throughput. |
+| Connector and cabling | Small PCB, few conductors, simple field cabling. | Board area and cable count are acceptable costs. |
+| Host-controlled reset independent of power | Not required; `UIF_PWR_EN` cycling is sufficient recovery. | Required — the controller must be reset while remaining powered. |
+
+Where the criteria conflict, determinism and streaming outrank payload size: a Unit moving very little data under a hard timing constraint belongs on `UIF-MSPI-14`, and a Unit moving more data with no deadline usually does not.
 
 ### AES-IF-007: Safe Default State
 

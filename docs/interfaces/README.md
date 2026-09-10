@@ -1,13 +1,18 @@
 # Unit Interface Profile Specifications
 
-**Status:** Per-profile status stated in each file (both profiles are currently Draft)
+**Status:** Per-profile status stated in each file (all profiles are currently Draft)
 **Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [EEPROM Metadata](../06-eeprom-metadata.md)
 
 This directory holds the concrete, versioned **Unit Interface Profile** specifications. The profile-independent rules — the `UIF_` signal set, `UIF_READY` semantics, the discovery and activation sequence, and profile versioning — live in [Interfaces and Versioning](../05-interfaces-and-versioning.md) ([AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)). The files here define the parts that are specific to one profile: connector, pinout, electrical limits and timing.
 
 Each profile is versioned independently. A Released Unit and its host declare the profile identifier and version they implement in EEPROM metadata ([AES-EEPROM-008](../06-eeprom-metadata.md#aes-eeprom-008-execution-model-profile-and-api-metadata)).
 
-| Profile | File | Status | Intended for |
-|---|---|---|---|
-| `AURIORA UIF-I2C-6` | [uif-i2c-6.md](./uif-i2c-6.md) | Draft | Passive Units and simple I²C-based Units |
-| AURIORA Managed SPI Profile | [managed-spi.md](./managed-spi.md) | Draft | Managed Units requiring a high-level SPI API |
+| Profile | File | Positions | Status | Intended for |
+|---|---|---:|---|---|
+| `AURIORA UIF-I2C-6` | [uif-i2c-6.md](./uif-i2c-6.md) | 6 | Draft | Passive Units and simple I²C-based Units |
+| `AURIORA UIF-MI2C-8` | [uif-mi2c-8.md](./uif-mi2c-8.md) | 8 | Draft | Low-bandwidth Managed Units — the default Managed profile |
+| `AURIORA UIF-MSPI-14` | [uif-mspi-14.md](./uif-mspi-14.md) | 14 | Draft | Managed Units bound by throughput, latency, deterministic timing or streaming |
+
+Two axes select a profile: the **management model** (Passive or Managed) fixes the host contract, and the **transport** fixes the bus. They are independent — a Managed Unit is not required to use SPI. The selection rule is [AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-selection) and the family table is in [Interfaces and Versioning §3.2](../05-interfaces-and-versioning.md#32-profile-family-and-selection).
+
+Profile identifiers follow `UIF-[M]<transport>-<positions>`. The position counts are deliberately distinct so no two profiles can mate: a host cannot energize or mis-drive a Unit built to a different contract.
