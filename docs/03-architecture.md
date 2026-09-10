@@ -33,9 +33,9 @@ A Module is a standalone product: it is usable and reviewable even if its Contro
 
 ### AES-MOD-003: Unit Compatibility Matrix
 
-**Requirement:** A Released Module that accepts Units SHALL publish a compatibility matrix listing supported Unit Interface versions, compatible Unit classes, electrical limits and calibration requirements. During Active Development a running list in the design notes is sufficient.
+**Requirement:** A Released Module that accepts Units SHALL publish a compatibility matrix listing supported Unit Interface Profiles and versions, compatible Unit classes, calibration requirements, and the Module's own Unit-facing electrical limits: how many ports of each profile it provides, what one port supplies, and any restriction on operating those ports simultaneously. During Active Development a running list in the design notes is sufficient.
 
-**Rationale:** Replaceable Units are useful only when compatibility can be determined before installation.
+**Rationale:** Replaceable Units are useful only when compatibility can be determined before installation. A Unit is required to declare what it needs, with numbers ([AES-UNIT-004](#aes-unit-004-declared-limits), [AES-EEPROM-008](./06-eeprom-metadata.md#aes-eeprom-008-execution-model-profile-and-api-metadata)); the matrix is where the other side of that contract is stated. Port count is not a power promise: a Module may expose more ports than it can drive at once, which is a compatibility fact its users need before installation rather than a defect to hide.
 
 ### AES-MOD-004: Safety Policy Ownership
 
@@ -88,9 +88,9 @@ The execution model is independent of the **transport** the Unit Interface uses.
 
 ### AES-UNIT-007: Deterministic Discovery and Activation Sequence
 
-**Requirement:** A Module SHALL activate a Unit in this order: (1) supply `UIF_PWR_VIN`; (2) discover the Unit through the Unit EEPROM on the Unit Interface I²C bus; (3) read and validate the Unit descriptor; (4) check Unit type, interface profile, hardware compatibility, API compatibility, capabilities and power requirements; (5) if the Unit is supported, assert `UIF_PWR_EN`; (6) wait for `UIF_READY`; (7) begin functional communication only after `UIF_READY` is HIGH. If the Unit is unsupported, incompatible, invalid, or exceeds the host power capability, `UIF_PWR_EN` SHALL remain LOW. The Unit EEPROM and the minimum circuitry required for discovery MAY remain powered from `UIF_PWR_VIN` while `UIF_PWR_EN` is LOW.
+**Requirement:** A Module SHALL activate a Unit in this order: (1) supply `UIF_PWR_VIN`; (2) discover the Unit through the Unit EEPROM on the Unit Interface I²C bus; (3) read and validate the Unit descriptor; (4) check Unit type, interface profile, hardware compatibility, API compatibility, capabilities and power requirements; (5) if the Unit is supported, assert `UIF_PWR_EN`; (6) wait a bounded time for `UIF_READY`; (7) begin functional communication only after `UIF_READY` is HIGH. If the Unit is unsupported, incompatible, invalid, or exceeds the host power capability, `UIF_PWR_EN` SHALL remain LOW. The Unit EEPROM and the minimum circuitry required for discovery SHALL remain powered and readable from `UIF_PWR_VIN` while `UIF_PWR_EN` is LOW. The wait at step (6) SHALL be bounded; on expiry the host SHALL de-assert `UIF_PWR_EN` and treat the Unit as failed rather than transacting with it. The bound itself is a profile or product property, not a Platform constant.
 
-**Rationale:** A single deterministic sequence keeps unknown or incompatible Units unpowered and un-commanded until compatibility and power are validated (see [AES-IF-007](./05-interfaces-and-versioning.md#aes-if-007-safe-default-state) and [AES-EEPROM-002](./06-eeprom-metadata.md#aes-eeprom-002-deterministic-validation-order)). Physical presence is established by successful EEPROM discovery, so no separate presence signal is required.
+**Rationale:** A single deterministic sequence keeps unknown or incompatible Units unpowered and un-commanded until compatibility and power are validated (see [AES-IF-007](./05-interfaces-and-versioning.md#aes-if-007-safe-default-state) and [AES-EEPROM-002](./06-eeprom-metadata.md#aes-eeprom-002-deterministic-validation-order)). Physical presence is established by successful EEPROM discovery, so no separate presence signal is required. Discovery power is not optional: the sequence validates a Unit before enabling it, so the discovery domain must be readable while the functional domain is off. An unbounded wait for `UIF_READY` is the one step that can hang the host on a Unit that never initializes, so the wait is bounded even though its length is not.
 
 ### AES-UNIT-001: Electronic Identity
 
