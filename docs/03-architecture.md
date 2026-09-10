@@ -71,18 +71,20 @@ A Unit is the Platform mechanism for concentrating reusable engineering investme
 
 For Active Development and Released Units, keep visible: Unit class and function, supported Unit Interface version, electrical limits, mechanical envelope, EEPROM metadata fields, and calibration ownership.
 
-### 5.1 Execution Models
+### 5.1 Execution Models and Transport
 
 Every Unit is realized as one of two execution models. Both remain Units under the same identity, interface and compatibility rules — these are execution models, not separate top-level product categories.
 
 - **Passive Unit.** A Unit without independently executing application firmware. The host Module directly controls the Unit's sensors, actuators, converters or other functional circuits through the Unit Interface. A Passive Unit is not required to contain a microcontroller.
 - **Managed Unit.** A Unit containing one or more programmable controllers and exposing a versioned, high-level Unit API. The host Module operates the Unit through that API and is not required to know or control the Managed Unit's internal components, register-level interfaces, radio configuration, GNSS configuration, sensor configuration or other implementation details. A Managed Unit is therefore designed and documented as a capability provider, not as a collection of low-level peripheral drivers exposed to the host.
 
+The execution model is independent of the **transport** the Unit Interface uses. Managed does not imply SPI: the execution model fixes the host contract — direct peripheral control versus a versioned Unit API — while throughput, latency, timing determinism and streaming behavior select the transport and therefore the Unit Interface Profile. A low-bandwidth Managed Unit legitimately uses an I²C transport. The profile family and the selection rule are in [Interfaces and Versioning §3.2](./05-interfaces-and-versioning.md#32-profile-family-and-selection) ([AES-IF-010](./05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-selection)).
+
 ### AES-UNIT-006: Declared Execution Model
 
 **Requirement:** A Unit SHALL declare its execution model — Passive or Managed — in its documentation, and a Managed Unit SHALL additionally expose, through the Unit discovery mechanism, its supported capabilities and Unit API version. A host Module SHALL NOT be required to know or control a Managed Unit's internal components or register-level interfaces to operate it through its declared Unit API.
 
-**Rationale:** The host contract differs by model: a Passive Unit is driven directly, a Managed Unit is driven through a high-level API. Making the model discoverable lets the host apply the right contract without hard-coded assumptions.
+**Rationale:** The host contract differs by model: a Passive Unit is driven directly, a Managed Unit is driven through a high-level API. Making the model discoverable lets the host apply the right contract without hard-coded assumptions. The model is declared separately from the Unit Interface Profile because the two are independent: the model says how the host talks to the Unit, the profile says over what.
 
 ### AES-UNIT-007: Deterministic Discovery and Activation Sequence
 
@@ -135,7 +137,7 @@ Examples, illustrative only: the Environmental, Spectral, Communication & Timing
 
 **Rationale:** Converging on two platforms concentrates firmware reuse, HAL work, toolchain support and part familiarity, and makes controller substitution predictable across product families. It is a default, not a restriction: naming the two defaults is what makes a departure from them a visible, reasoned decision rather than an accident (see [EDR-004](./edr/EDR-004-default-controller-platforms.md)).
 
-This is the one place where AES names vendor platforms. Everything else about a Controller — peripheral choice, part numbers, packages, memory sizing — remains routine engineering judgment, recorded per [Decisions and Governance §3](./08-decisions-and-governance.md#3-when-a-decision-needs-a-record).
+This is the one place where AES names vendor *controller* platforms. Everything else about a Controller — peripheral choice, part numbers, packages, memory sizing — remains routine engineering judgment, recorded per [Decisions and Governance §3](./08-decisions-and-governance.md#3-when-a-decision-needs-a-record). The other admitted vendor naming is the connector family in the Unit Interface Profile specifications, where [AES-IF-006](./05-interfaces-and-versioning.md#aes-if-006-unit-interface-completeness) requires a named physical connector; each such naming is carried by the profile's own decision record.
 
 ## 7. Guidance (non-normative)
 

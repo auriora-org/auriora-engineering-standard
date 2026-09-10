@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 1.2.0
+**Version:** 1.3.0
 **Status:** Normative
 **Language:** English
 
@@ -71,12 +71,13 @@ There are no conformance certificates, conformance statements or traceability ma
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
 | [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution. |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
-| [Unit Interface Profiles](./docs/interfaces/README.md) | Concrete, versioned Unit Interface Profile specifications (connectors, pinouts, electrical limits). |
+| [Unit Interface Profiles](./docs/interfaces/README.md) | Concrete, versioned Unit Interface Profile specifications (connectors, pinouts, electrical limits) and the profile-selection matrix. |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
 | [08 Decisions and Governance](./docs/08-decisions-and-governance.md) | Fixed historical decisions; when ADRs/EDRs are needed; small-team governance. |
 | [09 Review Checklists](./docs/09-review-checklists.md) | One general engineering checklist and a release checklist. |
 | [Document Index](./docs/document-index.md) | Index of AES documents, companion documents and retired document/requirement IDs. |
-| [Worked Example](./examples/worked-example-module-lifecycle.md) | One hypothetical Module from breadboard to release across the maturity levels. |
+| [Worked Example: Module Lifecycle](./examples/worked-example-module-lifecycle.md) | One hypothetical Module from breadboard to release across the maturity levels. |
+| [Worked Example: Profile Selection](./examples/worked-example-unit-interface-profile-selection.md) | Four planned Units assessed against the Unit Interface Profile selection rule. |
 
 Companion standards and guides, each in its own repository:
 
@@ -183,5 +184,6 @@ Engineering Decision Records (platform-wide engineering decisions):
 
 - [EDR-001: Controllers Are Separated from Modules](./docs/edr/EDR-001-controller-module-separation.md)
 - [EDR-002: Unit Identity Is Electronic and Runtime-Discoverable](./docs/edr/EDR-002-runtime-unit-identity.md)
-- [EDR-003: UIF-MSPI Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md)
+- [EDR-003: UIF-MSPI-14 Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md)
 - [EDR-004: Default Controller Platforms](./docs/edr/EDR-004-default-controller-platforms.md)
+- [EDR-005: A Low-Bandwidth Managed Unit Interface Profile](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)

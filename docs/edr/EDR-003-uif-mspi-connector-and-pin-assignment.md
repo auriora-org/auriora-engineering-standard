@@ -6,9 +6,11 @@ Proposed
 
 *Self-authored draft pending maintainer acceptance per [AES-GOV-010](../08-decisions-and-governance.md#aes-gov-010-maintainer-governance). Independent review SHOULD be sought before any Released Managed Unit relies on this pinout.*
 
+*The `UIF-MSPI` connector and pin assignment decided here stand unchanged. The provisional identifier `UIF-MSPI` used throughout this record — left open by its Scope section for confirmation at `1.0` — has since been confirmed as **`UIF-MSPI-14`** by [EDR-005](./EDR-005-low-bandwidth-managed-unit-interface.md), aligning it with the Platform pattern `UIF-[M]<transport>-<positions>`; the profile specification moved to `docs/interfaces/uif-mspi-14.md`. The name changed, the decision did not. The AEU-01 consequence recorded below — that AEU-01 adopts this pinout as the first `UIF-MSPI` realization — is superseded by [EDR-005](./EDR-005-low-bandwidth-managed-unit-interface.md): AEU-01 is a low-bandwidth Managed Unit and realizes [`UIF-MI2C-8`](../interfaces/uif-mi2c-8.md) instead. `UIF-MSPI` therefore awaits its first realization.*
+
 ## Context
 
-The Managed SPI Unit Interface Profile ([`UIF-MSPI`](../interfaces/managed-spi.md), Draft) fixes the Managed-Unit signal set — the six-signal discovery/power/ready core shared with [`UIF-I2C-6`](../interfaces/uif-i2c-6.md), plus `UIF_SPI_SCK`, `UIF_SPI_MOSI`, `UIF_SPI_MISO`, `UIF_SPI_CS_N`, `UIF_IRQ_N`, `UIF_RESET_N` — but leaves its physical layer OPEN (managed-spi.md §4): connector family/part, final pin count and pin ordering, the number and definition of any synchronization/auxiliary signal(s), and the per-signal electrical attributes. That section states these are Platform interface decisions and requires an EDR before the profile can reach `1.0` ([AES-EDR-001](../08-decisions-and-governance.md#aes-edr-001-edr-trigger)).
+The Managed SPI Unit Interface Profile ([`UIF-MSPI`](../interfaces/uif-mspi-14.md), Draft) fixes the Managed-Unit signal set — the six-signal discovery/power/ready core shared with [`UIF-I2C-6`](../interfaces/uif-i2c-6.md), plus `UIF_SPI_SCK`, `UIF_SPI_MOSI`, `UIF_SPI_MISO`, `UIF_SPI_CS_N`, `UIF_IRQ_N`, `UIF_RESET_N` — but leaves its physical layer OPEN (uif-mspi-14.md §4): connector family/part, final pin count and pin ordering, the number and definition of any synchronization/auxiliary signal(s), and the per-signal electrical attributes. That section states these are Platform interface decisions and requires an EDR before the profile can reach `1.0` ([AES-EDR-001](../08-decisions-and-governance.md#aes-edr-001-edr-trigger)).
 
 The realization forcing the decision is the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AEU:001`, AEU-01), being reworked from a Passive Unit (`UIF-I2C-6`) into a Managed Unit built around an STM32U031C8U6 controller. AEU-01 needs a committed connector and pinout to enter PCB layout, and — as the **first `UIF-MSPI` realization** — its pinout will in practice become the profile's reference physical layer, exactly as AEU-01's power decisions became the first `UIF-I2C-6` realization.
 
@@ -57,7 +59,7 @@ The low-speed signals (`UIF_PWR_EN`, `UIF_READY`, `UIF_RESET_N`, `UIF_IRQ_N`, `U
 Per-signal electrical attributes fixed here because they are inseparable from the pinout:
 
 - **`UIF_RESET_N`** — active-LOW, **open-drain with the pull-up on the host side**. This matches the bidirectional open-drain reset semantics of typical Unit controllers (e.g. STM32 `NRST`) and avoids drive contention and hot-plug back-drive into an unpowered Unit.
-- **`UIF_IRQ_N`** — active-LOW, **open-drain, pull-up on the host side**. The host (the persistent side) owns the de-asserted (HIGH) idle state, so the line is defined when the Unit is absent, unpowered or disabled, and there is no per-Unit pull-up variation. Event semantics remain per managed-spi.md §3 (general event notification; the host queries the Unit API for the cause).
+- **`UIF_IRQ_N`** — active-LOW, **open-drain, pull-up on the host side**. The host (the persistent side) owns the de-asserted (HIGH) idle state, so the line is defined when the Unit is absent, unpowered or disabled, and there is no per-Unit pull-up variation. Event semantics remain per uif-mspi-14.md §3 (general event notification; the host queries the Unit API for the cause).
 - **No synchronization/auxiliary signal** is defined in this pinout.
 
 ## Rationale
@@ -89,7 +91,7 @@ Explicitly **not** resolved here — these belong to the `UIF-MSPI` electrical-l
 
 ## Affected Requirements / Documents
 
-- [managed-spi.md §4](../interfaces/managed-spi.md) — resolves the connector, pin-ordering and aux-signal OPEN items; the remaining §4 electrical items stay open.
+- [uif-mspi-14.md §4](../interfaces/uif-mspi-14.md) — resolves the connector, pin-ordering and aux-signal OPEN items; the remaining §4 electrical items stay open.
 - [AES-EDR-001](../08-decisions-and-governance.md#aes-edr-001-edr-trigger) — platform interface decision requiring an EDR.
 - [AES-IF-006](../05-interfaces-and-versioning.md#aes-if-006-unit-interface-completeness) / [AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles) — interface completeness and profile versioning.
 - [document-index.md](../document-index.md) — `UIF-MSPI` status remains Draft until the electrical layer is fixed and the profile reaches `1.0`.
