@@ -31,6 +31,8 @@ Every externally visible behavior, safety limit and compatibility promise has on
 
 A Module is a standalone product: it is usable and reviewable even if its Controller implementation changes. For Active Development and Released Modules, keep the following visible in the README or design notes: intended function, supported Host and Unit Interface versions, Controller inventory, power architecture and safety limits, calibration dependencies, and known issues. A single living document is fine; separate formal design records are not required.
 
+A Module MAY provide Module Synchronization Interface ports (SYNC IN, SYNC OUT) for deterministic event timing with other Modules. If it does, it follows [Interfaces and Versioning §4](./05-interfaces-and-versioning.md#4-module-synchronization-interface) and the [SYNC specification](./interfaces/sync.md), and its README or design notes list the SYNC IN actions and SYNC OUT sources it supports. SYNC is a Module responsibility: it is never delegated to a Unit or carried on a Unit Interface.
+
 ### AES-MOD-003: Unit Compatibility Matrix
 
 **Requirement:** A Released Module that accepts Units SHALL publish a compatibility matrix listing supported Unit Interface Profiles and versions, compatible Unit classes, calibration requirements, and the Module's own Unit-facing electrical limits: how many ports of each profile it provides, what one port supplies, and any restriction on operating those ports simultaneously. During Active Development a running list in the design notes is sufficient.

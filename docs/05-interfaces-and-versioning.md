@@ -7,7 +7,7 @@
 
 ## 1. Purpose
 
-This chapter defines Host Interface and Unit Interface rules, versioning and compatibility evolution.
+This chapter defines Host Interface and Unit Interface rules, the Module Synchronization Interface, versioning and compatibility evolution.
 
 Interfaces are versioned contracts, not merely connectors, buses or firmware functions. This is where AES stays strict even for a small team, because interfaces are exactly the places where today's shortcut becomes next year's incompatibility.
 
@@ -52,7 +52,7 @@ Maturity scaling: an Experimental connection between two of your own boards need
 - `UIF_SPI_SCK`, `UIF_SPI_MOSI`, `UIF_SPI_MISO`, `UIF_SPI_CS_N` — SPI transport, where a profile uses one
 - `UIF_IRQ_N` — generic asynchronous event notification from the Unit to the host
 - `UIF_RESET_N` — host-controlled Unit reset, where a profile defines one
-- profile-defined synchronization or auxiliary signals
+- profile-defined synchronization or auxiliary signals — Unit-to-host signals within one Module; the Module-to-Module SYNC interface of Section 4 is not a `UIF_` signal
 
 Physical presence is determined through successful EEPROM discovery, not through a dedicated presence pin. A Unit-presence signal (`UIF_PRESENT`, `UIF_PRESENT_N` or equivalent) SHALL NOT be defined; the connector SHALL NOT require separate discovery and functional power pins — the Unit locally switches or enables the power of its functional circuitry from `UIF_PWR_EN`.
 
@@ -137,11 +137,71 @@ Where the criteria conflict, determinism and streaming outrank payload size: a U
 
 **Rationale:** Tooling and installed hardware must know when automatic compatibility is safe.
 
-## 4. Compatibility
+## 4. Module Synchronization Interface
+
+The **AURIORA Module Synchronization Interface (SYNC)** provides deterministic event synchronization between Modules. SYNC carries no command, address, payload or event identifier. It represents a precisely timed external event. The receiving Module determines the action associated with that event from its local configuration and current state.
+
+The dividing line in one sentence: **control interfaces define *what* a Module does; SYNC defines *when* the configured action or event occurs.** Its complement on the output side: **SYNC OUT reports *when* a configured internal Module event occurred; the meaning of the pulse lives in the Module configuration and event log, not in the electrical signal.**
+
+SYNC is a **Module-level** interface. It connects Modules to Modules, or a Module to external laboratory equipment that consumes the same edge. It is not part of the Unit Interface: Units are internal building blocks of a Module and neither expose nor receive Module SYNC. The profile-defined synchronization signals a Unit Interface Profile may carry (§3.1) are Unit-to-host signals inside one Module and are unrelated to SYNC. SYNC does not replace, extend or forward to any `UIF_` signal.
+
+SYNC is deliberately not a communication protocol. It has no baud rate, framing, addressing, command codes, checksum or message structure; it is a digital event pulse. Its physical layer uses RS-422-compatible differential signaling, but SYNC is not an RS-422 protocol, and it is not described as a "SYNC protocol", a "SYNC command" or a "trigger bus". The physical, electrical and timing specification is the versioned [SYNC interface specification](./interfaces/sync.md); this section defines the interface-independent rules.
+
+### 4.1 Topology
+
+The normal SYNC link is one **SYNC OUT** driving one **SYNC IN**: a point-to-point differential link.
+
+```text
+Module A SYNC OUT ──────────────► Module B SYNC IN
+```
+
+Where one source must synchronize several Modules, an active **SYNC Hub** regenerates one input event onto several independent outputs, each a separate point-to-point link:
+
+```text
+                         ┌──► Module #1 SYNC IN
+                         ├──► Module #2 SYNC IN
+SYNC SOURCE ─► SYNC HUB ─┼──► Module #3 SYNC IN
+                         └──► Module #4 SYNC IN
+```
+
+The Hub is transparent: it does not encode information, decide the meaning of the event or act as a timing master. It introduces a finite, characterized delay. Hubs may be cascaded; delays accumulate and each stage remains point-to-point.
+
+### AES-SYNC-001: SYNC Is a Module-Level Event Interface
+
+**Requirement:** A Module that provides event synchronization with other Modules SHALL do so through the Module Synchronization Interface as specified in [`docs/interfaces/sync.md`](./interfaces/sync.md). A SYNC signal SHALL carry only the occurrence and timing of an event: no command, address, parameter, event type, payload or identifier. Meaning SHALL NOT be assigned to pulse width, pulse count, pulse spacing or polarity beyond the single defined event edge; a Module that needs to convey commands or data SHALL use a Host Interface or another declared control interface. SYNC SHALL NOT be part of any Unit Interface Profile, and a Unit SHALL NOT expose or consume Module SYNC.
+
+**Rationale:** A single-meaning event edge is the only thing that stays unambiguous when pulses are lost, when receivers are in different states, and when the line is observed by an instrument that knows nothing about the sender. The moment width or count carries meaning, SYNC becomes an undocumented protocol with the failure modes of one and none of the framing. Keeping it out of the Unit Interface keeps the Module the single owner of its external timing behavior ([AES-MOD-004](./03-architecture.md#aes-mod-004-safety-policy-ownership)).
+
+### AES-SYNC-002: Point-to-Point Links and Active Fan-Out
+
+**Requirement:** A SYNC link SHALL connect exactly one SYNC OUT to exactly one SYNC IN over a differential pair. Passive multidrop wiring, passive splitters and daisy-chaining through a Module SHALL NOT be the means of reaching several receivers; fan-out SHALL be performed by an active SYNC Hub that regenerates the event onto independent outputs. A SYNC Hub SHALL NOT alter, filter, interpret or add information to the event, and SHALL document its input-to-output propagation delay and channel-to-channel skew. A receiving Module SHALL terminate its own SYNC IN; a Module or Hub output SHALL NOT be terminated as a receiver.
+
+**Rationale:** A point-to-point link has one driver, one receiver and one termination, so its timing is predictable and a fault on one link cannot disturb another. A Hub built from the same transceiver class as the Modules keeps the whole system on one electrical contract. Delay is documented rather than denied: a Hub is not zero-delay, and a high-precision experiment needs the number.
+
+### AES-SYNC-003: Event Binding, Arming and Default Behavior
+
+**Requirement:** A Module with a SYNC IN SHALL define a configurable **SYNC IN action** — the action executed when a valid SYNC event arrives — and SHALL execute it only when the Module is **armed** for it and the action is valid in the Module's current state. A SYNC event that arrives while the Module is not armed, or while a triggered run is still in progress, SHALL NOT execute, restart, stop, advance or queue the configured action unless the Module has been explicitly configured to do so; the default is to ignore the event and record it. Post-completion behavior — return to idle, or re-arm — SHALL be an explicit, visible configuration, not an implicit default. A Module with a SYNC OUT SHALL generate its pulse from a configured **SYNC OUT source**, a defined internal event such as the start or end of a protocol or acquisition, and SHALL NOT forward SYNC IN to SYNC OUT unless that forwarding is itself the configured source. Where a Module supports more than one SYNC OUT source at the same time, the active binding SHALL be explicit in its configuration and documented as an advanced feature, since a receiver cannot distinguish the pulses. A configurable, deterministic delay between the SYNC event and the action MAY be provided; the delay is Module configuration, not information carried by SYNC. The actions and sources a Module supports are Module-specific and are documented with the Module; this requirement defines the mechanism, not the list.
+
+**Rationale:** A Module that reacts to any pulse on its input is a Module whose experiment can be started by a stray edge. Arming makes the trigger a two-step act — configure, then wait — which is what makes experiments reproducible and lets an ignored pulse be a logged fact rather than a mystery. Binding SYNC OUT to the actual internal event, rather than to reception of the trigger or receipt of a command, is what makes the output pulse a usable timestamp of what physically happened.
+
+### AES-SYNC-004: SYNC Observability
+
+**Requirement:** A Module with firmware and a Host Interface that provides SYNC SHALL record SYNC events in its event log: at minimum received, transmitted and ignored events, each with a local timestamp, the Module state at the time, the reason when ignored, the related run or protocol identifier where one exists, and a local per-direction event counter. Counters are local to the Module, are not transmitted over SYNC, and SHALL NOT be presented as synchronized between Modules. The active SYNC IN action, SYNC OUT source, delay and post-completion mode SHALL be readable through the Host Interface. During Experimental work a reduced log is acceptable; a Released Module SHALL provide the full set.
+
+**Rationale:** Two Modules' logs are the only place where the meaning of a pulse train can be reconstructed: the sender's log says which internal event produced each pulse, the receiver's log says what it did with it. Comparing local counters across a run is the cheapest way to detect a lost event on one path. Without configuration readback an experiment cannot be reproduced from its records.
+
+### 4.2 Guidance (non-normative)
+
+- **Baseline behavioral model.** `IDLE → CONFIGURED → ARMED → RUNNING → COMPLETE`, with `COMPLETE → IDLE` (one-shot) or `COMPLETE → ARMED` (repeat-armed) as the two post-completion modes. Firmware may use its own state names; what matters is that the armed gate and the completion choice exist and are visible.
+- **Two usage modes.** *Trigger*: Module A's `SYNC OUT source = PROTOCOL_START` drives Module B's `SYNC IN action = START_PROTOCOL`. *Marker*: a continuously recording Module binds `SYNC IN action = INSERT_MARKER` and stamps each event into its acquisition timeline; the sender's log later says which marker was which.
+- **Timing budget.** Distinguish cable propagation, transceiver delay, Hub delay, firmware reaction latency and the latency of the physical action. Capture the event edge as close to hardware as practical and characterize the rest. Implementation guidance is in the [Hardware Design Guide](https://github.com/auriora-org/auriora-hardware-design-guide) §5.1 and the [Firmware Style Guide](https://github.com/auriora-org/auriora-firmware-style-guide) §14.2.
+- A worked trigger-and-marker example is [Worked Example: Module Synchronization](../examples/worked-example-module-synchronization.md).
+
+## 5. Compatibility
 
 Compatibility claims about Released artifacts name what they cover — electrical, mechanical, firmware, protocol, documentation, manufacturing — and the version range: `Electrical and protocol compatible with UIF 1.1; mechanical incompatible without adapter`, not "compatible with APEM". Unqualified "compatible" is a support case waiting to happen. For prototypes, a compatibility note in the design notes suffices.
 
-## 5. Evolution
+## 6. Evolution
 
 ### AES-EVO-002: Prefer Additive Evolution
 
@@ -157,7 +217,7 @@ Compatibility claims about Released artifacts name what they cover — electrica
 
 Breaking changes to Released interfaces additionally require a decision record — see [Decisions and Governance](./08-decisions-and-governance.md).
 
-## 6. Guidance (non-normative)
+## 7. Guidance (non-normative)
 
 - Test fixtures or procedures that verify identity discovery, error behavior and compatibility decisions are strongly recommended for Released Unit Interfaces — interface documents without tests drift from implementations.
 - Documentation-only changes (typo, clarified example) are PATCH; manufacturing-only changes (approved substitution, process change) update the manufacturing package version and rerun affected tests; interface changes update the interface version even when the implementation diff is small.

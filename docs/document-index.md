@@ -23,8 +23,9 @@ This index records the AES documents and reserved companion document IDs, and ho
 | `AES-REG-DOC` | Document Index | `docs/document-index.md` |
 | `AES-EXAMPLE-MODULE-LIFECYCLE` | Worked Example: Module Lifecycle (informative) | `examples/worked-example-module-lifecycle.md` |
 | `AES-EXAMPLE-UIF-SELECTION` | Worked Example: Choosing a Unit Interface Profile (informative) | `examples/worked-example-unit-interface-profile-selection.md` |
+| `AES-EXAMPLE-SYNC` | Worked Example: Module Synchronization (informative) | `examples/worked-example-module-synchronization.md` |
 
-## Unit Interface Profile Specifications
+## Interface Specifications
 
 Concrete, independently versioned Unit Interface Profiles (see [AES-IF-008](./05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)):
 
@@ -33,6 +34,12 @@ Concrete, independently versioned Unit Interface Profiles (see [AES-IF-008](./05
 | `AURIORA UIF-I2C-6` | 0.1 | Draft | `docs/interfaces/uif-i2c-6.md` |
 | `AURIORA UIF-MI2C-8` | 0.1 | Draft | `docs/interfaces/uif-mi2c-8.md` |
 | `AURIORA UIF-MSPI-14` | 0.1 | Draft | `docs/interfaces/uif-mspi-14.md` |
+
+The Module Synchronization Interface (see [AES-SYNC-001](./05-interfaces-and-versioning.md#aes-sync-001-sync-is-a-module-level-event-interface)):
+
+| Interface | Version | Status | Source Path |
+|---|---|---|---|
+| `AURIORA SYNC` | 0.1 | Draft | `docs/interfaces/sync.md` |
 
 ## Companion Document IDs (reserved)
 
