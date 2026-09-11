@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 1.4.0
+**Version:** 1.5.0
 **Status:** Normative
 **Language:** English
 
@@ -69,15 +69,16 @@ There are no conformance certificates, conformance statements or traceability ma
 | [02 Terminology](./docs/02-terminology.md) | Canonical AURIORA vocabulary. Frozen core terms. |
 | [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; default controller platform strategy. |
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
-| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution. |
+| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the Module Synchronization Interface (SYNC). |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
-| [Unit Interface Profiles](./docs/interfaces/README.md) | Concrete, versioned Unit Interface Profile specifications (connectors, pinouts, electrical limits) and the profile-selection matrix. |
+| [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix) and the Module Synchronization Interface (SYNC). |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
 | [08 Decisions and Governance](./docs/08-decisions-and-governance.md) | Fixed historical decisions; when ADRs/EDRs are needed; small-team governance. |
 | [09 Review Checklists](./docs/09-review-checklists.md) | One general engineering checklist and a release checklist. |
 | [Document Index](./docs/document-index.md) | Index of AES documents, companion documents and retired document/requirement IDs. |
 | [Worked Example: Module Lifecycle](./examples/worked-example-module-lifecycle.md) | One hypothetical Module from breadboard to release across the maturity levels. |
 | [Worked Example: Profile Selection](./examples/worked-example-unit-interface-profile-selection.md) | Four planned Units assessed against the Unit Interface Profile selection rule. |
+| [Worked Example: Module Synchronization](./examples/worked-example-module-synchronization.md) | SYNC as trigger and as marker on a bench of three Modules, with the logs that give the pulses their meaning. |
 
 Companion standards and guides, each in its own repository:
 
@@ -100,6 +101,8 @@ flowchart TB
     Interfaces[Interfaces]
     Host[Host Interface]
     UI[Unit Interface]
+    SYNC[Module Synchronization Interface]
+    Peer[Other Module]
     External[Developer Host / DAQ / Computer]
 
     Platform --> Family
@@ -109,10 +112,13 @@ flowchart TB
     Family --> Unit
     Interfaces --> Host
     Interfaces --> UI
+    Interfaces --> SYNC
     Module --> Controller
     Module --> Host
     Module --> UI
+    Module --> SYNC
     UI --> Unit
+    SYNC --> Peer
     Host --> External
 ```
 
@@ -187,3 +193,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-003: UIF-MSPI-14 Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md)
 - [EDR-004: Default Controller Platforms](./docs/edr/EDR-004-default-controller-platforms.md)
 - [EDR-005: A Low-Bandwidth Managed Unit Interface Profile](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)
+- [EDR-006: Module Synchronization Interface](./docs/edr/EDR-006-module-synchronization-interface.md)

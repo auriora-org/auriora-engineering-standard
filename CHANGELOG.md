@@ -4,6 +4,31 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [1.5.0] - 2026-09-11
+
+### Added
+
+- **Module Synchronization Interface (SYNC)** — a third interface class alongside the Host Interface and the Unit Interface: a Module-to-Module, point-to-point, RS-422-compatible differential event interface that carries a single rising-edge event and no data. Interfaces and Versioning gains a new §4 with the interface-independent rules and four requirements:
+  - `AES-SYNC-001` (Module-level event interface): SYNC carries only the occurrence and timing of an event; no meaning in pulse width, count, spacing or polarity; commands and data go over a control interface; SYNC is not part of any Unit Interface Profile and a Unit neither exposes nor consumes it.
+  - `AES-SYNC-002` (point-to-point links and active fan-out): one SYNC OUT to one SYNC IN per link; no passive multidrop, passive splitters or required daisy-chaining; fan-out through an active, transparent SYNC Hub that documents its propagation delay and skew; termination at the receiver only.
+  - `AES-SYNC-003` (event binding, arming and default behavior): a configurable SYNC IN action executed only when armed and valid in the current state; unarmed and mid-run events are ignored and recorded by default; explicit one-shot or re-arm post-completion mode; SYNC OUT generated from a configured internal event source, never by implicit IN→OUT forwarding; optional deterministic delay as Module configuration; supported actions and sources documented per Module.
+  - `AES-SYNC-004` (observability): received, transmitted and ignored events logged with local timestamp, state, reason, run identifier and a local per-direction counter that is never transmitted or presented as synchronized; configuration readable over the Host Interface.
+- Interface specification **`AURIORA SYNC`** ([`docs/interfaces/sync.md`](./docs/interfaces/sync.md), version `0.1`, Draft): M8 3-position A-coded connector with pin 1 `GND`, pin 2 `SYNC_P`, pin 3 `SYNC_N` identical on SYNC IN and SYNC OUT; RS-422-compatible differential signaling with a parameter-specified full-duplex transceiver class (no part named); receiver-side ~120 Ω reference termination; fail-safe idle with no event on open, unpowered or shorted input; protection at the connector; rising edge as the event; the SYNC Hub as a controller-less receive → regenerate → distribute device with documented delay and skew, cascadable. Connector gender and keying, pulse width, cable, thresholds, protection level and latency budget are open items, so the specification is Draft.
+- Terminology supporting terms **Module Synchronization Interface (SYNC)**, **SYNC event**, **SYNC Hub**, **SYNC IN action** and **SYNC OUT source**.
+- Architecture §3: a Module MAY provide SYNC ports; if it does, it follows the SYNC rules and lists its supported actions and sources; SYNC is never delegated to a Unit or carried on a Unit Interface.
+- Informative worked example [Module Synchronization](./examples/worked-example-module-synchronization.md) (`AES-EXAMPLE-SYNC`): trigger use with staggered delays, marker use on a continuously recording Module, an ignored mid-run retrigger, and lost-event detection by counter comparison. Indexed in `STANDARD.md` and the Document Index.
+- [EDR-006: Module Synchronization Interface](./docs/edr/EDR-006-module-synchronization-interface.md), recording the decision and the alternatives weighed — a messaged protocol, meaning encoded in the pulse, automatic IN→OUT forwarding, single-ended logic, optical isolation, an RS-485 multidrop bus, passive splitters, daisy-chaining, header/BNC/M8 connectors, and reacting to every pulse versus an armed gate — together with the standard-form connector naming carve-out and the note that SYNC does not answer the PPS-class time reference need recorded in EDR-005. Indexed in `STANDARD.md`.
+
+### Changed
+
+- Interfaces and Versioning §3.1: the "profile-defined synchronization or auxiliary signals" entry now states that these are Unit-to-host signals within one Module and that the Module-to-Module SYNC interface is not a `UIF_` signal. Sections *Compatibility*, *Evolution* and *Guidance* are renumbered 5–7 to make room for §4; no inbound links referenced the old numbers.
+- `docs/interfaces/README.md` retitled *Interface Specifications* and split into a Unit Interface Profiles part and a Module Synchronization Interface part; the Document Index section is retitled accordingly and lists `AURIORA SYNC`.
+- *Editorial:* `STANDARD.md` Canonical Documents rows for Interfaces and Versioning and for the interface specifications name SYNC; the Primary Architecture Reference diagram shows the Module Synchronization Interface between Modules.
+
+### Compatibility
+
+No breaking change. All additions are new requirements, new supporting terms, a new Draft interface specification and a new decision record; no existing requirement, `UIF_` signal, profile, pinout or schema field changed meaning. The three Unit Interface Profiles keep their signal sets, connectors and `0.1` Draft versions. The frozen core vocabulary (`AES-TERM-003`) is unchanged — SYNC terms are supporting terms — and the decision is recorded in EDR-006 because introducing a Platform interface class is a platform-wide decision (`AES-EDR-001`).
+
 ## [1.4.0] - 2026-09-10
 
 ### Added
