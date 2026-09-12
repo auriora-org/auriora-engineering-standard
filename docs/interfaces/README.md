@@ -5,6 +5,8 @@
 
 This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profiles** and the **Module Synchronization Interface**.
 
+The **Module Control Interface (MCI)** is defined transport-independently in [Interfaces and Versioning §5](../05-interfaces-and-versioning.md#5-module-control-interface) and has no specification here yet: its transport bindings — a direct local transport and the Module Control Link (`MCL`) — are open items ([EDR-007](../edr/EDR-007-module-control-interface-and-module-hub.md)) and will be added as versioned binding specifications when their requirements are settled.
+
 ## Unit Interface Profiles
 
 The Unit Interface is realized through versioned profiles. The profile-independent rules — the `UIF_` signal set, `UIF_READY` semantics, the discovery and activation sequence, and profile versioning — live in [Interfaces and Versioning](../05-interfaces-and-versioning.md) ([AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)). The files here define the parts that are specific to one profile: connector, pinout, electrical limits and timing.

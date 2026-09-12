@@ -7,7 +7,7 @@
 
 ## 1. Purpose
 
-This chapter defines Host Interface and Unit Interface rules, the Module Synchronization Interface, versioning and compatibility evolution.
+This chapter defines Host Interface and Unit Interface rules, the Module Synchronization Interface, the Module Control Interface, versioning and compatibility evolution.
 
 Interfaces are versioned contracts, not merely connectors, buses or firmware functions. This is where AES stays strict even for a small team, because interfaces are exactly the places where today's shortcut becomes next year's incompatibility.
 
@@ -174,9 +174,9 @@ The Hub is transparent: it does not encode information, decide the meaning of th
 
 ### AES-SYNC-002: Point-to-Point Links and Active Fan-Out
 
-**Requirement:** A SYNC link SHALL connect exactly one SYNC OUT to exactly one SYNC IN over a differential pair. Passive multidrop wiring, passive splitters and daisy-chaining through a Module SHALL NOT be the means of reaching several receivers; fan-out SHALL be performed by an active SYNC Hub that regenerates the event onto independent outputs. A SYNC Hub SHALL NOT alter, filter, interpret or add information to the event, and SHALL document its input-to-output propagation delay and channel-to-channel skew. A receiving Module SHALL terminate its own SYNC IN; a Module or Hub output SHALL NOT be terminated as a receiver.
+**Requirement:** A SYNC link SHALL connect exactly one SYNC OUT to exactly one SYNC IN over a differential pair. Passive multidrop wiring, passive splitters and daisy-chaining through a Module SHALL NOT be the means of reaching several receivers; fan-out SHALL be performed by an active SYNC Hub that regenerates the event onto independent outputs. A SYNC Hub SHALL NOT alter, filter, interpret or add information to the event, and SHALL document its input-to-output propagation delay and channel-to-channel skew. A receiving Module SHALL terminate its own SYNC IN; a Module or Hub output SHALL NOT be terminated as a receiver. Where a SYNC Hub function forms part of a composite device such as a Module Hub, the SYNC event path SHALL remain independent of that device's firmware: routing, port enable and group membership SHALL be static configuration established before the affected Modules are armed, and SHALL NOT be evaluated per event. Such a device MAY observe the event path — counting or timestamping events — only where the observation cannot alter, delay or gate the regenerated event. A device that originates SYNC events rather than regenerating a received one acts as a *SYNC Source*, a role distinct from fan-out and subject to the transmitter rules of this section.
 
-**Rationale:** A point-to-point link has one driver, one receiver and one termination, so its timing is predictable and a fault on one link cannot disturb another. A Hub built from the same transceiver class as the Modules keeps the whole system on one electrical contract. Delay is documented rather than denied: a Hub is not zero-delay, and a high-precision experiment needs the number.
+**Rationale:** A point-to-point link has one driver, one receiver and one termination, so its timing is predictable and a fault on one link cannot disturb another. A Hub built from the same transceiver class as the Modules keeps the whole system on one electrical contract. Delay is documented rather than denied: a Hub is not zero-delay, and a high-precision experiment needs the number. Packaging a Hub together with control electronics does not change any of this: the moment firmware decides per event whether or how an edge is forwarded, the Hub's delay becomes a function of its load and the one property SYNC exists to provide is lost. Static pre-ARM configuration keeps a selectable fan-out available without putting a processor in the timing path, and passive observation stays legitimate because it does not touch the edge.
 
 ### AES-SYNC-003: Event Binding, Arming and Default Behavior
 
@@ -197,11 +197,72 @@ The Hub is transparent: it does not encode information, decide the meaning of th
 - **Timing budget.** Distinguish cable propagation, transceiver delay, Hub delay, firmware reaction latency and the latency of the physical action. Capture the event edge as close to hardware as practical and characterize the rest. Implementation guidance is in the [Hardware Design Guide](https://github.com/auriora-org/auriora-hardware-design-guide) §5.1 and the [Firmware Style Guide](https://github.com/auriora-org/auriora-firmware-style-guide) §14.2.
 - A worked trigger-and-marker example is [Worked Example: Module Synchronization](../examples/worked-example-module-synchronization.md).
 
-## 5. Compatibility
+## 5. Module Control Interface
+
+The **AURIORA Module Control Interface (MCI)** is the Platform's transport-independent Module control contract: the identity, capability, lifecycle, configuration, Asset and Session semantics through which a host manages a Module.
+
+AES has always named the Host Interface as the standard developer and integration interface a Module exposes, but required only that a Released one be deterministic and machine-parseable ([AES-IF-002](#aes-if-002-host-interface-determinism)). That leaves every Module free to invent its own identity query, its own capability model and its own notion of being ready to run — which is how a platform accumulates several incompatible control protocols and host software that special-cases each Module by type. MCI is the Platform's single realization of the Host Interface, so that work is done once.
+
+MCI defines what an operation *means*. It deliberately says nothing about how the bytes travel; that is an **MCI transport binding**.
+
+The dividing line against SYNC, in one sentence: **MCI prepares system state; SYNC causes the deterministic event.** A Module is discovered, configured, loaded and armed over MCI; the instant at which armed Modules act is carried by SYNC ([Section 4](#4-module-synchronization-interface)), never by a sequence of MCI operations issued Module by Module.
+
+### 5.1 Transport Bindings
+
+MCI is carried by one or more versioned bindings. A binding defines framing, request/response correlation, error signaling, flow control and — where the transport is a physical link — its electrical layer. Two bindings are intended:
+
+| Binding | Transport | Role |
+|---|---|---|
+| Direct local transport | A local service connection such as USB | Commissioning, firmware update, diagnostics, recovery, manufacturing test, standalone operation. A Module remains serviceable through it without any infrastructure. |
+| `MCL` — Module Control Link | Wired differential, point-to-point, one link per Module Port | Scalable multi-Module management through a [Module Hub](./03-architecture.md#7-module-hub). |
+
+Neither binding is specified in this version of AES. `MCL`'s duplex model, electrical layer, framing and connector are open items ([Architecture §7](./03-architecture.md#7-module-hub)), and are fixed in a versioned binding specification under [`docs/interfaces/`](./interfaces/) when the requirements behind them are settled rather than assumed.
+
+Direct local access is not a fallback that a Module may drop once it supports `MCL`. Loss of infrastructure must never remove the ability to recover, update or diagnose a Module.
+
+### AES-MCI-001: Transport Independence
+
+**Requirement:** MCI SHALL define Module control semantics independently of any transport. An MCI transport binding SHALL define carriage only — framing, request/response correlation, error signaling, flow control and, where the transport is a physical link, its electrical layer — and SHALL NOT add, remove or alter the meaning of an MCI operation. Where a Module implements MCI over more than one transport, an operation SHALL have the same meaning, the same preconditions and the same effect on Module Lifecycle State on each. A binding MAY be unable to carry a particular operation; it SHALL then report a defined error rather than substituting different behavior.
+
+**Rationale:** A Module is commissioned over a local cable and then operated through infrastructure, and the operator, the script and the test are expected to behave identically in both cases. If the meaning of arming depends on whether the request arrived locally or through a Hub, every workflow has to be written and validated twice, and the local service path stops being a usable recovery path for a deployed Module. One contract is also what lets host software run against a simulated Module — already expected by the [Software Style Guide](https://github.com/auriora-org/auriora-software-style-guide) §3.4 — and what makes a future transport an addition rather than a second protocol.
+
+### AES-MCI-002: Module Identity
+
+**Requirement:** A Module implementing MCI SHALL expose a persistent identity readable before any configuration, unchanged across power cycles, transports, cables, Hub ports, host device paths and enumeration order. That identity SHALL convey at minimum the Module's Product Family and Product, its Product Revision, its firmware version, its manufacturing instance ([AES-ID-008](./04-naming-and-identity.md#aes-id-008-serial-numbers)) and the MCI version and transport bindings it implements; a Released Module SHALL additionally expose its AOID ([AES-ID-006](./04-naming-and-identity.md#aes-id-006-aoid-assignment)). A Module's identity SHALL NOT be derived from or depend on the port, Hub, cable position or host device path through which it is reached. Where a host records physical location, that topology information SHALL be held as metadata separate from identity.
+
+**Rationale:** A Module moved to another Hub port is the same Module; a different Module in the same port is not. Only persistent identity separates those two cases, and they are not rare — recabling a bench is ordinary work. Host software that keys on a device node or a port index rebinds an experiment to the wrong hardware the first time two cables are swapped, and that failure produces plausible-looking data rather than an error, which is the worst class of failure an instrument can have. AES already keeps Family, Product, Revision and Instance identity separate ([AES-ID-001](./04-naming-and-identity.md#aes-id-001-identity-level-separation)); this is that separation made readable at runtime, and the Module-level counterpart of the Unit's electronic identity ([AES-UNIT-001](./03-architecture.md#aes-unit-001-electronic-identity)).
+
+### AES-MCI-003: Module Capability Discovery
+
+**Requirement:** A Module implementing MCI SHALL expose through MCI, before configuration, the optional MCI functions it supports — at minimum whether it provides Assets, Sessions, SYNC IN, SYNC OUT, event logging and firmware update — together with the limits a host must plan against where applicable. A host SHALL determine a Module's supported functions by querying capabilities, and SHALL NOT infer them from Product Family, Product number, firmware version or device type. A Module SHALL refuse an operation it does not support with a defined error, never with undefined behavior or silent success.
+
+**Rationale:** Hard-coded per-type assumptions are how host software acquires a table of special cases that has to be edited for every new Module and every firmware revision, and they fail silently when a Module is present but lacks the function assumed of it. Declared capabilities move that knowledge to the Module, where it is already true, which is the same reasoning that put execution model and capabilities in Unit discovery ([AES-UNIT-006](./03-architecture.md#aes-unit-006-declared-execution-model)). Silent success on an unsupported operation is singled out because it is the failure a host cannot detect: the experiment proceeds, and the missing function is discovered in the data.
+
+### AES-MCI-004: Module Lifecycle and the ARM Boundary
+
+**Requirement:** A Module implementing MCI SHALL expose over MCI a Module Lifecycle State carrying at least the meanings `IDLE`, `CONFIGURED`, `ARMED`, `RUNNING` and `COMPLETE`, and SHALL report both its transitions and the reason for any refused transition. A Module SHALL enter `ARMED` only when its configuration is valid, the Assets and selected Session its capabilities require are present and verified, and no blocking fault exists; a host SHALL be able to determine per Module whether arming succeeded before relying on it. Where relative execution timing between Modules matters, the deterministic instant SHALL be carried by SYNC ([AES-SYNC-001](#aes-sync-001-sync-is-a-module-level-event-interface)) and SHALL NOT be produced by issuing an MCI operation to each Module in turn. An MCI operation MAY start execution on a single Module where inter-Module timing does not matter.
+
+**Rationale:** This is the rule that keeps the two interfaces from collapsing into each other. Sending a start operation to four Modules over a control link produces four different start times whose spread depends on link scheduling, queueing and host load; the spread is neither bounded nor recorded, so the resulting data looks synchronized and is not. Making `ARMED` an explicit, verifiable state is what lets an operator establish that every required Module is ready *before* the event — the last moment at which a missing or faulted Module can still be noticed. The receiving side of the same boundary is [AES-SYNC-003](#aes-sync-003-event-binding-arming-and-default-behavior): SYNC executes only what was armed.
+
+### AES-MCI-005: Object Transfer Integrity
+
+**Requirement:** Where a Module implementing MCI accepts Assets, Sessions, firmware or other bulk objects, transfer SHALL be staged: the transfer is opened, content is transferred, the received content is verified against an integrity value covering the whole object, and only then is the object committed and made selectable or active. A partially transferred, unverified or failed object SHALL NOT become active or selectable, and SHALL NOT be reported as present. A Module SHALL expose enough of its stored object inventory — identity and content integrity value — for a host to determine whether a transfer is needed before starting one. An interrupted transfer SHALL leave the Module in a defined state with any previously committed object unchanged.
+
+**Rationale:** A half-written waveform that is selectable is a stimulus nobody designed, and neither the Module nor the host can tell it apart from the intended one after the fact; verification before commit is what makes the difference detectable at the only point where it is still cheap. Exposing the inventory addresses the other end of the same problem: when a bench holds many Modules that need the same Asset, blindly retransmitting to each is the difference between a deployment step that is usable and one that is not — and a content integrity value answers "is this already the right object" without transferring anything.
+
+### 5.2 Guidance (non-normative)
+
+- **Desired state over sequences.** Express a multi-Module setup as the state each Module should be in — configuration, Assets, Session — and let the host compare that against what each Module reports and transfer only the difference. This is what makes inventory exposure ([AES-MCI-005](#aes-mci-005-object-transfer-integrity)) worth having, and it degrades gracefully: a Module that is already correct costs one query.
+- **Groups are a host concept.** Logical groups — all Modules, a treatment group, a measurement group — are orchestration in host software. They need no shared electrical bus and no broadcast addressing, and keeping them host-side is what lets the same grouping work for locally connected and Hub-connected Modules.
+- **Hot-plug changes nothing by itself.** Discovering a Module, or rediscovering one after a reconnection, establishes identity and capabilities and nothing more. Restoring configuration is a deliberate host action and re-arming is always explicit — [AES-MCI-004](#aes-mci-004-module-lifecycle-and-the-arm-boundary) and [AES-SYNC-003](#aes-sync-003-event-binding-arming-and-default-behavior) together mean a reconnected Module cannot resume an experiment on its own.
+- **Error categories worth having early.** Unsupported operation, unsupported capability, invalid state, invalid configuration, timeout, transfer failure, integrity failure, busy, fault, storage exhausted, version incompatible, not armed, missing prerequisite. Module-specific faults stay outside the common set unless they are universally meaningful.
+- **Framing, retries and validation are guide material.** How a binding frames, checks, times out and retries is already governed by the [Firmware Style Guide](https://github.com/auriora-org/auriora-firmware-style-guide) §14 and the [Software Style Guide](https://github.com/auriora-org/auriora-software-style-guide) §3. A binding specification states its own choices; it does not restate that discipline.
+
+## 6. Compatibility
 
 Compatibility claims about Released artifacts name what they cover — electrical, mechanical, firmware, protocol, documentation, manufacturing — and the version range: `Electrical and protocol compatible with UIF 1.1; mechanical incompatible without adapter`, not "compatible with APEM". Unqualified "compatible" is a support case waiting to happen. For prototypes, a compatibility note in the design notes suffices.
 
-## 6. Evolution
+## 7. Evolution
 
 ### AES-EVO-002: Prefer Additive Evolution
 
@@ -217,7 +278,7 @@ Compatibility claims about Released artifacts name what they cover — electrica
 
 Breaking changes to Released interfaces additionally require a decision record — see [Decisions and Governance](./08-decisions-and-governance.md).
 
-## 7. Guidance (non-normative)
+## 8. Guidance (non-normative)
 
 - Test fixtures or procedures that verify identity discovery, error behavior and compatibility decisions are strongly recommended for Released Unit Interfaces — interface documents without tests drift from implementations.
 - Documentation-only changes (typo, clarified example) are PATCH; manufacturing-only changes (approved substitution, process change) update the manufacturing package version and rerun affected tests; interface changes update the interface version even when the implementation diff is small.

@@ -41,6 +41,8 @@ The Module Synchronization Interface (see [AES-SYNC-001](./05-interfaces-and-ver
 |---|---|---|---|
 | `AURIORA SYNC` | 0.1 | Draft | `docs/interfaces/sync.md` |
 
+No **MCI transport binding** specification exists yet. The Module Control Interface ([AES-MCI-001](./05-interfaces-and-versioning.md#aes-mci-001-transport-independence)) is defined transport-independently; its bindings — a direct local transport and the Module Control Link (`MCL`) — are recorded as open items in [EDR-007](./edr/EDR-007-module-control-interface-and-module-hub.md) and will be listed here when specified.
+
 ## Companion Document IDs (reserved)
 
 | Document ID | Title | Repository |
