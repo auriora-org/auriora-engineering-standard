@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 1.5.0
+**Version:** 1.6.0
 **Status:** Normative
 **Language:** English
 
@@ -67,9 +67,9 @@ There are no conformance certificates, conformance statements or traceability ma
 |---|---|
 | [01 Principles](./docs/01-principles.md) | The engineering posture: platform thinking, explicitness, honest documentation. |
 | [02 Terminology](./docs/02-terminology.md) | Canonical AURIORA vocabulary. Frozen core terms. |
-| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; default controller platform strategy. |
+| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; default controller platform strategy; the optional Module Hub and the Module Port. |
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
-| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the Module Synchronization Interface (SYNC). |
+| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the Module Synchronization Interface (SYNC); the Module Control Interface (MCI). |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
 | [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix) and the Module Synchronization Interface (SYNC). |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
@@ -100,8 +100,10 @@ flowchart TB
     Unit[Unit]
     Interfaces[Interfaces]
     Host[Host Interface]
+    MCI[Module Control Interface]
     UI[Unit Interface]
     SYNC[Module Synchronization Interface]
+    Hub[Module Hub]
     Peer[Other Module]
     External[Developer Host / DAQ / Computer]
 
@@ -113,13 +115,17 @@ flowchart TB
     Interfaces --> Host
     Interfaces --> UI
     Interfaces --> SYNC
+    Host --> MCI
     Module --> Controller
     Module --> Host
     Module --> UI
     Module --> SYNC
     UI --> Unit
     SYNC --> Peer
-    Host --> External
+    SYNC --> Hub
+    MCI --> Hub
+    MCI --> External
+    Hub --> External
 ```
 
 This diagram shows containment and governance relationships, not PCB placement or firmware call structure.
@@ -194,3 +200,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-004: Default Controller Platforms](./docs/edr/EDR-004-default-controller-platforms.md)
 - [EDR-005: A Low-Bandwidth Managed Unit Interface Profile](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)
 - [EDR-006: Module Synchronization Interface](./docs/edr/EDR-006-module-synchronization-interface.md)
+- [EDR-007: Module Control Interface and Module Hub](./docs/edr/EDR-007-module-control-interface-and-module-hub.md)
