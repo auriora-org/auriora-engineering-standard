@@ -178,6 +178,8 @@ The separation is the design. Management traffic is bursty, queued and tolerant 
 
 An active star is chosen over a shared multidrop bus for the same reason SYNC links are point-to-point: each port has its own driver, receiver and termination, so its behavior does not depend on how many other Modules happen to be connected, and a fault on one port does not take the bench down.
 
+Whether Module Hubs may be **cascaded** — a Module Port feeding another Hub rather than a Module — is open. It is settled together with the `MCL` binding, because it decides whether that binding's addressing is flat or hierarchical, and a binding that assumes a single Hub cannot be extended to cascading without a compatibility break. This is independent of SYNC Hub cascading, which is already permitted and is unaffected ([`docs/interfaces/sync.md`](./interfaces/sync.md) Section 5).
+
 ### AES-HUB-001: Module Hub Scope
 
 **Requirement:** A Module Hub SHALL act as MCI transport infrastructure and SYNC distribution only. It SHALL NOT own, interpret or depend on Module-specific configuration, Session or experiment semantics; it SHALL NOT be the source of a Module's identity ([AES-MCI-002](./05-interfaces-and-versioning.md#aes-mci-002-module-identity)); and it SHALL NOT discover, configure, address or power Units, which remain the responsibility of their parent Module. A Module SHALL remain fully serviceable — commissioning, configuration, firmware update, diagnostics and recovery — through its direct local MCI transport without a Module Hub, and a Module Hub SHALL NOT be a prerequisite for any of those.
@@ -201,10 +203,11 @@ Two things are settled about it:
 
 Everything physical about it is deliberately **open**, and is not fixed by this version of AES:
 
-- the `MCL` duplex model — one differential pair with direction control, or two pairs with simultaneous transmit and receive — which determines the pair count before anything else can be decided;
+- the `MCL` duplex model — half duplex on one differential pair with direction control, full duplex on two pairs, or full duplex on one pair with simultaneous bidirectional transmission — and, inseparable from it, whether `MCL` adopts an existing standard link or is specified from scratch. Together these decide the pair count, and nothing else physical can be settled before them;
 - the resulting conductor and contact count, connector family, gender, keying and pinout;
 - the cable construction, characteristic impedance and maximum length;
 - the reference and shield strategy across the combined cable;
+- the hot-plug and live-insertion behavior of the combined port, and the protection strategy at its contacts. A Module is expected to be connected and disconnected on a running bench: doing so must disturb no other port ([AES-HUB-002](#aes-hub-002-port-independence-and-scale-interoperability)) and must not produce a SYNC event on any link, which the standalone ports already achieve through fail-safe idle ([`docs/interfaces/sync.md`](./interfaces/sync.md));
 - **crosstalk between the `MCL` pairs and the SYNC pairs.** This is a requirement of the cable specification, not a detail: `MCL` carries continuous switching traffic while a SYNC edge is judged on its timing fidelity, and the two share a cable. The isolation needed to keep `MCL` activity out of SYNC edge timing is characterized and specified before the Module Port is fixed.
 
 These are resolved together with the `MCL` binding specification, from the requirements of the first Hub and a Hub-connected Module — not in advance. Until then a Module Port is an architectural intent, and no Module or Hub claims conformance to one.
