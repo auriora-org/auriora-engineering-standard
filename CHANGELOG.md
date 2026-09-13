@@ -4,6 +4,20 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [1.6.1] - 2026-09-13
+
+### Fixed
+
+- **[Architecture §7.1](./docs/03-architecture.md#71-the-module-port)** — the open item describing the `MCL` duplex model enumerated only two options, half duplex on one pair and full duplex on two pairs, and stated that the duplex model determines the pair count. Both were wrong: full duplex on a *single* pair with simultaneous bidirectional transmission is an established option, so duplex model and pair count are not the same question, and the omission silently excluded a class of existing standard links from a decision that [EDR-007](./docs/edr/EDR-007-module-control-interface-and-module-hub.md) records as blocking for all `MCL` hardware work. The bullet now lists three duplex options and adds the question that is inseparable from them — whether `MCL` adopts an existing standard link or is specified from scratch. The enumeration in EDR-007's open-items list is superseded by this text; the record itself is unchanged, as required by [AES-EDR-002](./docs/08-decisions-and-governance.md#aes-edr-002-decision-record-structure-and-immutability).
+
+### Added
+
+- **[Architecture §7.1](./docs/03-architecture.md#71-the-module-port)** — hot-plug and live-insertion behavior of the Module Port, and the protection strategy at its contacts, added to the open items. Both are named in EDR-007 as properties belonging to the Module Port specification but were absent from the list in AES. Connecting or disconnecting a Module on a running bench must disturb no other port (`AES-HUB-002`) and must not produce a SYNC event on any link.
+- **[Architecture §7](./docs/03-architecture.md#7-module-hub)** — Module Hub **cascading** recorded as open. It is settled with the `MCL` binding because it decides whether that binding's addressing is flat or hierarchical, and a binding that assumes a single Hub cannot be extended to cascading without a compatibility break. SYNC Hub cascading is already permitted by [`docs/interfaces/sync.md`](./docs/interfaces/sync.md) Section 5 and is unaffected.
+- **[Interfaces and Versioning §5.2](./docs/05-interfaces-and-versioning.md#52-guidance-non-normative)** — a guidance note stating that asynchronous notification is not part of MCI in this version: every operation is a host-initiated request with a response, which covers everything AES requires, and whether a Module may report a fault unprompted is deliberately left to the first binding specification. The absence was previously implied by the repeated phrase "request/response correlation" but never stated, leaving a binding author to guess.
+
+No requirement is added, removed or changed in this release, and no anchor changes. `AES-MCI-001` to `AES-MCI-005`, `AES-HUB-001`, `AES-HUB-002` and the amended `AES-SYNC-002` are unchanged.
+
 ## [1.6.0] - 2026-09-12
 
 ### Added
