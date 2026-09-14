@@ -3,7 +3,7 @@
 **Status:** Per-specification status stated in each file (all are currently Draft)
 **Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [EEPROM Metadata](../06-eeprom-metadata.md)
 
-This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profiles** and the **Module Synchronization Interface**.
+This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profiles** and the **AURIORA Event Link**.
 
 The **Module Control Interface (MCI)** is defined transport-independently in [Interfaces and Versioning §5](../05-interfaces-and-versioning.md#5-module-control-interface) and has no specification here yet: its transport bindings — a direct local transport and the Module Control Link (`MCL`) — are open items ([EDR-007](../edr/EDR-007-module-control-interface-and-module-hub.md)) and will be added as versioned binding specifications when their requirements are settled.
 
@@ -23,10 +23,12 @@ Two axes select a profile: the **management model** (Passive or Managed) fixes t
 
 Profile identifiers follow `UIF-[M]<transport>-<positions>`. The position counts are deliberately distinct so no two profiles can mate: a host cannot energize or mis-drive a Unit built to a different contract.
 
-## Module Synchronization Interface
+## AURIORA Event Link
 
-The Module-to-Module event interface. Its interface-independent rules — event-only semantics, point-to-point topology with active Hub fan-out, arming and default behavior, observability ([AES-SYNC-001](../05-interfaces-and-versioning.md#aes-sync-001-sync-is-a-module-level-event-interface) to [AES-SYNC-004](../05-interfaces-and-versioning.md#aes-sync-004-sync-observability)) — live in [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-module-synchronization-interface); the file here defines the connector, pinout, electrical layer, event edge and the SYNC Hub. SYNC is not a Unit Interface Profile and carries no `UIF_` signal.
+The Module-to-Module typed event interface. Its interface-independent rules — typed event frame and what it may not carry, point-to-point topology with direct and routed operation, event identifiers and Module bindings, timing and observability, active Hub routing ([AES-AEL-001](../05-interfaces-and-versioning.md#aes-ael-001-ael-is-the-module-level-typed-event-interface) to [AES-AEL-005](../05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior)) — are in [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-auriora-event-link). The specification below defines the physical and electrical layer, the event frame, the timing reference and the AEL router.
 
 | Interface | File | Positions | Status | Intended for |
 |---|---|---:|---|---|
-| `AURIORA SYNC` | [sync.md](./sync.md) | 3 | Draft | Deterministic event synchronization between Modules: triggering a configured action, or marking an event in an acquisition timeline |
+| `AURIORA AEL` | [ael.md](./ael.md) | 3 | Draft | Deterministic typed events between Modules: triggering configured actions, marking events in an acquisition timeline, and closed-loop reactions between measurement and stimulus Modules, directly or through one or more Module Hubs |
+
+[sync.md](./sync.md) is the superseded notice of the former Module Synchronization Interface (`SYNC`, AES `0.6.0`–`0.7.1`); it is not a current interface.
