@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (2026-09-12)
+Accepted (2026-09-12) — **SYNC-related parts superseded by [EDR-008](./EDR-008-auriora-event-link.md)** (2026-09-14): the firmware-free SYNC event path, the static fan-out model and the SYNC terminology of the Module Hub and Module Port (Decision items 5–7 where they concern SYNC). The MCI and `MCL` decisions (items 1–4) remain in force. The body below is preserved unchanged as a historical record.
 
 *Self-authored and accepted by the maintainer as a self-review per [AES-GOV-010](../08-decisions-and-governance.md#aes-gov-010-maintainer-governance). Independent review SHOULD be sought before any Released Module or Module Hub relies on this architecture.*
 
@@ -34,7 +34,7 @@ The proposal that prompted this record introduced a common differential link lay
 
 | Alternative | Assessment |
 |---|---|
-| **A fourth Platform interface class** under which control and SYNC are profiles | Rejected, on three grounds. *There is little to factor out:* the SYNC electrical layer is roughly ten lines of normative text in [`sync.md`](../interfaces/sync.md) §3, and a new interface class, terminology, versioned specification and identity assignment cost more than the duplication they remove. *The two users differ where it matters:* SYNC is a unidirectional, unframed link optimized for edge fidelity and fail-safe idle; a control link is bidirectional and framed, with a bit rate, bus recovery and its own common-mode requirements over its own cable length. *The abstraction cannot yet be written:* the proposal itself left the duplex model — pair count, simultaneous transmit and receive — undecided, and a common physical layer whose most basic property is unknown and probably differs between its two users is not a specification. |
+| **A fourth Platform interface class** under which control and SYNC are profiles | Rejected, on three grounds. *There is little to factor out:* the SYNC electrical layer is roughly ten lines of normative text in [`sync.md`](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/interfaces/sync.md) §3, and a new interface class, terminology, versioned specification and identity assignment cost more than the duplication they remove. *The two users differ where it matters:* SYNC is a unidirectional, unframed link optimized for edge fidelity and fail-safe idle; a control link is bidirectional and framed, with a bit rate, bus recovery and its own common-mode requirements over its own cable length. *The abstraction cannot yet be written:* the proposal itself left the duplex model — pair count, simultaneous transmit and receive — undecided, and a common physical layer whose most basic property is unknown and probably differs between its two users is not a specification. |
 | **No shared layer; each interface specifies its own electrical requirements** | **Chosen.** SYNC keeps its specification. `MCL` gets its own when its requirements are real. Conventions that genuinely are shared — transceiver class, protection at the connector, receiver-side termination, `P`/`N` polarity naming — belong in the [Hardware Design Guide](https://github.com/auriora-org/auriora-hardware-design-guide), which already carries them for SYNC ports. |
 | **Defer the question** | Effectively part of the chosen option, and recorded as such: the properties that a combined Module Port really does share — connector, contacts, cable, shield, reference, hot-plug, ESD entry — are shared because they are one physical connector, not because of an abstract link layer, and they have a natural home in the Module Port connector specification when it is written. If a shared electrical baseline earns its place later, it will be factored out of two concrete specifications rather than guessed ahead of both. |
 
@@ -128,7 +128,7 @@ Not resolved here. The first four are blocking for any hardware work:
 ## Affected Requirements / Documents
 
 - [Interfaces and Versioning §5](../05-interfaces-and-versioning.md#5-module-control-interface) — new section; `AES-MCI-001` to `AES-MCI-005` (new).
-- [Interfaces and Versioning](../05-interfaces-and-versioning.md#aes-sync-002-point-to-point-links-and-active-fan-out) — `AES-SYNC-002` amended for composite devices, static pre-ARM configuration, passive observation and the SYNC Source role.
+- [Interfaces and Versioning](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/05-interfaces-and-versioning.md#aes-sync-002-point-to-point-links-and-active-fan-out) — `AES-SYNC-002` amended for composite devices, static pre-ARM configuration, passive observation and the SYNC Source role.
 - [Architecture §7](../03-architecture.md#7-module-hub) — new section; `AES-HUB-001` and `AES-HUB-002` (new); §3 Module Design gains the MCI paragraph.
 - [Terminology §3](../02-terminology.md#3-supporting-terms) — nine supporting terms.
 - [Document Index](../document-index.md), `STANDARD.md` — indexing.

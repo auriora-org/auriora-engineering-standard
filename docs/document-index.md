@@ -23,7 +23,7 @@ This index records the AES documents and reserved companion document IDs, and ho
 | `AES-REG-DOC` | Document Index | `docs/document-index.md` |
 | `AES-EXAMPLE-MODULE-LIFECYCLE` | Worked Example: Module Lifecycle (informative) | `examples/worked-example-module-lifecycle.md` |
 | `AES-EXAMPLE-UIF-SELECTION` | Worked Example: Choosing a Unit Interface Profile (informative) | `examples/worked-example-unit-interface-profile-selection.md` |
-| `AES-EXAMPLE-SYNC` | Worked Example: Module Synchronization (informative) | `examples/worked-example-module-synchronization.md` |
+| `AES-EXAMPLE-AEL` | Worked Example: Multimodal AEL Experiment (informative) | `examples/worked-example-multimodal-ael-experiment.md` |
 
 ## Interface Specifications
 
@@ -35,13 +35,23 @@ Concrete, independently versioned Unit Interface Profiles (see [AES-IF-008](./05
 | `AURIORA UIF-MI2C-8` | 0.1 | Draft | `docs/interfaces/uif-mi2c-8.md` |
 | `AURIORA UIF-MSPI-14` | 0.1 | Draft | `docs/interfaces/uif-mspi-14.md` |
 
-The Module Synchronization Interface (see [AES-SYNC-001](./05-interfaces-and-versioning.md#aes-sync-001-sync-is-a-module-level-event-interface)):
+The AURIORA Event Link (see [AES-AEL-001](./05-interfaces-and-versioning.md#aes-ael-001-ael-is-the-module-level-typed-event-interface)):
 
 | Interface | Version | Status | Source Path |
 |---|---|---|---|
-| `AURIORA SYNC` | 0.1 | Draft | `docs/interfaces/sync.md` |
+| `AURIORA AEL` | 0.1 | Draft | `docs/interfaces/ael.md` |
 
 No **MCI transport binding** specification exists yet. The Module Control Interface ([AES-MCI-001](./05-interfaces-and-versioning.md#aes-mci-001-transport-independence)) is defined transport-independently; its bindings — a direct local transport and the Module Control Link (`MCL`) — are recorded as open items in [EDR-007](./edr/EDR-007-module-control-interface-and-module-hub.md) and will be listed here when specified.
+
+## Retired Identifiers
+
+Identifiers that appeared in a released AES version and were withdrawn. They are reserved and are not reused for a different meaning ([AES-DOCID-001](./04-naming-and-identity.md#aes-docid-001-document-identifiers-for-standards)).
+
+| Identifier | Was | Retired in | Replacement |
+|---|---|---|---|
+| `AES-SYNC-001` – `AES-SYNC-004` | Module Synchronization Interface requirements (Interfaces and Versioning §4, AES 1.5.0–1.6.1) | 2.0.0 | `AES-AEL-001` – `AES-AEL-005` ([EDR-008](./edr/EDR-008-auriora-event-link.md)) |
+| `AES-EXAMPLE-SYNC` | Worked Example: Module Synchronization (informative) | 2.0.0 | `AES-EXAMPLE-AEL` |
+| `AURIORA SYNC` (`docs/interfaces/sync.md`) | Module Synchronization Interface specification, 0.1 Draft | 2.0.0 | `AURIORA AEL` (`docs/interfaces/ael.md`); the file remains as a superseded notice |
 
 ## Companion Document IDs (reserved)
 

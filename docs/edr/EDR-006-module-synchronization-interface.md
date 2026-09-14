@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (2026-09-11)
+Accepted (2026-09-11) — **Superseded by [EDR-008](./EDR-008-auriora-event-link.md)** (2026-09-14). The body below is preserved unchanged as a historical record.
 
 *Self-authored and accepted by the maintainer as a self-review per [AES-GOV-010](../08-decisions-and-governance.md#aes-gov-010-maintainer-governance). Independent review SHOULD be sought before any Released Module relies on this interface.*
 
@@ -61,7 +61,7 @@ This is a Platform interface decision — a new interface class, a new versioned
 
 ## Decision
 
-1. AES gains a third interface class, the **Module Synchronization Interface (SYNC)**: a Module-to-Module, point-to-point, RS-422-compatible differential event interface carrying a single rising-edge event and no data. Its interface-independent rules are [AES-SYNC-001](../05-interfaces-and-versioning.md#aes-sync-001-sync-is-a-module-level-event-interface) to [AES-SYNC-004](../05-interfaces-and-versioning.md#aes-sync-004-sync-observability) in [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-module-synchronization-interface); its physical, electrical and timing layer is the versioned specification [`docs/interfaces/sync.md`](../interfaces/sync.md) (`0.1`, Draft).
+1. AES gains a third interface class, the **Module Synchronization Interface (SYNC)**: a Module-to-Module, point-to-point, RS-422-compatible differential event interface carrying a single rising-edge event and no data. Its interface-independent rules are [AES-SYNC-001](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/05-interfaces-and-versioning.md#aes-sync-001-sync-is-a-module-level-event-interface) to [AES-SYNC-004](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/05-interfaces-and-versioning.md#aes-sync-004-sync-observability) in [Interfaces and Versioning §4](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/05-interfaces-and-versioning.md#4-module-synchronization-interface); its physical, electrical and timing layer is the versioned specification [`docs/interfaces/sync.md`](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/interfaces/sync.md) (`0.1`, Draft).
 2. SYNC is not part of the Unit Interface. Units do not expose or consume it; profile-defined synchronization signals in Unit Interface Profiles are unrelated Unit-to-host signals.
 3. Fan-out is performed by an active, controller-less **SYNC Hub**; passive multidrop and required daisy-chaining are excluded.
 4. The connector is **M8, 3-position, A-coded**: pin 1 `GND`, pin 2 `SYNC_P`, pin 3 `SYNC_N`, identical on SYNC IN and SYNC OUT. Gender, keying and the cross-mating mitigation are open and will be recorded in a supplementary or superseding record when fixed.
@@ -101,11 +101,11 @@ Not resolved here; they belong to the SYNC `1.0` finalization, informed by the f
 
 ## Affected Requirements / Documents
 
-- [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-module-synchronization-interface) — new section; `AES-SYNC-001` to `AES-SYNC-004` (new).
-- [`docs/interfaces/sync.md`](../interfaces/sync.md) — new specification.
+- [Interfaces and Versioning §4](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/05-interfaces-and-versioning.md#4-module-synchronization-interface) — new section; `AES-SYNC-001` to `AES-SYNC-004` (new).
+- [`docs/interfaces/sync.md`](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/docs/interfaces/sync.md) — new specification.
 - [Terminology §3](../02-terminology.md#3-supporting-terms) — supporting terms.
 - [Architecture §3](../03-architecture.md#3-module-design) — Module Design note on SYNC.
-- [Worked Example: Module Synchronization](../../examples/worked-example-module-synchronization.md) — informative.
+- [Worked Example: Module Synchronization](https://github.com/auriora-org/auriora-engineering-standard/blob/v1.6.1/examples/worked-example-module-synchronization.md) — informative.
 - [Document Index](../document-index.md), `STANDARD.md` — indexing.
 
 ## Future Review Criteria

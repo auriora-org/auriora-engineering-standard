@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 1.6.1
+**Version:** 2.0.0
 **Status:** Normative
 **Language:** English
 
@@ -69,16 +69,16 @@ There are no conformance certificates, conformance statements or traceability ma
 | [02 Terminology](./docs/02-terminology.md) | Canonical AURIORA vocabulary. Frozen core terms. |
 | [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; default controller platform strategy; the optional Module Hub and the Module Port. |
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
-| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the Module Synchronization Interface (SYNC); the Module Control Interface (MCI). |
+| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI). |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
-| [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix) and the Module Synchronization Interface (SYNC). |
+| [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix) and the AURIORA Event Link (AEL). |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
 | [08 Decisions and Governance](./docs/08-decisions-and-governance.md) | Fixed historical decisions; when ADRs/EDRs are needed; small-team governance. |
 | [09 Review Checklists](./docs/09-review-checklists.md) | One general engineering checklist and a release checklist. |
 | [Document Index](./docs/document-index.md) | Index of AES documents, companion documents and retired document/requirement IDs. |
 | [Worked Example: Module Lifecycle](./examples/worked-example-module-lifecycle.md) | One hypothetical Module from breadboard to release across the maturity levels. |
 | [Worked Example: Profile Selection](./examples/worked-example-unit-interface-profile-selection.md) | Four planned Units assessed against the Unit Interface Profile selection rule. |
-| [Worked Example: Module Synchronization](./examples/worked-example-module-synchronization.md) | SYNC as trigger and as marker on a bench of three Modules, with the logs that give the pulses their meaning. |
+| [Worked Example: Multimodal AEL Experiment](./examples/worked-example-multimodal-ael-experiment.md) | A closed-loop bench of one measurement and three stimulus Modules on two Module Hubs: compiled event identifiers, bindings, routes, arming, a host disconnect, and the record that decodes it all — plus the same frame on a Hub-free pair. |
 
 Companion standards and guides, each in its own repository:
 
@@ -102,7 +102,7 @@ flowchart TB
     Host[Host Interface]
     MCI[Module Control Interface]
     UI[Unit Interface]
-    SYNC[Module Synchronization Interface]
+    AEL[AURIORA Event Link]
     Hub[Module Hub]
     Peer[Other Module]
     External[Developer Host / DAQ / Computer]
@@ -114,15 +114,15 @@ flowchart TB
     Family --> Unit
     Interfaces --> Host
     Interfaces --> UI
-    Interfaces --> SYNC
+    Interfaces --> AEL
     Host --> MCI
     Module --> Controller
     Module --> Host
     Module --> UI
-    Module --> SYNC
+    Module --> AEL
     UI --> Unit
-    SYNC --> Peer
-    SYNC --> Hub
+    AEL --> Peer
+    AEL --> Hub
     MCI --> Hub
     MCI --> External
     Hub --> External
@@ -199,5 +199,6 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-003: UIF-MSPI-14 Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md)
 - [EDR-004: Default Controller Platforms](./docs/edr/EDR-004-default-controller-platforms.md)
 - [EDR-005: A Low-Bandwidth Managed Unit Interface Profile](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)
-- [EDR-006: Module Synchronization Interface](./docs/edr/EDR-006-module-synchronization-interface.md)
-- [EDR-007: Module Control Interface and Module Hub](./docs/edr/EDR-007-module-control-interface-and-module-hub.md)
+- [EDR-006: Module Synchronization Interface](./docs/edr/EDR-006-module-synchronization-interface.md) — superseded by EDR-008
+- [EDR-007: Module Control Interface and Module Hub](./docs/edr/EDR-007-module-control-interface-and-module-hub.md) — SYNC parts superseded by EDR-008
+- [EDR-008: AURIORA Event Link](./docs/edr/EDR-008-auriora-event-link.md) — supersedes EDR-006
