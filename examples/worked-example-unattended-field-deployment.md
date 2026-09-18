@@ -20,7 +20,7 @@ No Module Hub. No AEL: nothing needs to react to anything else. No network. The 
 ```text
 identity      APEM  serial 0x2A41  rev B  fw 1.4.0  MCI 0.1 over direct-local
 capabilities  sessions yes   assets yes   event_log yes   firmware_update yes
-              ael_in no      ael_out no                       (this build has no AEL ports fitted)
+              ael_in no      ael_out no                       (this build has no Module Port fitted)
               autonomous_continuation yes
                 host_loss:           continue | stop
                 recovery_after_reset: none | resume
@@ -148,7 +148,21 @@ uptime          11d 14:02   (went backwards relative to the host's last view →
 event log       start, checkpoints, 340 detector markers, 1 reset, 1 recovery, STORAGE_EXHAUSTED, COMPLETE
 ```
 
-The host re-arms nothing and restarts nothing. It reconciles the deployment record: the run now has two segments and an early completion with a recorded cause, and the record says whether that was expected (it was not) and what happened (the log says). Retrieving the ~8 GB of data is the bulk path, which is a separate concern and not MCI.
+The host re-arms nothing and restarts nothing. It reconciles the deployment record: the run now has two segments and an early completion with a recorded cause, and the record says whether that was expected (it was not) and what happened (the log says).
+
+Then it asks what the Module holds. APEM declares stored object retrieval ([AES-MCI-008](../docs/05-interfaces-and-versioning.md#aes-mci-008-stored-object-retrieval)), so the inventory is the same request it would answer through a Module Hub:
+
+```text
+list_objects
+  REC-R-0917-01-S0   recording   complete    4.98 GB   run R-0917-01 seg 0   day 0 → day 8 23:58:40
+                     session FIELD-21D 3c9e…  format apem-ephys 2.1  fw 1.4.0  sha256 91c0…
+  REC-R-0917-01-S1   recording   complete    3.02 GB   run R-0917-01 seg 1   day 9 → day 19 21:14:03
+                     session FIELD-21D 3c9e…  format apem-ephys 2.1  fw 1.4.0  sha256 5e7a…
+  LOG-R-0917-01      event log   complete    1.2 MB    run R-0917-01
+  FIELD-21D          session     complete    14 kB     3c9e…
+```
+
+Two recordings, one per segment — never one file with a hidden gap. The host reads them in chunks of the declared maximum, checking each response's object, offset and length. Halfway through the first recording the researcher trips over the cable; the Module holds no transfer state, so after rediscovery by identity the host continues from the last byte it stored, and nothing is renegotiated. When the assembled files match the inventory's hashes the retrieval is complete and the hashes go into the record; until then the local files are marked partial. Nothing on the Module was deleted, because nothing asked. Had the Module come back on a Module Hub instead of a laptop, the inventory, the reads and the hashes would have been the same, forwarded by a Hub that does not know what a recording is ([AES-HUB-003](../docs/03-architecture.md#aes-hub-003-host-facing-interface-and-traffic-separation)).
 
 ## 10. The deployment record, afterwards
 
@@ -162,6 +176,7 @@ run        R-0917-01
   boundary    BROWNOUT → POWER_ON · automatic recovery, policy resume · gap ≈ 3 min 12 s (RTC, uncorrected)
   segment 1   day 9 → day 19 21:14:03  samples 0 … 170 108 600
 outcome    COMPLETE by STORAGE_EXHAUSTED (policy stop), 2 days early · no data overwritten
+retrieved  REC-R-0917-01-S0 91c0… · REC-R-0917-01-S1 5e7a… · LOG-R-0917-01   (verified against inventory, day 21)
 events     1 reset · 1 recovery · 340 markers · 0 faults
 ```
 

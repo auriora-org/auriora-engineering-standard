@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 0.8.0
+**Version:** 0.9.0
 **Status:** Normative
 **Language:** English
 
@@ -67,11 +67,11 @@ There are no conformance certificates, conformance statements or traceability ma
 |---|---|
 | [01 Principles](./docs/01-principles.md) | The engineering posture: platform thinking, explicitness, honest documentation. |
 | [02 Terminology](./docs/02-terminology.md) | Canonical AURIORA vocabulary. Frozen core terms. |
-| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; unattended autonomous operation; default controller platform strategy; the optional Module Hub and the Module Port. |
+| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; unattended autonomous operation; default controller platform strategy; the optional Module Hub, its host-facing interface and the Module Port; the Module's external interface roles and the separation of communication from primary power. |
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
-| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI), including autonomous continuation, deployment policy and recovery after reset. |
+| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI), including autonomous continuation, deployment policy, recovery after reset and stored object retrieval. |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
-| [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix) and the AURIORA Event Link (AEL). |
+| [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix), the AURIORA Event Link (AEL), the Module Port with the AURIORA Link Cable, and the Module Power Interface. |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
 | [08 Decisions and Governance](./docs/08-decisions-and-governance.md) | Fixed historical decisions; when ADRs/EDRs are needed; small-team governance. |
 | [09 Review Checklists](./docs/09-review-checklists.md) | One general engineering checklist and a release checklist. |
@@ -104,6 +104,8 @@ flowchart TB
     MCI[Module Control Interface]
     UI[Unit Interface]
     AEL[AURIORA Event Link]
+    Port[Module Port]
+    Power[Module Power Interface]
     Hub[Module Hub]
     Peer[Other Module]
     External[Developer Host / DAQ / Computer]
@@ -116,14 +118,19 @@ flowchart TB
     Interfaces --> Host
     Interfaces --> UI
     Interfaces --> AEL
+    Interfaces --> Port
+    Interfaces --> Power
     Host --> MCI
     Module --> Controller
     Module --> Host
     Module --> UI
     Module --> AEL
+    Module --> Port
+    Module --> Power
     UI --> Unit
-    AEL --> Peer
-    AEL --> Hub
+    AEL --> Port
+    Port --> Peer
+    Port --> Hub
     MCI --> Hub
     MCI --> External
     Hub --> External
@@ -202,5 +209,7 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-005: A Low-Bandwidth Managed Unit Interface Profile](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)
 - [EDR-006: Module Synchronization Interface](./docs/edr/EDR-006-module-synchronization-interface.md) — superseded by EDR-008
 - [EDR-007: Module Control Interface and Module Hub](./docs/edr/EDR-007-module-control-interface-and-module-hub.md) — SYNC parts superseded by EDR-008
-- [EDR-008: AURIORA Event Link](./docs/edr/EDR-008-auriora-event-link.md) — supersedes EDR-006
+- [EDR-008: AURIORA Event Link](./docs/edr/EDR-008-auriora-event-link.md) — supersedes EDR-006; connector items superseded by EDR-011
 - [EDR-009: Autonomous Module Operation and Recovery](./docs/edr/EDR-009-autonomous-module-operation-and-recovery.md)
+- [EDR-010: Hub Host-Facing Interface and Stored Object Retrieval](./docs/edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)
+- [EDR-011: Module External Interfaces — Module Port, Module Power Interface and USB](./docs/edr/EDR-011-module-external-interfaces-and-power.md) — supersedes EDR-008 items 8–9

@@ -1,11 +1,11 @@
 # AURIORA Event Link (AEL)
 
 **Interface Identifier:** `AEL`
-**Version:** `0.1`
+**Version:** `0.2`
 **Status:** Draft
 **Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [Architecture](../03-architecture.md)
 
-This is the versioned specification of the **AURIORA Event Link**. The interface-independent rules — what AEL is and is not, topology, event identifiers and Module bindings, timing and observability, Hub routing ([AES-AEL-001](../05-interfaces-and-versioning.md#aes-ael-001-ael-is-the-module-level-typed-event-interface) to [AES-AEL-005](../05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior)) — live in [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-auriora-event-link) and are not repeated here. This file defines the physical and electrical layer, the event frame and its encoding, the timing reference and the behavior of an AEL router.
+This is the versioned specification of the **AURIORA Event Link**. The interface-independent rules — what AEL is and is not, topology, event identifiers and Module bindings, timing and observability, Hub routing ([AES-AEL-001](../05-interfaces-and-versioning.md#aes-ael-001-ael-is-the-module-level-typed-event-interface) to [AES-AEL-005](../05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior)) — live in [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-auriora-event-link) and are not repeated here. This file defines the electrical layer, the event frame and its encoding, the timing reference and the behavior of an AEL router; the connector and cable through which AEL links leave a device are the [Module Port specification](./module-port.md).
 
 While this specification is Draft, it is not release-binding: no Module or Hub may claim Released conformance until the open items in Section 10 are resolved and the specification is versioned to a `1.x` release. Section 10 separates what this Draft has **settled** from what is still **open**, so that an implementer knows which parameters may still move.
 
@@ -30,34 +30,30 @@ multi-Hub  Module A  AEL OUT ──► Hub 1 ──Hub-to-Hub AEL link──► 
 
 A Module cannot tell, and must not need to know, which path a frame took. A Hub is optional infrastructure, never a prerequisite for two Modules to exchange events. Hub-to-Hub AEL links carry the same frame with the identifier unchanged; the topology of Hub-to-Hub links is **acyclic** (a tree or a chain), so a frame cannot circulate. Experiment-level feedback — Module A's event causes an action on Module B whose completion event causes an action on Module A — is a legitimate experiment design and is not a routing loop; it is validated by the host, not prevented by the network.
 
-A Module reaches a Module Hub either through its standalone AEL ports or through a Module Port that packages `MCL`, AEL IN and AEL OUT in one cable ([Architecture §7.1](../03-architecture.md#71-the-module-port)); the links remain electrically and semantically independent in either case.
+A Module's AEL IN and AEL OUT leave the device through its single **Module Port**, which packages them with `MCL` in one connector and one **AURIORA Link Cable** ([Architecture §7.1](../03-architecture.md#71-the-module-port), [Module Port specification](./module-port.md)); the links remain electrically and semantically independent inside it. The direct path is one Link Cable between two Modules; the routed paths are Link Cables between Modules and Hub ports and between Hubs.
 
 ## 3. Physical Layer
 
-- **Connector.** M8, 3-position, A-coded circular connector (IEC 61076-2-104 form), one connector per standalone AEL port. A Module provides an **AEL IN** port, an **AEL OUT** port, or both; the two are physically separate connectors, never a shared one.
-- **Pinout.** Identical for AEL IN and AEL OUT:
+AEL has no connector of its own. A Module's AEL IN and AEL OUT are two of the three differential links carried by its single **Module Port** — an M8 8-position A-coded female connector shared with `MCL` — and leave the device through it ([Module Port specification](./module-port.md), [Architecture §7.1](../03-architecture.md#71-the-module-port)). The standalone M8 3-position AEL ports of AEL `0.1` are withdrawn ([EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md)).
 
-| Pin | Signal | Notes |
-|---:|---|---|
-| 1 | `GND` | Signal reference, connected to the device's ground |
-| 2 | `AEL_P` | Differential pair, non-inverting |
-| 3 | `AEL_N` | Differential pair, inverting |
-
-  On the device the nets are distinguished by port: `AEL_IN_P`/`AEL_IN_N` and `AEL_OUT_P`/`AEL_OUT_N`. A cable is a straight three-conductor assembly, pin 1 to pin 1, with `AEL_P`/`AEL_N` as a twisted or otherwise coupled pair.
-- **Gender, keying and cross-mating — OPEN.** The gender assignment of AEL IN and AEL OUT, keying and marking are decided at Platform level against the full AURIORA connector inventory — AEL IN, AEL OUT, the Module Port, electrode and sensor connectors and every other existing or planned M8 interface — weighing pin count, coding, gender, accidental cross-mating, the electrical hazard of a wrong connection, field usability and cable availability. An `OUT = male / IN = female` convention with a straight cable is the conceptually attractive direction and is **not** settled. Until the decision is recorded, AEL IN and AEL OUT SHOULD be mechanically distinguishable from each other, every AEL connector SHALL either be prevented from mating with, or be electrically harmless when mated with, any other M8 interface on the same product family, and a device's AEL connector selection SHALL be recorded in its design notes together with the cross-mating analysis.
-- **Labeling.** Ports are labeled `AEL IN` and `AEL OUT` on the enclosure. Hub-to-Hub link ports on a Hub are labeled as such.
+- **Contacts.** The Module Port carries `AEL_IN_P`/`AEL_IN_N` — the received pair, terminated at this device — and `AEL_OUT_P`/`AEL_OUT_N` — the driven pair — with the Module Port's `GND` contact as the reference of both. `P` is the non-inverting and `N` the inverting side. The position numbering is assigned in the Module Port specification; the contact roles and net names are fixed.
+- **Cable.** Module Ports are connected only by the **AURIORA Link Cable**, which crosses AEL OUT to AEL IN with polarity preserved, so that one non-oriented cable joins a Module to a Hub port, a Module directly to one peer Module, and a Hub to a Hub. A generic straight-through M8 8-position cable connects two AEL OUT drivers to one pair and is **not compatible**; every port survives one indefinitely without emitting a valid frame (Module Port specification Section 5.1).
+- **Direct operation is 1:1.** Two Modules joined by one Link Cable exchange events in both directions with no infrastructure. Three or more Modules in one event exchange use an AEL router.
+- **Router ports.** On a Module Hub every Module Port is a router port pair — its `AEL_IN` pair a router ingress, its `AEL_OUT` pair a router egress — and a Hub-to-Hub link port is a Module Port connector whose Link Cable carries one link in each direction (Section 8.6).
+- **Adapters and instruments.** An AEL-to-trigger adapter or a test fixture presents a Module Port and is connected with a Link Cable like any other device.
+- **Labeling.** `AEL IN` and `AEL OUT` name links, not connectors, and do not appear on an enclosure; the connector is labeled as the Module Port specification requires.
 
 ## 4. Electrical Layer
 
-- **Signaling.** Point-to-point differential signaling: one unidirectional differential pair per link, driven by a differential driver at AEL OUT and received by a differential receiver at AEL IN. There is no bus arbitration, direction control or addressing on the wire, and never more than one driver on a pair.
+- **Signaling.** Point-to-point differential signaling: one unidirectional differential pair per link, driven by a differential driver at AEL OUT and received by a differential receiver at AEL IN. There is no bus arbitration, direction control or addressing on the wire, and never more than one driver on a pair. AEL IN and AEL OUT are therefore two simplex links, not one bidirectional link: a single half-duplex AEL pair would let two legitimate events collide with no recovery, or need a medium-access rule that couples a Module's event latency to its peer's traffic, and was rejected ([EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md)).
 - **Electrical profile — OPEN.** The intended direction is an **RS-485-compatible driver/receiver electrical contract** (driver levels, receiver sensitivity, common-mode range) used in AEL's point-to-point topology. Which standard or profile AEL normatively follows, and with it the driver output requirements, receiver threshold, common-mode range and termination assumptions, is decided explicitly before `1.0` (Section 10). This specification does not treat RS-422 and RS-485 as interchangeable and does not quote threshold or common-mode numbers until the profile is chosen.
 - **Transceiver class.** A 3.3 V-compatible differential transceiver with separate receiver and driver pairs, a **true fail-safe** receiver (defined receiver output for open, shorted and idle inputs — a property that SHALL be established from the device's specification, not assumed of every generic RS-422/RS-485 receiver), ESD-rated bus pins, and a rated data rate with margin above the AEL bit rate (Section 5.3). Because AEL IN and AEL OUT are physically separate links, a half-duplex transceiver SHALL NOT be used as the single-device implementation of both ports. Part selection follows the Hardware Design Guide's parameter-based rules; this specification names no part.
-- **Termination.** Termination belongs at the receiver: each AEL IN provides a differential termination across `AEL_P`/`AEL_N`; **120 Ω** is the reference design assumption, to be validated against the selected transceiver, connector, PCB, cable and length (Section 10). AEL OUT and Hub outputs are not terminated as receivers.
+- **Termination.** Termination belongs at the receiver: each AEL IN provides a differential termination across `AEL_IN_P`/`AEL_IN_N`; **120 Ω** is the reference design assumption, to be validated against the selected transceiver, connector, PCB, cable and length (Section 10). AEL OUT and Hub outputs are not terminated as receivers.
 - **Logical idle and fail-safe.** AEL defines a **logical idle state** — the state of a link on which no frame is in progress — which in the baseline encoding is the UART mark state, logic HIGH at the receiver output (Section 5.2). The AEL receiver path SHALL provide fail-safe behavior such that an open input, a disconnected cable, an unpowered or resetting remote transmitter and a shorted differential pair resolve to the logical AEL idle state and cannot by themselves produce a valid AEL event; cable insertion and removal SHALL NOT produce one either. Physical line activity, a framing error or an integrity failure is never an event.
-- **Protection.** Every AEL port is an external, user-wired connector and SHALL carry ESD/transient protection at the connector, ahead of the termination and the transceiver, per the Hardware Design Guide. The transceiver's internal ESD rating is not sufficient on its own. ESD and transient levels are product and guide matters, not fixed here.
+- **Protection.** Every AEL link enters a device through its Module Port, an external, user-wired connector, and SHALL carry ESD/transient protection at that connector, ahead of the termination and the transceiver, per the Hardware Design Guide. The transceiver's internal ESD rating is not sufficient on its own. ESD and transient levels are product and guide matters, not fixed here.
 - **No back-drive.** An unpowered device SHALL NOT be back-driven through, and SHALL NOT source current into, its AEL pins.
 - **Power-up, power-down and reset.** A device SHALL NOT emit a valid AEL frame as a consequence of powering up, powering down, resetting, or having a cable inserted or removed. A transmitter that cannot guarantee a defined line state through these transitions holds its output disabled until it can.
-- **Isolation — not required.** Galvanic isolation is not part of this version. `GND` on pin 1 is the link's reference and ties the two devices' grounds through the cable; a design sensitive to ground loops records the consequence in its design notes.
+- **Isolation — not required.** Galvanic isolation is not part of this version. The Module Port's `GND` contact is the link's reference and ties the two devices' grounds through the cable; a design sensitive to ground loops records the consequence in its design notes.
 
 ## 5. Event Frame
 
@@ -143,7 +139,7 @@ AEL does not require nanosecond-class latency. It requires bounded latency, boun
 
 ## 8. AEL Router
 
-An **AEL router** is the event-routing function of a Module Hub, or a standalone AEL Hub. It has *N* AEL IN ports, *M* AEL OUT ports, and optionally one or more **Hub-to-Hub AEL link** ports; every port conforms to Sections 3–5. Its behavior is governed by [AES-AEL-005](../05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior); this section states the mechanism.
+An **AEL router** is the event-routing function of a Module Hub, or a standalone AEL Hub. It has *N* AEL IN ports and *M* AEL OUT ports — on a Module Hub, the `AEL_IN` and `AEL_OUT` pairs of its Module Ports — and optionally one or more **Hub-to-Hub AEL link** ports; every port conforms to Sections 3–5. Its behavior is governed by [AES-AEL-005](../05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior); this section states the mechanism.
 
 ### 8.1 Forwarding
 
@@ -197,7 +193,7 @@ A router SHALL expose per port: received, forwarded, unrouted, invalid (framing 
 
 ### 8.6 Hub-to-Hub links and depth
 
-A Hub-to-Hub AEL link is an AEL OUT on one router driving an AEL IN on another, carrying unchanged frames; a router treats a frame arriving on such a link as an ingress event like any other. The number of such links a router provides is a product decision. The topology formed by Hub-to-Hub links SHALL be acyclic; the host validates this before deployment, and no run-time mechanism (hop count, spanning tree, duplicate suppression) exists to compensate for a cycle. **No maximum depth is defined by AEL.** A path is valid when the experiment's timing requirement is met by the sum of the declared per-hop timing envelopes along it, which the host checks per deployment; a product MAY publish a recommended or validated maximum depth for itself.
+A Hub-to-Hub AEL link is an AEL OUT on one router driving an AEL IN on another, carrying unchanged frames; a router treats a frame arriving on such a link as an ingress event like any other. Physically a Hub-to-Hub link port is a Module Port connector, and one AURIORA Link Cable between two such ports carries a link in each direction ([Module Port specification](./module-port.md)). The number of such links a router provides is a product decision. The topology formed by Hub-to-Hub links SHALL be acyclic; the host validates this before deployment, and no run-time mechanism (hop count, spanning tree, duplicate suppression) exists to compensate for a cycle. **No maximum depth is defined by AEL.** A path is valid when the experiment's timing requirement is met by the sum of the declared per-hop timing envelopes along it, which the host checks per deployment; a product MAY publish a recommended or validated maximum depth for itself.
 
 ### 8.7 Timing contract
 
@@ -207,7 +203,7 @@ A router SHALL document, as measured values under representative load: forwardin
 
 | Compatibility Class | Rule | Test |
 |---|---|---|
-| Physical | M8 3-position A-coded; pin 1 `GND`, pin 2 `AEL_P`, pin 3 `AEL_N`; gender and keying per Section 3 once fixed. | Fit check against every other M8 port on the product family; mis-mate harmlessness check in both directions. |
+| Physical | Carried in the Module Port: `AEL_IN_P`/`AEL_IN_N` and `AEL_OUT_P`/`AEL_OUT_N` with the port's `GND` as reference; connected only by the AURIORA Link Cable ([Module Port specification](./module-port.md)). | Two Modules exchange events in both directions over one Link Cable; a straight-through cable yields zero valid frames and no damage. |
 | Electrical | Point-to-point differential pair; receiver-side termination (120 Ω reference); true fail-safe receiver; logical idle (mark) on open, unpowered, shorted, inserted and removed links; protection at the connector; no frame on power or reset transitions. | Idle and zero valid frames under each fault condition and during 100 insertion/removal cycles and 100 power/reset cycles at each end; transient test per the Hardware Design Guide. |
 | Frame | 8N1 at 1 Mbit/s; exactly four bytes, big-endian `event_id` + CRC-16 (0x1021 / 0xFFFF / no reflection / no xorout); `0x0000` invalid; ≥ 2 character times idle between frames; contiguous characters within a frame; gap-based resynchronization. | The `check` value 0x29B1 reproduced; a corrupted frame, a three- or five-byte burst, a frame with `0x0000`, and a break each produce no action and one invalid count; two identical frames produce two events; resynchronization after injected corruption at the next qualifying gap. |
 | Behavioral | Receive bindings with per-state enable; action only after a complete valid frame confirmed by its gap; unknown, unbound and disabled events ignored and recorded; source bindings emit at the real occurrence; no implicit IN→OUT forwarding; no retry ([AES-AEL-003](../05-interfaces-and-versioning.md#aes-ael-003-event-identifiers-and-module-event-bindings)). | Every state × bound identifier combination exercised; an unbound identifier and a disabled-in-state identifier are logged and cause no action; a bound identifier acts while `RUNNING` where so configured; the source frame's reference instant coincides with the internal event within the documented latency. |
@@ -232,15 +228,16 @@ Decided by [EDR-008](../edr/EDR-008-auriora-event-link.md) and its baseline revi
 - Event identifiers unique per logical source within the active AEL routing domain, host-allocated per deployment.
 - No fixed Platform maximum Hub depth; path validity from declared per-hop envelopes.
 - No dedicated AOID class for AEL; AEL support and version are ordinary device capabilities.
-- M8 3-position pinout and net names; receiver-side termination with 120 Ω as reference design assumption.
+- Two unidirectional pairs per link — AEL IN and AEL OUT — with one driver per pair; no half-duplex AEL.
+- Carriage in the Module Port with the `AEL_IN_*`/`AEL_OUT_*` contact roles and net names; the AURIORA Link Cable crossover; receiver-side termination with 120 Ω as reference design assumption.
 
 ### 10.2 Open
 
 Decided before this specification reaches `1.0`, from an explicit Platform decision or from bring-up measurement of the first AEL-capable Modules and a router:
 
 - **Electrical profile:** the normative RS-485-compatible driver/receiver contract AEL follows, and with it driver output requirements, receiver threshold, common-mode range and termination assumptions.
-- **Connector gender, keying, marking and cross-mating**, evaluated against the full AURIORA connector inventory.
-- **Cable and termination validation:** actual cable impedance, termination behavior, maximum validated cable length at 1 Mbit/s, signal integrity, insertion/removal and false-frame immunity, EMC/ESD behavior where product validation requires it.
+- **Module Port position numbering**, Link Cable impedance and `MCL`-to-AEL crosstalk limits — decided in the [Module Port specification](./module-port.md) (its Section 8).
+- **Cable and termination validation:** actual Link Cable impedance, termination behavior, maximum validated cable length at 1 Mbit/s, signal integrity, insertion/removal and false-frame immunity, EMC/ESD behavior where product validation requires it.
 - **Timing envelopes:** real Module source-event-to-frame and frame-to-action latency and jitter; router input-SOF-to-output-SOF latency (min/typ/max), jitter and measured fan-out skew; event-rate saturation and queue behavior under worst-case load.
 - **Router management contract:** how the host identifies a router, reads its capabilities and stages, verifies, commits and reads back route tables — MCI reuse is the preferred candidate ([EDR-008](../edr/EDR-008-auriora-event-link.md)); its transport.
 - **AEL-to-trigger adapter** as a product; **identity and naming** of an AEL router product and of a Module Hub.
@@ -250,4 +247,5 @@ Decided before this specification reaches `1.0`, from an explicit Platform decis
 
 | Version | Change | Compatibility Impact |
 |---|---|---|
+| 0.2 (Draft) | Physical layer re-based on the Module Port ([EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md)): the standalone M8 3-position AEL IN / AEL OUT connectors are withdrawn; AEL IN and AEL OUT are carried as `AEL_IN_P`/`AEL_IN_N` and `AEL_OUT_P`/`AEL_OUT_N` in the M8 8-position Module Port, connected only by the AURIORA Link Cable, which crosses OUT to IN; direct operation is 1:1 and Hub-to-Hub links use the same port and cable. Electrical layer, frame, identifiers, timing reference and router unchanged; the open gender/keying item is closed by the withdrawal. | Not release-binding; not mechanically compatible with AEL `0.1` ports; frame unchanged |
 | 0.1 (Draft) | Initial draft, superseding the SYNC `0.1` Draft ([EDR-008](../edr/EDR-008-auriora-event-link.md)): typed fixed four-byte event frame — 16-bit big-endian identifier plus fully parameterized CRC-16 — carried as 8N1 UART-class characters at a 1 Mbit/s baseline with idle-gap delimiting and gap-based resynchronization; logical idle = mark with a true fail-safe receiver requirement; start-of-frame reference instant; deployment-scoped, routing-domain-unique identifiers; store-and-forward AEL router with committed route tables, declared timing contract, deterministic queueing and counted overflow; acyclic Hub-to-Hub links with no fixed depth; M8 3-position pinout and receiver-side termination carried over from SYNC. Electrical profile, connector gender/keying, cable and termination validation, timing envelopes and the router management contract left open. | Not release-binding; not wire-compatible with SYNC `0.1` |

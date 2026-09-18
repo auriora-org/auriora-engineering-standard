@@ -3,9 +3,9 @@
 **Status:** Per-specification status stated in each file (all are currently Draft)
 **Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [EEPROM Metadata](../06-eeprom-metadata.md)
 
-This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profiles** and the **AURIORA Event Link**.
+This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profiles**, the **AURIORA Event Link**, the **Module Port** and the **Module Power Interface**.
 
-The **Module Control Interface (MCI)** is defined transport-independently in [Interfaces and Versioning §5](../05-interfaces-and-versioning.md#5-module-control-interface) and has no specification here yet: its transport bindings — a direct local transport and the Module Control Link (`MCL`) — are open items ([EDR-007](../edr/EDR-007-module-control-interface-and-module-hub.md)) and will be added as versioned binding specifications when their requirements are settled.
+The **Module Control Interface (MCI)** is defined transport-independently in [Interfaces and Versioning §5](../05-interfaces-and-versioning.md#5-module-control-interface) and has no specification here yet: its transport bindings — a direct local transport and the Module Control Link (`MCL`) — are open items ([EDR-007](../edr/EDR-007-module-control-interface-and-module-hub.md), [EDR-010](../edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)) and will be added as versioned binding specifications when their requirements are settled. `MCL`'s connector and its half-duplex single-pair model are already fixed by the Module Port specification below ([EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md)).
 
 ## Unit Interface Profiles
 
@@ -25,10 +25,19 @@ Profile identifiers follow `UIF-[M]<transport>-<positions>`. The position counts
 
 ## AURIORA Event Link
 
-The Module-to-Module typed event interface. Its interface-independent rules — typed event frame and what it may not carry, point-to-point topology with direct and routed operation, event identifiers and Module bindings, timing and observability, active Hub routing ([AES-AEL-001](../05-interfaces-and-versioning.md#aes-ael-001-ael-is-the-module-level-typed-event-interface) to [AES-AEL-005](../05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior)) — are in [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-auriora-event-link). The specification below defines the physical and electrical layer, the event frame, the timing reference and the AEL router.
+The Module-to-Module typed event interface. Its interface-independent rules — typed event frame and what it may not carry, point-to-point topology with direct and routed operation, event identifiers and Module bindings, timing and observability, active Hub routing ([AES-AEL-001](../05-interfaces-and-versioning.md#aes-ael-001-ael-is-the-module-level-typed-event-interface) to [AES-AEL-005](../05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior)) — are in [Interfaces and Versioning §4](../05-interfaces-and-versioning.md#4-auriora-event-link). The specification below defines the electrical layer, the event frame, the timing reference and the AEL router; its links are carried in the Module Port.
 
 | Interface | File | Positions | Status | Intended for |
 |---|---|---:|---|---|
-| `AURIORA AEL` | [ael.md](./ael.md) | 3 | Draft | Deterministic typed events between Modules: triggering configured actions, marking events in an acquisition timeline, and closed-loop reactions between measurement and stimulus Modules, directly or through one or more Module Hubs |
+| `AURIORA AEL` | [ael.md](./ael.md) | in Module Port | Draft | Deterministic typed events between Modules: triggering configured actions, marking events in an acquisition timeline, and closed-loop reactions between measurement and stimulus Modules, directly or through one or more Module Hubs |
+
+## Module Port and Module Power Interface
+
+The two external connectors of a Module besides its service connection ([AES-MOD-005](../03-architecture.md#aes-mod-005-external-interfaces-and-power-separation)): the **Module Port** carries everything that is communication with a Hub or a peer Module — `MCL`, AEL IN and AEL OUT — and the **Module Power Interface** carries the Module's primary operating power. They never share a connector, and their inserts do not mate ([EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md)).
+
+| Interface | File | Positions | Status | Intended for |
+|---|---|---:|---|---|
+| `AURIORA Module Port` | [module-port.md](./module-port.md) | 8 | Draft | One connector per Module for `MCL`, AEL IN and AEL OUT, and the AURIORA Link Cable that connects Module Ports to a Hub, to a peer Module and Hub to Hub |
+| `AURIORA Module Power Interface` | [module-power.md](./module-power.md) | 3 | Draft | The primary 12 V DC power input of a Module and the male-to-female power cable that feeds it from a source |
 
 [sync.md](./sync.md) is the superseded notice of the former Module Synchronization Interface (`SYNC`, AES `0.6.0`–`0.7.1`); it is not a current interface.

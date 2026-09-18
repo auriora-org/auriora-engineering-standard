@@ -6,7 +6,7 @@ Accepted (2026-09-17)
 
 *Self-authored and accepted by the maintainer as a self-review per [AES-GOV-010](../08-decisions-and-governance.md#aes-gov-010-maintainer-governance). Independent review SHOULD be sought before any Released Module relies on autonomous recovery.*
 
-This record adds to [EDR-007](./EDR-007-module-control-interface-and-module-hub.md) (MCI) and [EDR-008](./EDR-008-auriora-event-link.md) (AEL) and supersedes nothing in either.
+This record adds to [EDR-007](./EDR-007-module-control-interface-and-module-hub.md) (MCI) and [EDR-008](./EDR-008-auriora-event-link.md) (AEL) and supersedes nothing in either. Its statement that the bulk-data path lies outside MCI is superseded by [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md) (2026-09-18), which places it inside MCI as stored object retrieval; the body below is otherwise unchanged.
 
 ## Context
 
@@ -134,7 +134,7 @@ AES stays lean. The requirements fix the contract — capability, policy, invari
 - **Host-loss detection** per MCI transport binding: the supervision-interval model, its default and range, and what a binding that can report link loss contributes. Decided with each binding specification.
 - **Persistent route policy for the AEL router** — whether a Module Hub may ever reinstate a committed route table under an explicitly configured policy so that a Hub-connected unattended deployment survives a Hub power loss. The reasons behind `AES-AEL-005` weigh against it; it is recorded here so that it is decided rather than assumed.
 - **Time across segments**: how a segment boundary's time uncertainty is expressed once the Platform has a shared clock-alignment mechanism (the open concern of EDR-005 and EDR-008). Until then the boundary carries local time, sample index and time-reference status.
-- **Retrieval of locally stored data** — the bulk-data path — remains outside MCI and AEL and is not designed here.
+- **Retrieval of locally stored data** — the bulk-data path — remains outside MCI and AEL and is not designed here. *Designed in [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md) as an optional MCI function, `AES-MCI-008`.*
 - Whether the readback of recovery occurrence, segments and overwrite indicators belongs to the MCI core or to an optional MCI function is fixed with the first binding, together with the MCI version that carries it.
 
 ## Affected Requirements / Documents

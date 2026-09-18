@@ -40,9 +40,16 @@ The AURIORA Event Link (see [AES-AEL-001](./05-interfaces-and-versioning.md#aes-
 
 | Interface | Version | Status | Source Path |
 |---|---|---|---|
-| `AURIORA AEL` | 0.1 | Draft | `docs/interfaces/ael.md` |
+| `AURIORA AEL` | 0.2 | Draft | `docs/interfaces/ael.md` |
 
-No **MCI transport binding** specification exists yet. The Module Control Interface ([AES-MCI-001](./05-interfaces-and-versioning.md#aes-mci-001-transport-independence)) is defined transport-independently; its bindings — a direct local transport and the Module Control Link (`MCL`) — are recorded as open items in [EDR-007](./edr/EDR-007-module-control-interface-and-module-hub.md) and will be listed here when specified.
+The Module Port and the Module Power Interface (see [AES-MOD-005](./03-architecture.md#aes-mod-005-external-interfaces-and-power-separation), [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md)):
+
+| Interface | Version | Status | Source Path |
+|---|---|---|---|
+| `AURIORA Module Port` | 0.1 | Draft | `docs/interfaces/module-port.md` |
+| `AURIORA Module Power Interface` | 0.1 | Draft | `docs/interfaces/module-power.md` |
+
+No **MCI transport binding** specification exists yet. The Module Control Interface ([AES-MCI-001](./05-interfaces-and-versioning.md#aes-mci-001-transport-independence)) is defined transport-independently; its bindings — a direct local transport and the Module Control Link (`MCL`) — are recorded as open items in [EDR-007](./edr/EDR-007-module-control-interface-and-module-hub.md) and will be listed here when specified; `MCL`'s connector and half-duplex single-pair model are already fixed by the Module Port specification ([EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md)). The direct local transport binding is also the host-facing interface of a Module Hub ([AES-HUB-003](./03-architecture.md#aes-hub-003-host-facing-interface-and-traffic-separation), [EDR-010](./edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)).
 
 ## Retired Identifiers
 

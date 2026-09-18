@@ -2,7 +2,7 @@
 
 ## Status
 
-Accepted (2026-09-14)
+Accepted (2026-09-14) — **items 8 and 9 of the Decision superseded by [EDR-011](./EDR-011-module-external-interfaces-and-power.md)** (2026-09-18): the M8 3-position standalone AEL IN / AEL OUT connectors, the open gender and keying item, and the retention of standalone AEL ports beside the Module Port. Everything else stands. The body below is preserved unchanged as a historical record.
 
 *Self-authored and accepted by the maintainer as a self-review per [AES-GOV-010](../08-decisions-and-governance.md#aes-gov-010-maintainer-governance). Independent review SHOULD be sought before any Released Module or Module Hub relies on this interface.*
 
@@ -148,8 +148,8 @@ Keeping AES lean is a deliberate part of the decision. Experiment compilation, r
 **Open — explicit Platform decisions still to take:**
 
 - The normative **electrical profile**: which RS-485-compatible driver/receiver contract AEL follows, and with it driver output requirements, receiver threshold, common-mode range and termination assumptions.
-- **Connector gender, keying and marking** for AEL IN / AEL OUT, decided against the full AURIORA connector inventory (AEL IN, AEL OUT, Module Port, electrode and sensor connectors, every other existing or planned M8 interface) with the cross-mating analysis.
-- The Hub's **host-facing management contract** (MCI reuse preferred) and its transport.
+- **Connector gender, keying and marking** for AEL IN / AEL OUT, decided against the full AURIORA connector inventory (AEL IN, AEL OUT, Module Port, electrode and sensor connectors, every other existing or planned M8 interface) with the cross-mating analysis. *Closed by [EDR-011](./EDR-011-module-external-interfaces-and-power.md): the standalone AEL connectors are withdrawn and AEL is carried in the Module Port, female on every device.*
+- The Hub's **host-facing management contract** (MCI reuse preferred) and its transport. *The transport is decided in [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md); the contract's content remains open.*
 
 **Open — measurement-dependent, from the first AEL-capable Modules and a router:**
 
