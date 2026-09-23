@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 0.9.0
+**Version:** 0.10.0
 **Status:** Normative
 **Language:** English
 
@@ -67,9 +67,9 @@ There are no conformance certificates, conformance statements or traceability ma
 |---|---|
 | [01 Principles](./docs/01-principles.md) | The engineering posture: platform thinking, explicitness, honest documentation. |
 | [02 Terminology](./docs/02-terminology.md) | Canonical AURIORA vocabulary. Frozen core terms. |
-| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; unattended autonomous operation; default controller platform strategy; the optional Module Hub, its host-facing interface and the Module Port; the Module's external interface roles and the separation of communication from primary power. |
+| [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; unattended autonomous operation; default controller platform strategy; the optional Module Hub, its host-facing interface, its identity and capability discovery and the Module Port; the Module's external interface roles and the separation of communication from primary power. |
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
-| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI), including autonomous continuation, deployment policy, recovery after reset and stored object retrieval. |
+| [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI), including autonomous continuation, deployment policy, recovery after reset, stored object retrieval and the Units a Module reports to the host. |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
 | [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix), the AURIORA Event Link (AEL), the Module Port with the AURIORA Link Cable, and the Module Power Interface. |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
@@ -213,3 +213,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-009: Autonomous Module Operation and Recovery](./docs/edr/EDR-009-autonomous-module-operation-and-recovery.md)
 - [EDR-010: Hub Host-Facing Interface and Stored Object Retrieval](./docs/edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)
 - [EDR-011: Module External Interfaces — Module Port, Module Power Interface and USB](./docs/edr/EDR-011-module-external-interfaces-and-power.md) — supersedes EDR-008 items 8–9
+- [EDR-012: Hub Identity and Capability Discovery, and Unit Enumeration through MCI](./docs/edr/EDR-012-hub-capability-discovery-and-unit-enumeration.md)

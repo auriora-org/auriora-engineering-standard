@@ -57,7 +57,7 @@ H1    AEL 0.1  ports 8 + 2 hub links  routes ≤ 64  queue 8/output  fwd latency
 H2    (same product)
 ```
 
-It also reads the Hubs' identity, capacity and timing figures through the Hub management contract ([AES-AEL-005](../docs/05-interfaces-and-versioning.md#aes-ael-005-active-hub-routing-and-bounded-overload-behavior); its concrete form is open).
+It also reads the Hubs' identity, port and link counts, capacity and timing figures through the Hub management contract ([AES-HUB-004](../docs/03-architecture.md#aes-hub-004-hub-identity-and-capability-discovery); its concrete form is open). The `ports 8 + 2 hub links` line above is a readout, not a figure the host knew in advance; a smaller or larger Hub of another product would be configured the same way.
 
 ## 2. Compilation: names become identifiers
 

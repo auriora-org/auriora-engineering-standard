@@ -239,8 +239,8 @@ Decided before this specification reaches `1.0`, from an explicit Platform decis
 - **Module Port position numbering**, Link Cable impedance and `MCL`-to-AEL crosstalk limits — decided in the [Module Port specification](./module-port.md) (its Section 8).
 - **Cable and termination validation:** actual Link Cable impedance, termination behavior, maximum validated cable length at 1 Mbit/s, signal integrity, insertion/removal and false-frame immunity, EMC/ESD behavior where product validation requires it.
 - **Timing envelopes:** real Module source-event-to-frame and frame-to-action latency and jitter; router input-SOF-to-output-SOF latency (min/typ/max), jitter and measured fan-out skew; event-rate saturation and queue behavior under worst-case load.
-- **Router management contract:** how the host identifies a router, reads its capabilities and stages, verifies, commits and reads back route tables — MCI reuse is the preferred candidate ([EDR-008](../edr/EDR-008-auriora-event-link.md)); its transport.
-- **AEL-to-trigger adapter** as a product; **identity and naming** of an AEL router product and of a Module Hub.
+- **Router management contract:** the form in which the host reads a router's identity and capabilities — *what* it reads is fixed by [AES-HUB-004](../03-architecture.md#aes-hub-004-hub-identity-and-capability-discovery) — and stages, verifies, commits and reads back route tables; MCI reuse is the preferred candidate ([EDR-008](../edr/EDR-008-auriora-event-link.md)). Its transport is the host-facing interface ([AES-HUB-003](../03-architecture.md#aes-hub-003-host-facing-interface-and-traffic-separation)).
+- **AEL-to-trigger adapter** as a product; **naming** (AOID) of an AEL router product and of a Module Hub — the identity content a Hub exposes is fixed by [AES-HUB-004](../03-architecture.md#aes-hub-004-hub-identity-and-capability-discovery).
 - Separate architectural concerns, not AEL extensions: long-duration cross-Module clock alignment; bulk measurement-data transport; the experiment description language (`AEDL`, informative).
 
 ## 11. Version History
