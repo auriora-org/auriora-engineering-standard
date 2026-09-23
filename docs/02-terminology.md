@@ -38,7 +38,7 @@ The standard interface connecting Units to a Module. A Unit Interface includes p
 
 ### Product Family
 
-A durable AURIORA engineering family identified by a stable family identifier such as `AAM`, `AAC`, `APEM` or `APBM`. A Product Family defines engineering identity, design scope, ownership, lifecycle and compatibility expectations across Products, revisions and manufacturing instances.
+A durable AURIORA engineering family identified by a stable family identifier such as `APEM`, `APBM`, `AASM` or `AHUB`. A Product Family defines engineering identity, design scope, ownership, lifecycle and compatibility expectations across Products, revisions and manufacturing instances.
 
 ## 3. Supporting Terms
 

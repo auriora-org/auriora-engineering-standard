@@ -10,8 +10,8 @@ This example applies the profile-selection rule ([AES-IF-010](../docs/05-interfa
 
 | Unit | Data and timing profile | Profile |
 |---|---|---|
-| **AEU** — Environmental Unit (STM32 + several internal sensors) | A few tens of bytes per sample, sub-hertz to a few hertz, no deadline. | `UIF-MI2C-8`. Event notification optional; polling is sufficient. |
-| **ASU** — Spectral Unit (STM32U031 + TCS34488 + TMP112) | A spectrum of a few tens of bytes per acquisition; integration time in the tens to hundreds of milliseconds; no hard deadline. | `UIF-MI2C-8`. The canonical case, worked through below. |
+| **AENU** — Environmental Unit (STM32 + several internal sensors) | A few tens of bytes per sample, sub-hertz to a few hertz, no deadline. | `UIF-MI2C-8`. Event notification optional; polling is sufficient. |
+| **ASPU** — Spectral Unit (STM32U031 + TCS34488 + TMP112) | A spectrum of a few tens of bytes per acquisition; integration time in the tens to hundreds of milliseconds; no hard deadline. | `UIF-MI2C-8`. The canonical case, worked through below. |
 | **Soil Unit** (STM32 bridging an RS-485/Modbus sensor) | A handful of registers per poll; the external Modbus transaction dominates latency at 0.1–1 s. | `UIF-MI2C-8`. The Unit controller absorbs the slow external bus; the host sees a bounded high-level API and never the Modbus register map. Event notification is useful to signal transaction completion. |
 | **Communication & Timing Unit** (STM32U031 + GNSS + LoRa) | Command and data plane is small: position fixes at ~1 Hz, LoRa payloads ≤ 256 B. Asynchronous downlink reception with a bounded service window. | `UIF-MI2C-8` for the command and data plane, with `UIF_IRQ_N` used in earnest for LoRa receive. A hardware time reference does not fit either Managed profile — see below. |
 
@@ -21,7 +21,7 @@ The Communication & Timing Unit is the instructive one: what would push it towar
 
 That the boundary falls on timing rather than on throughput is the practical evidence for treating management model and transport as independent axes ([Interfaces and Versioning §3.2](../docs/05-interfaces-and-versioning.md#32-profile-family-and-selection)).
 
-## ASU end to end
+## ASPU end to end
 
 ```text
 Host (Module)
@@ -54,4 +54,4 @@ Both are valid and produce the same result, because every event reachable throug
 
 ## Why not Managed SPI
 
-ASU moves on the order of a hundred bytes per acquisition at well under 1 Hz — roughly four orders of magnitude below what a 400 kHz I²C bus sustains. `UIF-MSPI-14` would add six contacts, a second bus and two host signals to carry it. The same arithmetic applies to AEU and the Soil Unit, which is why the Platform has a low-bandwidth Managed profile at all ([EDR-005](../docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)).
+ASPU moves on the order of a hundred bytes per acquisition at well under 1 Hz — roughly four orders of magnitude below what a 400 kHz I²C bus sustains. `UIF-MSPI-14` would add six contacts, a second bus and two host signals to carry it. The same arithmetic applies to AENU and the Soil Unit, which is why the Platform has a low-bandwidth Managed profile at all ([EDR-005](../docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)).

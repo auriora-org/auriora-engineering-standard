@@ -77,7 +77,7 @@ A Managed Unit typically serves I²C transactions from firmware, so clock stretc
 
 ### 3.2 First hardware realizations
 
-The first Units realizing this profile are the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AEU:001`, AEU-01) and the AURIORA Spectral Unit (ASU, AOID not yet assigned). Their bring-up measurements will seed the electrical layer, exactly as AEU-01's power decisions seeded [`UIF-I2C-6`](./uif-i2c-6.md). Those values are Unit-specific and **not yet profile-normative**; promotion to a normative range is required before `UIF-MI2C-8` leaves Draft.
+The first Units realizing this profile are the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AENU:001`, AENU-01) and the AURIORA Spectral Unit (ASU, AOID not yet assigned). Their bring-up measurements will seed the electrical layer, exactly as AENU-01's power decisions seeded [`UIF-I2C-6`](./uif-i2c-6.md). Those values are Unit-specific and **not yet profile-normative**; promotion to a normative range is required before `UIF-MI2C-8` leaves Draft.
 
 ## 4. Event Notification
 
@@ -140,7 +140,7 @@ A Unit API on this profile SHALL be expressible as I²C transactions bounded by 
 
 ## 9. Applicability
 
-The profile-selection rule and its criteria are [AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-selection). Four planned Units are assessed against it — AEU, ASU, the Soil Unit and the Communication & Timing Unit — in the informative [worked example](../../examples/worked-example-unit-interface-profile-selection.md), which also works ASU through end to end.
+The profile-selection rule and its criteria are [AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-selection). Four planned Units are assessed against it — AENU, ASU, the Soil Unit and the Communication & Timing Unit — in the informative [worked example](../../examples/worked-example-unit-interface-profile-selection.md), which also works ASU through end to end.
 
 The practical boundary is worth stating here: what takes a Unit off this profile is timing rather than volume. A distributed hardware time reference (a PPS-class sub-microsecond edge) cannot be carried by a generic event pin whose cause is resolved by an API query, so it fits neither this profile nor `UIF-MSPI-14` as specified. Such a need SHALL be met by a versioned profile addition, never by adding a Unit-specific signal to this profile.
 

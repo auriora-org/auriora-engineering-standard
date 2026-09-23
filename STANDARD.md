@@ -68,14 +68,14 @@ There are no conformance certificates, conformance statements or traceability ma
 | [01 Principles](./docs/01-principles.md) | The engineering posture: platform thinking, explicitness, honest documentation. |
 | [02 Terminology](./docs/02-terminology.md) | Canonical AURIORA vocabulary. Frozen core terms. |
 | [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; unattended autonomous operation; default controller platform strategy; the optional Module Hub, its host-facing interface, its identity and capability discovery, Hub cascading with path addressing, and the Module Port; the Module's external interface roles and the separation of communication from primary power. |
-| [04 Naming and Identity](./docs/04-naming-and-identity.md) | Family identifiers, product numbers, revisions, serials, AOIDs, document IDs. |
+| [04 Naming and Identity](./docs/04-naming-and-identity.md) | Four-letter family identifiers and their register, product numbers versus revisions, serials, AOIDs, document IDs. |
 | [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI), including autonomous continuation, deployment policy, recovery after reset, stored object retrieval and the Units a Module reports to the host. |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
 | [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix), the AURIORA Event Link (AEL), the Module Port with the AURIORA Link Cable, and the Module Power Interface. |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
 | [08 Decisions and Governance](./docs/08-decisions-and-governance.md) | Fixed historical decisions; when ADRs/EDRs are needed; small-team governance. |
 | [09 Review Checklists](./docs/09-review-checklists.md) | One general engineering checklist and a release checklist. |
-| [Document Index](./docs/document-index.md) | Index of AES documents, companion documents and retired document/requirement IDs. |
+| [Document Index](./docs/document-index.md) | Index of AES documents, companion documents, the Family Identifier Register, AOID assignments and retired IDs. |
 | [Worked Example: Module Lifecycle](./examples/worked-example-module-lifecycle.md) | One hypothetical Module from breadboard to release across the maturity levels. |
 | [Worked Example: Profile Selection](./examples/worked-example-unit-interface-profile-selection.md) | Four planned Units assessed against the Unit Interface Profile selection rule. |
 | [Worked Example: Multimodal AEL Experiment](./examples/worked-example-multimodal-ael-experiment.md) | A closed-loop bench of one measurement and three stimulus Modules on two Module Hubs: compiled event identifiers, bindings, routes, arming, a host disconnect, and the record that decodes it all — plus the same frame on a Hub-free pair. |
@@ -215,3 +215,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-011: Module External Interfaces — Module Port, Module Power Interface and USB](./docs/edr/EDR-011-module-external-interfaces-and-power.md) — supersedes EDR-008 items 8–9
 - [EDR-012: Hub Identity and Capability Discovery, and Unit Enumeration through MCI](./docs/edr/EDR-012-hub-capability-discovery-and-unit-enumeration.md)
 - [EDR-013: MCL Cascading and Path Addressing](./docs/edr/EDR-013-mcl-cascading-and-path-addressing.md)
+- [EDR-014: Four-Letter Family Identifiers and the Family Identifier Register](./docs/edr/EDR-014-four-letter-family-identifiers-and-register.md)

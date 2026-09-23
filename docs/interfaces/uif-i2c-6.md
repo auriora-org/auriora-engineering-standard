@@ -36,7 +36,7 @@ Concrete electrical limits — logic levels, `UIF_PWR_VIN` voltage, current limi
 
 ### Electrical baseline and first realization
 
-The profile was originally seeded by the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AEU:001`, AEU-01). AEU-01 has since been reworked as a **Managed Unit** and now realizes [`UIF-MI2C-8`](./uif-mi2c-8.md) ([EDR-005](../edr/EDR-005-low-bandwidth-managed-unit-interface.md)), so `UIF-I2C-6` currently has no committed hardware realization; its electrical layer is finalized when the first Passive Unit on this profile is designed.
+The profile was originally seeded by the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AENU:001`, AENU-01). AENU-01 has since been reworked as a **Managed Unit** and now realizes [`UIF-MI2C-8`](./uif-mi2c-8.md) ([EDR-005](../edr/EDR-005-low-bandwidth-managed-unit-interface.md)), so `UIF-I2C-6` currently has no committed hardware realization; its electrical layer is finalized when the first Passive Unit on this profile is designed.
 
 The working assumption carried across all UIF profiles remains:
 
@@ -72,4 +72,4 @@ Presence is established by successful EEPROM discovery ([AES-EEPROM-002](../06-e
 | Version | Change | Compatibility Impact |
 |---|---|---|
 | 0.1 (Draft) | Initial draft: six-signal Passive/simple-I²C Unit Interface; signal set and meaning defined, electrical and mechanical limits left open. | Not release-binding |
-| 0.1 (Draft) | Clarification: scope stated as management-model-based (Passive/simple Units) with Managed Units directed to `UIF-MI2C-8` or `UIF-MSPI-14`; AEU-01 recorded as having moved to `UIF-MI2C-8`; functional I²C addressing bound to `AES-IF-009`. | None (draft clarification) |
+| 0.1 (Draft) | Clarification: scope stated as management-model-based (Passive/simple Units) with Managed Units directed to `UIF-MI2C-8` or `UIF-MSPI-14`; AENU-01 recorded as having moved to `UIF-MI2C-8`; functional I²C addressing bound to `AES-IF-009`. | None (draft clarification) |

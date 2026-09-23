@@ -6,15 +6,15 @@ Proposed
 
 *Self-authored draft pending maintainer acceptance per [AES-GOV-010](../08-decisions-and-governance.md#aes-gov-010-maintainer-governance). Independent review SHOULD be sought before any Released Unit relies on this profile.*
 
-Supersedes the AEU-01 consequence of [EDR-003](./EDR-003-uif-mspi-connector-and-pin-assignment.md) and resolves its open identifier item. EDR-003's connector and pin assignment stand unchanged.
+Supersedes the AENU-01 consequence of [EDR-003](./EDR-003-uif-mspi-connector-and-pin-assignment.md) and resolves its open identifier item. EDR-003's connector and pin assignment stand unchanged.
 
 ## Context
 
 AES 0.2.0 introduced two Unit execution models (Passive, Managed) and two Unit Interface Profiles: [`UIF-I2C-6`](../interfaces/uif-i2c-6.md), a six-signal profile described as being for "Passive Units and simple I²C-based Units", and [`UIF-MSPI-14`](../interfaces/uif-mspi-14.md), a twelve-signal, fourteen-position profile for "Managed Units requiring a high-level SPI API".
 
-In practice the two profiles were read as *Passive ⇒ I²C, Managed ⇒ SPI*. Nothing in the normative text says that — [AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles) treats profiles as an open set — but the two available profiles left no third choice, and `UIF-MSPI-14` became the default landing place for any Unit with a controller behind it. [EDR-003](./EDR-003-uif-mspi-connector-and-pin-assignment.md) records exactly this: AEU-01, an environmental sensor Unit producing tens of bytes at sub-hertz rates, was moved from `UIF-I2C-6` to a 14-position SPI profile solely because it gained an STM32 controller and a high-level API.
+In practice the two profiles were read as *Passive ⇒ I²C, Managed ⇒ SPI*. Nothing in the normative text says that — [AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles) treats profiles as an open set — but the two available profiles left no third choice, and `UIF-MSPI-14` became the default landing place for any Unit with a controller behind it. [EDR-003](./EDR-003-uif-mspi-connector-and-pin-assignment.md) records exactly this: AENU-01, an environmental sensor Unit producing tens of bytes at sub-hertz rates, was moved from `UIF-I2C-6` to a 14-position SPI profile solely because it gained an STM32 controller and a high-level API.
 
-The expected AURIORA Unit portfolio makes this the common case rather than the exception. AEU (environmental), ASU (spectral, STM32U031 + TCS34488 + TMP112), the Soil Unit (STM32 bridging an RS-485/Modbus sensor) and further sensing Units all share one shape: an own controller, a high-level API that hides internal peripherals, small payloads, low update rates, no hard deadlines, and priorities of low power, small PCB area and simple field cabling. For all of them the SPI transport, `UIF_RESET_N` and the guarded 14-position connector are pure cost.
+The expected AURIORA Unit portfolio makes this the common case rather than the exception. AENU (environmental), ASU (spectral, STM32U031 + TCS34488 + TMP112), the Soil Unit (STM32 bridging an RS-485/Modbus sensor) and further sensing Units all share one shape: an own controller, a high-level API that hides internal peripherals, small payloads, low update rates, no hard deadlines, and priorities of low power, small PCB area and simple field cabling. For all of them the SPI transport, `UIF_RESET_N` and the guarded 14-position connector are pure cost.
 
 Two axes were being conflated:
 
@@ -44,7 +44,7 @@ This is a Platform interface decision — a new named Unit Interface Profile, ne
 
 | Alternative | Assessment |
 |---|---|
-| Mandatory contact, mandatory use | Rejected. Forces an unused signal and a host interrupt input on Units such as AEU that have nothing asynchronous to report. |
+| Mandatory contact, mandatory use | Rejected. Forces an unused signal and a host interrupt input on Units such as AENU that have nothing asynchronous to report. |
 | Optional contact (a variant with and a variant without the event pin) | Rejected — the two-profile problem above in a different form. |
 | **Mandatory contact, optional use, declared in capability metadata** | **Chosen.** One connector, one host port design. A Unit with no asynchronous events leaves the line undriven; the host pull-up defines it; the host polls. A Unit with events declares the capability and the host may serve it by interrupt. Every event remains observable by polling, so the signal is a latency and power optimization and never the sole path to an event. |
 
@@ -87,7 +87,7 @@ Introducing a third profile is the moment to make the family consistent rather t
 
 7. The Platform profile identifier pattern is **`UIF-[M]<transport>-<positions>`**, and all profiles follow it. The provisional identifier `UIF-MSPI` is confirmed as **`UIF-MSPI-14`** — resolving that profile's open identifier item and EDR-003's — and its specification moves to `docs/interfaces/uif-mspi-14.md`. Signal set, semantics, connector and pinout are unchanged; this is a naming change in a Draft profile that no artifact yet realizes.
 
-8. **AEU-01 adopts `UIF-MI2C-8`**, superseding EDR-003's consequence that it becomes the first `UIF-MSPI-14` realization. ASU is the second planned realization. EDR-003's connector and pinout are unaffected and remain the reference physical layer for that profile.
+8. **AENU-01 adopts `UIF-MI2C-8`**, superseding EDR-003's consequence that it becomes the first `UIF-MSPI-14` realization. ASU is the second planned realization. EDR-003's connector and pinout are unaffected and remain the reference physical layer for that profile.
 
 ## Rationale
 
@@ -108,7 +108,7 @@ Address allocation is made normative now because this profile is the first to pu
 ## Consequences
 
 - The Platform has three Unit Interface Profiles with distinct position counts — 6, 8 and 14 — so no two can mate. The count is deliberately capped: `UIF-MI2C-8` covers a cell that was empty, it does not fragment an occupied one.
-- AEU-01's Managed rework targets `UIF-MI2C-8`; its 14-position `UIF-MSPI-14` connector selection from EDR-003 is withdrawn for this Unit. Its bring-up measurements now seed the `UIF-MI2C-8` electrical layer.
+- AENU-01's Managed rework targets `UIF-MI2C-8`; its 14-position `UIF-MSPI-14` connector selection from EDR-003 is withdrawn for this Unit. Its bring-up measurements now seed the `UIF-MI2C-8` electrical layer.
 - ASU is designed against `UIF-MI2C-8` from the start and is the profile's second validation case.
 - Every `UIF-MI2C-8` host SHALL provide the I²C and `UIF_IRQ_N` pull-ups, SHALL support polling operation, and SHALL tolerate bounded Unit clock stretching.
 - Cable assemblies for this profile SHALL populate both ground conductors end to end; a single-ground cable is not conformant and is a continuity-test item at bring-up.
@@ -122,7 +122,7 @@ Address allocation is made normative now because this profile is the first to pu
 
 ## Scope and Remaining Open Items
 
-Not resolved here; these belong to the `UIF-MI2C-8` electrical-layer finalization before `1.0`, informed by AEU-01 and ASU bring-up:
+Not resolved here; these belong to the `UIF-MI2C-8` electrical-layer finalization before `1.0`, informed by AENU-01 and ASU bring-up:
 
 - JST SH sub-series and part number; cable construction and the arrangement of the two ground conductors within the bundle.
 - `UIF_PWR_VIN` tolerance band and per-rail current limits.
@@ -137,9 +137,9 @@ Not resolved here; these belong to the `UIF-MI2C-8` electrical-layer finalizatio
 - [AES-IF-009](../05-interfaces-and-versioning.md#aes-if-009-unit-interface-i2c-address-allocation), [AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-selection) — new requirements.
 - [AES-EEPROM-008](../06-eeprom-metadata.md#aes-eeprom-008-execution-model-profile-and-api-metadata) — Unit API Transport Address field added.
 - [Architecture §5.1](../03-architecture.md#51-execution-models-and-transport), [AES-UNIT-006](../03-architecture.md#aes-unit-006-declared-execution-model) — execution model is independent of transport.
-- [`docs/interfaces/uif-i2c-6.md`](../interfaces/uif-i2c-6.md) — scope clarified to Passive/simple Units; AEU-01 realization note updated.
+- [`docs/interfaces/uif-i2c-6.md`](../interfaces/uif-i2c-6.md) — scope clarified to Passive/simple Units; AENU-01 realization note updated.
 - [`docs/interfaces/uif-mspi-14.md`](../interfaces/uif-mspi-14.md) — purpose narrowed to bandwidth/latency/determinism-bound Managed Units; identifier confirmed as `UIF-MSPI-14` and file renamed from `managed-spi.md`.
-- [EDR-003](./EDR-003-uif-mspi-connector-and-pin-assignment.md) — its AEU-01 consequence is superseded; its pinout decision stands.
+- [EDR-003](./EDR-003-uif-mspi-connector-and-pin-assignment.md) — its AENU-01 consequence is superseded; its pinout decision stands.
 - [document-index.md](../document-index.md) — profile table and AOID note.
 
 ## Future Review Criteria

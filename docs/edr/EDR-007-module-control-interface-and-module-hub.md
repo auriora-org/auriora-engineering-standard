@@ -121,7 +121,7 @@ Not resolved here. The first four are blocking for any hardware work:
 - MCI version numbering and its starting version; the direct local transport binding.
 - Whether MCI becomes a MUST for Released Modules, and on what schedule. *Decided in [EDR-013](./EDR-013-mcl-cascading-and-path-addressing.md): `AES-MCI-009`.*
 - Module Hub Product Family identifier, product naming, and its host-facing transport. *The host-facing transport is decided in [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md) (host-facing interface); identifier and naming remain open.*
-- Whether a Module Hub needs an AOID interface class of its own. *Decided in [EDR-013](./EDR-013-mcl-cascading-and-path-addressing.md): AOID class `HUB`, family `AMH`.*
+- Whether a Module Hub needs an AOID interface class of its own. *Decided in [EDR-013](./EDR-013-mcl-cascading-and-path-addressing.md): AOID class `HUB`, family `AHUB` (identifier per [EDR-014](./EDR-014-four-letter-family-identifiers-and-register.md)).*
 - Security posture for a Hub with a network-facing upstream transport; authenticated host sessions.
 - Power delivery over the Module Port. Deliberately excluded from this record: it is a separate specification concern and must not be attached to control or synchronization semantics. *[EDR-011](./EDR-011-module-external-interfaces-and-power.md) excludes it normatively and defines the separate Module Power Interface.*
 

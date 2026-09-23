@@ -20,7 +20,7 @@ That is the entire AES obligation. No changelog, no ADR, no register entry, no c
 
 ## 2. Active Development
 
-The approach works. The project becomes a real Module candidate in an existing family: product `AAM-01`, working toward release. The repository now grows only what helps engineering:
+The approach works. The project becomes a real Module candidate in an existing family: product `AASM-01`, working toward release. The repository now grows only what helps engineering:
 
 - a useful README (purpose, status **Active Development**, build/flash instructions)
 - schematic and PCB sources, hardware `Rev A` then `Rev B`
@@ -32,9 +32,9 @@ The Unit Interface the Module will expose is designed early against the [interfa
 
 ## 3. Released
 
-`AAM-01 Rev C` is ready for others to build. Now — and only now — the release obligations attach ([AES-REL-001](../docs/07-maturity-and-release.md#aes-rel-001-release-completeness)):
+`AASM-01 Rev C` is ready for others to build. Now — and only now — the release obligations attach ([AES-REL-001](../docs/07-maturity-and-release.md#aes-rel-001-release-completeness)):
 
-- family/product identity fixed: `AAM`, `AAM-01`; Unit Interface contract versioned `1.0` with AOID `AOID:PUB:UIF:MEAS:AAM:001`
+- family/product identity fixed: `AASM`, `AASM-01`; Unit Interface contract versioned `1.0` with AOID `AOID:PUB:UIF:MEAS:AASM:001`
 - release tag containing sources, regenerated Gerbers, final BOM, firmware source + binary with build hash
 - documented Host Interface; Unit compatibility matrix
 - test evidence for critical functions and safety behavior (including a corrupted-EEPROM negative test)

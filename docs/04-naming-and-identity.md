@@ -28,15 +28,15 @@ The core idea: names communicate to humans; identifiers provide durable machine-
 
 ## 3. Family Identifiers
 
-Family identifiers such as `AAM`, `AAC`, `APEM` and `APBM` are architectural identities, not casual abbreviations. They appear on PCB markings, in firmware, documentation, repositories and manufacturing records.
+Family identifiers such as `APEM`, `APBM`, `AASM` and `AHUB` are architectural identities, not casual abbreviations. They appear on PCB markings, in firmware, documentation, repositories and manufacturing records.
 
 ### AES-NAME-001: Family Identifier Stability
 
-**Requirement:** Every Product Family SHALL have a family identifier of 3–6 uppercase ASCII letters that encodes durable architectural meaning — never revision, supplier, chip, color, engineer or batch. Public AURIORA families SHOULD begin with `A`. Before Release a family identifier MAY change; after any artifact of the family is Released it SHALL NOT change, and a deprecated or retired family identifier SHALL NOT be reused, except through a formal migration recorded in an EDR.
+**Requirement:** Every Product Family SHALL have a family identifier of exactly **four uppercase ASCII letters**, entered in the [Family Identifier Register](./document-index.md#family-identifier-register) before it appears in any artifact, that encodes durable architectural meaning — never revision, supplier, chip, color, engineer, batch, or a countable property such as a port or channel count. For a Module or Unit family the identifier SHALL be `A`, two letters chosen as a mnemonic of the family's durable function, and the role letter `M` (Module) or `U` (Unit). An infrastructure family, of which the AURIORA Hub (`AHUB`) is the first, SHALL be registered individually and is not bound to the role-letter pattern. Before Release a family identifier MAY change, the old identifier being retired in the register; after any artifact of the family is Released it SHALL NOT change. A registered identifier — current, renamed or retired — SHALL NOT be reused for another family.
 
-**Rationale:** Old hardware, manuals and calibration records cannot be renamed. Encoding transient details creates false identity changes.
+**Rationale:** Old hardware, manuals and calibration records cannot be renamed. Encoding transient details creates false identity changes. A fixed width keeps labels, serial numbers, file names and identity fields uniform. Two mnemonic letters rather than initials are required because initials collide — a Spectral Unit and a Soil Unit were both about to be `ASU` — and it is the register, not a derivation rule, that prevents the next collision. The role letter is durable because a Unit never becomes a Module, and it lets a label be read without a lookup.
 
-Guidance: derive new identifiers from 2–4 durable words (`AURIORA` + `Plant` + `Electrophysiology` + `Module` → `APEM`), check the [Document Index](./document-index.md) and existing repositories for collisions, and note the derivation in the family's README. The prefixes `AX`, `AT`, `AR`, `AD` and `AZ` remain informally reserved for experimental, tooling, archival, deprecated-bridge and future governance use.
+Guidance: choose the two function letters so that the identifier reads as the family (`Plant Electrophysiology` → `PE` → `APEM`; `Soil` → `SO` → `ASOU`), prefer clarity over initials, record the derivation in the register and in the family's README, and reserve the identifier in the register at the moment the family is first named — a reserved entry costs nothing and a collision found later costs a rename. The prefixes `AX`, `AT`, `AR`, `AD` and `AZ` remain informally reserved for experimental, tooling, archival, deprecated-bridge and future governance use.
 
 ## 4. Public Names
 
@@ -52,6 +52,7 @@ Repository names are lowercase kebab-case and should include the family identifi
 
 - Products within a family use `<FAMILY-ID>-<NN>` (`APEM-01`), assigned by the maintainer when a product contract becomes real — typically at the start of Active Development toward release. Product numbers never encode revision, firmware version, batch or serial.
 - Hardware revisions use `Rev <LETTER>`. Firmware, interfaces, documents and manufacturing packages version per [Interfaces and Versioning](./05-interfaces-and-versioning.md).
+- The product number distinguishes products *within* a family, and the line between product and revision is compatibility: a variant whose host-visible contract differs — port count, channel count, capability set, connector set — is a new product (`AHUB-02`), while a compatible redesign of the same product is a new hardware revision (`AHUB-01 Rev B`). Neither a hardware generation nor a countable property is encoded in the family identifier or the product number; a host learns a device's ports, channels and capabilities from its declarations ([AES-MCI-003](./05-interfaces-and-versioning.md#aes-mci-003-module-capability-discovery), [AES-HUB-004](./03-architecture.md#aes-hub-004-hub-identity-and-capability-discovery)), never from its name.
 
 ### AES-ID-008: Serial Numbers
 

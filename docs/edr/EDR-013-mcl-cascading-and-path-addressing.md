@@ -71,7 +71,7 @@ The maintainer's product plan for the first Hub — eight Module Ports and two H
 |---|---|
 | **Hub route table after a reset** (EDR-009) | A router reinstates nothing unless the host has set a **route recovery policy** of *reinstate*, held persistently; then it restores the last committed table only after its content identity verifies, records the reinstatement with the reset cause and reports it. Default *none*. The Module already has this pattern in its deployment policy (`AES-MCI-006`, `AES-MCI-007`); a Hub-connected unattended deployment was the one case the Platform could not survive. |
 | **MCI mandatory for Released Modules** (EDR-007) | Yes: over at least one Released binding, over `MCL` where the Module has a Module Port; no substitute protocol. Every Platform promise about a bench is a promise about MCI. |
-| **Hub AOID class and family** (EDR-007) | AOID class `HUB`; family identifier `AMH` (AURIORA Module Hub), first product AMH-01, `AOID:PUB:HUB:GEN:AMH:001` reserved provisionally in the Document Index. |
+| **Hub AOID class and family** (EDR-007) | AOID class `HUB`; family identifier `AHUB` (AURIORA Hub), first product AHUB-01, `AOID:PUB:HUB:GEN:AHUB:001` reserved provisionally in the Document Index. The identifier follows the naming rule decided the same day in [EDR-014](./EDR-014-four-letter-family-identifiers-and-register.md). |
 | **Declared event sources and actions** | `AES-MCI-003` now requires a Module to declare its logical event sources and receivable actions with stable names or indices; the AEL specification's "semantic names live in Module documentation" becomes "in the Module's declared sources and actions". Without it a host still needed a product table to build bindings. |
 
 ## Decision
@@ -80,7 +80,7 @@ The maintainer's product plan for the first Hub — eight Module Ports and two H
 2. **`AES-AEL-005`** and the AEL specification's §8.4 change compatibly: reinstatement of a route table after reset only under a host-set, persistently held **route recovery policy**, *none* by default or *reinstate* after content identity verifies, recorded and reported; the router declares which it supports. Architecture §7's Hub paragraph and EDR-009's open item are updated.
 3. AES gains **`AES-MCI-009` MCI in Released Modules**.
 4. **`AES-MCI-003`** additionally requires the Module's logical event sources and receivable actions with stable names or indices.
-5. **AOID** class `HUB`; `AOID:PUB:HUB:GEN:AMH:001` reserved provisionally for the AURIORA Module Hub.
+5. **AOID** class `HUB`; `AOID:PUB:HUB:GEN:AHUB:001` reserved provisionally for the AURIORA Hub.
 6. **Terminology**: *Module Control Link* and *Module Port* extended; *Hub-to-Hub link port* added. *Cascade Port*, *upstream port* and *downstream port* are not terms of the standard; a product may print such labels.
 7. **The first Hub product** needs no hardware change for this decision: its ten identical ports are declared as nine Module Ports and one Hub-to-Hub link port, one Module Port labelled for a downstream Hub. That is a product decision recorded here as the case the model was checked against, not as a rule.
 
@@ -123,7 +123,7 @@ The four items closed alongside share one property: each needed a decision, not 
 - [AEL specification](../interfaces/ael.md) — §6 (semantic names), §8.4 (recovery), §8.6 (cascaded and AEL-only links), §10.2 (transport of the management contract).
 - [Module Port specification](../interfaces/module-port.md) — direct-link bullet, topology row, §8.1 settled roles, §8.2 open items narrowed.
 - [Terminology §3](../02-terminology.md#3-supporting-terms) — *Module Control Link*, *Module Port* (extended); *Hub-to-Hub link port* (new).
-- [Naming and Identity](../04-naming-and-identity.md) — AOID class `HUB`. [Document Index](../document-index.md) — `AOID:PUB:HUB:GEN:AMH:001`.
+- [Naming and Identity](../04-naming-and-identity.md) — AOID class `HUB`. [Document Index](../document-index.md) — `AOID:PUB:HUB:GEN:AHUB:001`.
 - [Worked Example: Multimodal AEL Experiment](../../examples/worked-example-multimodal-ael-experiment.md) — H2 as a downstream Hub on H1's Module Port 3.
 - [EDR-007](./EDR-007-module-control-interface-and-module-hub.md), [EDR-008](./EDR-008-auriora-event-link.md), [EDR-009](./EDR-009-autonomous-module-operation-and-recovery.md), [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md), [EDR-011](./EDR-011-module-external-interfaces-and-power.md), [EDR-012](./EDR-012-hub-capability-discovery-and-unit-enumeration.md) — open-item annotations only.
 - `STANDARD.md`, `CHANGELOG.md` — indexing and release notes.

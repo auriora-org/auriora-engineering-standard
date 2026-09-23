@@ -6,13 +6,13 @@ Proposed
 
 *Self-authored draft pending maintainer acceptance per [AES-GOV-010](../08-decisions-and-governance.md#aes-gov-010-maintainer-governance). Independent review SHOULD be sought before any Released Managed Unit relies on this pinout.*
 
-*The `UIF-MSPI` connector and pin assignment decided here stand unchanged. The provisional identifier `UIF-MSPI` used throughout this record — left open by its Scope section for confirmation at `1.0` — has since been confirmed as **`UIF-MSPI-14`** by [EDR-005](./EDR-005-low-bandwidth-managed-unit-interface.md), aligning it with the Platform pattern `UIF-[M]<transport>-<positions>`; the profile specification moved to `docs/interfaces/uif-mspi-14.md`. The name changed, the decision did not. The AEU-01 consequence recorded below — that AEU-01 adopts this pinout as the first `UIF-MSPI` realization — is superseded by [EDR-005](./EDR-005-low-bandwidth-managed-unit-interface.md): AEU-01 is a low-bandwidth Managed Unit and realizes [`UIF-MI2C-8`](../interfaces/uif-mi2c-8.md) instead. `UIF-MSPI` therefore awaits its first realization.*
+*The `UIF-MSPI` connector and pin assignment decided here stand unchanged. The provisional identifier `UIF-MSPI` used throughout this record — left open by its Scope section for confirmation at `1.0` — has since been confirmed as **`UIF-MSPI-14`** by [EDR-005](./EDR-005-low-bandwidth-managed-unit-interface.md), aligning it with the Platform pattern `UIF-[M]<transport>-<positions>`; the profile specification moved to `docs/interfaces/uif-mspi-14.md`. The name changed, the decision did not. The AENU-01 consequence recorded below — that AENU-01 adopts this pinout as the first `UIF-MSPI` realization — is superseded by [EDR-005](./EDR-005-low-bandwidth-managed-unit-interface.md): AENU-01 is a low-bandwidth Managed Unit and realizes [`UIF-MI2C-8`](../interfaces/uif-mi2c-8.md) instead. `UIF-MSPI` therefore awaits its first realization.*
 
 ## Context
 
 The Managed SPI Unit Interface Profile ([`UIF-MSPI`](../interfaces/uif-mspi-14.md), Draft) fixes the Managed-Unit signal set — the six-signal discovery/power/ready core shared with [`UIF-I2C-6`](../interfaces/uif-i2c-6.md), plus `UIF_SPI_SCK`, `UIF_SPI_MOSI`, `UIF_SPI_MISO`, `UIF_SPI_CS_N`, `UIF_IRQ_N`, `UIF_RESET_N` — but leaves its physical layer OPEN (uif-mspi-14.md §4): connector family/part, final pin count and pin ordering, the number and definition of any synchronization/auxiliary signal(s), and the per-signal electrical attributes. That section states these are Platform interface decisions and requires an EDR before the profile can reach `1.0` ([AES-EDR-001](../08-decisions-and-governance.md#aes-edr-001-edr-trigger)).
 
-The realization forcing the decision is the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AEU:001`, AEU-01), being reworked from a Passive Unit (`UIF-I2C-6`) into a Managed Unit built around an STM32U031C8U6 controller. AEU-01 needs a committed connector and pinout to enter PCB layout, and — as the **first `UIF-MSPI` realization** — its pinout will in practice become the profile's reference physical layer, exactly as AEU-01's power decisions became the first `UIF-I2C-6` realization.
+The realization forcing the decision is the AURIORA Environmental Sensor Unit (`AOID:PUB:UNIT:ENV:AENU:001`, AENU-01), being reworked from a Passive Unit (`UIF-I2C-6`) into a Managed Unit built around an STM32U031C8U6 controller. AENU-01 needs a committed connector and pinout to enter PCB layout, and — as the **first `UIF-MSPI` realization** — its pinout will in practice become the profile's reference physical layer, exactly as AENU-01's power decisions became the first `UIF-I2C-6` realization.
 
 A pinout chosen only for this one low-bandwidth sensor Unit would under-provision return paths for the higher-bandwidth Managed Units the profile is explicitly meant to serve (radio, GNSS, compute-bearing Units). Because a Unit Interface is a versioned platform contract, the reference pinout is expensive to change after any Released Managed Unit exists ([AES-IF-005](../05-interfaces-and-versioning.md#aes-if-005-backward-compatibility-within-a-major-version)); return-path headroom is therefore provisioned now.
 
@@ -25,15 +25,15 @@ The signal set is fixed by the profile (6 shared core + 6 Managed). The open dec
 | Alternative | Assessment |
 |---|---|
 | 12 positions, single GND (signal set only) | Minimal. One GND at the power end leaves the SPI group without a local return; adequate only for very low SPI clocks. Under-provisions the profile for higher-speed Managed Units. |
-| 13 positions, 2 GND (power return + one SPI-side GND) | Good for AEU-01: tight power loop plus a return adjacent to `SCK`. Sufficient to ~8–10 MHz, but the SPI block is guarded on one side only. |
+| 13 positions, 2 GND (power return + one SPI-side GND) | Good for AENU-01: tight power loop plus a return adjacent to `SCK`. Sufficient to ~8–10 MHz, but the SPI block is guarded on one side only. |
 | **14 positions, 3 GND — power return + SPI block guarded both sides** | **Chosen.** Power loop closed at the VIN end; the `SCK`/`MOSI`/`MISO`/`CS_N` block is flanked by GND on both sides, so every high-speed line is ≤2 positions from a return. Costs one contact and ~1 mm of board edge; provides SI headroom to ~20–30 MHz for future realizations. |
 | Add a reserved aux/sync position "for the future" | Rejected. An undefined reserved contact is speculative complexity — a spare pin is explicitly not a justification. A future hardware-sync need is a versioned profile addition, not a blank pin. |
-| Add a second power/GND pair | Rejected. JST SH is rated ~1 A/contact; the profile's functional load (AEU-01 worst case ~0.21 A) is far below one contact's rating, so parallel power pins earn nothing. |
+| Add a second power/GND pair | Rejected. JST SH is rated ~1 A/contact; the profile's functional load (AENU-01 worst case ~0.21 A) is far below one contact's rating, so parallel power pins earn nothing. |
 | Reuse the `UIF-I2C-6` 6-position connector/keying | Rejected on safety: a Managed host/unit must not mismate with a Passive one. A distinct position count makes cross-profile mating physically impossible. |
 
 ## Decision
 
-The `UIF-MSPI` physical layer is a **14-position, 1.00 mm-pitch connector in the JST SH family** — the same family as the AEU-01 `UIF-I2C-6` realization (assembly/tooling continuity), but with a distinct position count that inherently prevents cross-profile mismating, and intrinsically polarized against reverse insertion. The exact sub-series and part number are confirmed at BOM time.
+The `UIF-MSPI` physical layer is a **14-position, 1.00 mm-pitch connector in the JST SH family** — the same family as the AENU-01 `UIF-I2C-6` realization (assembly/tooling continuity), but with a distinct position count that inherently prevents cross-profile mismating, and intrinsically polarized against reverse insertion. The exact sub-series and part number are confirmed at BOM time.
 
 Pin assignment (pin 1 marked; direction is host-view):
 
@@ -72,15 +72,15 @@ Differentiating the connector by position count enforces the "connector fit is n
 
 ## Consequences
 
-- AEU-01 adopts this pinout for its Managed rework; its 6-position `UIF-I2C-6` connector is replaced, superseding the connector portion of the in-progress passive layout.
+- AENU-01 adopts this pinout for its Managed rework; its 6-position `UIF-I2C-6` connector is replaced, superseding the connector portion of the in-progress passive layout.
 - Every `UIF-MSPI` host SHALL provide the `UIF_RESET_N` and `UIF_IRQ_N` pull-ups and mate a 14-position SH connector.
 - The profile gains a reference physical layer but remains **Draft**: no Released conformance may be claimed until `UIF-MSPI` reaches `1.x` with its electrical layer fixed (see below).
-- AEU-01 becomes the first `UIF-MSPI` realization; its bring-up measurements feed the electrical-layer finalization, as its `UIF-I2C-6` power numbers did.
+- AENU-01 becomes the first `UIF-MSPI` realization; its bring-up measurements feed the electrical-layer finalization, as its `UIF-I2C-6` power numbers did.
 - This is a self-authored decision; the self-review is recorded per AES-GOV-010.
 
 ## Scope and Remaining Open Items
 
-Explicitly **not** resolved here — these belong to the `UIF-MSPI` electrical-layer finalization before `1.0`, informed by AEU-01 bring-up:
+Explicitly **not** resolved here — these belong to the `UIF-MSPI` electrical-layer finalization before `1.0`, informed by AENU-01 bring-up:
 
 - `UIF_PWR_VIN` tolerance band and per-rail current limits.
 - SPI maximum clock rate, mode (CPOL/CPHA) and timing.

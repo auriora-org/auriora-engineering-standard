@@ -70,11 +70,33 @@ Identifiers that appeared in a released AES version and were withdrawn. They are
 | `ASSG` | AURIORA Software Style Guide | [auriora-software-style-guide](https://github.com/auriora-org/auriora-software-style-guide) |
 | `ADS` | AURIORA Documentation Standard | [auriora-documentation-standard](https://github.com/auriora-org/auriora-documentation-standard) |
 
+## Family Identifier Register
+
+Every Product Family identifier is entered here before it appears in any artifact ([AES-NAME-001](./04-naming-and-identity.md#aes-name-001-family-identifier-stability)): `A`, two mnemonic letters, and the role letter `M` or `U`; infrastructure families are registered individually. An identifier once entered is never reused, whether current, renamed or retired.
+
+| Identifier | Family | Role | Status | Derivation / note |
+|---|---|---|---|---|
+| `APEM` | AURIORA Plant Electrophysiology Module | Module | Allocated | `PE` + `M`; product APEM-01 |
+| `APBM` | AURIORA Photobiology Module | Module | Allocated | `PB` + `M` |
+| `AASM` | AURIORA Acoustic Stimulus Module | Module | Allocated | `AS` + `M`; renames `AAM` ([EDR-014](./edr/EDR-014-four-letter-family-identifiers-and-register.md)); AES text migrated; hardware marking, firmware and companion guides migrate before Release |
+| `AENU` | AURIORA Environmental Sensor Unit | Unit | Allocated | `EN` + `U`; renames `AEU` ([EDR-014](./edr/EDR-014-four-letter-family-identifiers-and-register.md)); AES text and provisional AOID migrated; schematic, firmware and companion guides migrate before Release |
+| `ASPU` | AURIORA Spectral Unit | Unit | Reserved | `SP` + `U` |
+| `ASOU` | AURIORA Soil Unit | Unit | Reserved | `SO` + `U` |
+| `AWNU` | AURIORA Wind Unit | Unit | Reserved | `WN` + `U` |
+| `ACTU` | AURIORA Communication and Timing Unit | Unit | Reserved | `CT` + `U` |
+| `AGEU` | AURIORA Geophysical Unit | Unit | Reserved | `GE` + `U` |
+| `AHUB` | AURIORA Hub | Infrastructure | Allocated | registered individually; size variants are products (AHUB-01, AHUB-02, …), never encoded in the identifier |
+| `AAM` | — | — | Retired 2026-09-23 | renamed to `AASM`; never reused |
+| `AEU` | — | — | Retired 2026-09-23 | renamed to `AENU`; never reused |
+| `ASU` | — | — | Retired 2026-09-23 | collided (Spectral / Soil); never reused |
+| `AAC` | AURIORA Audio Controller | Controller | Retired 2026-09-23 | family discontinued; never reused |
+| `AMH` | — | — | Retired 2026-09-23 | superseded by `AHUB` before any use; never reused |
+
 ## AOID Assignments
 
 Released artifacts that participate in machine-readable identity need an AOID ([AES-ID-006](./04-naming-and-identity.md#aes-id-006-aoid-assignment)); assignments are listed here to prevent collisions. Pre-Release entries may appear provisionally so identifiers cited in draft specs are reserved.
 
 | AOID | Artifact | Maturity |
 |---|---|---|
-| `AOID:PUB:UNIT:ENV:AEU:001` | AURIORA Environmental Sensor Unit (AEU-01); Managed Unit, first realization of the `UIF-MI2C-8` profile ([EDR-005](./edr/EDR-005-low-bandwidth-managed-unit-interface.md)) | Pre-Release (provisional) |
-| `AOID:PUB:HUB:GEN:AMH:001` | AURIORA Module Hub (AMH-01); `MCL` concentrator, AEL router, host-facing interface, cascading ([EDR-013](./edr/EDR-013-mcl-cascading-and-path-addressing.md)) | Pre-Release (provisional) |
+| `AOID:PUB:UNIT:ENV:AENU:001` | AURIORA Environmental Sensor Unit (AENU-01); Managed Unit, first realization of the `UIF-MI2C-8` profile ([EDR-005](./edr/EDR-005-low-bandwidth-managed-unit-interface.md)); re-registered from `AEU` ([EDR-014](./edr/EDR-014-four-letter-family-identifiers-and-register.md)) | Pre-Release (provisional) |
+| `AOID:PUB:HUB:GEN:AHUB:001` | AURIORA Hub (AHUB-01); `MCL` concentrator, AEL router, host-facing interface, cascading ([EDR-013](./edr/EDR-013-mcl-cascading-and-path-addressing.md)) | Pre-Release (provisional) |
