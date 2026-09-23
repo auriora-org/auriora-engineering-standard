@@ -110,7 +110,7 @@ Deferring `MCL` cascading costs nothing because retrieval was specified end-to-e
 **Open — Platform decisions, taken with the evidence they need:**
 
 - **Direct local transport binding**: USB device class and descriptors; framing, correlation, flow control and error signaling; how a Hub and the Modules behind it are addressed on one connection; the chunk bound; the interleaving of control and bulk traffic; host-loss supervision (from EDR-009). One specification answers all of these.
-- **`MCL` cascading** — unchanged from EDR-007 and Architecture §7. Retrieval does not depend on it.
+- **`MCL` cascading** — unchanged from EDR-007 and Architecture §7. Retrieval does not depend on it. *Decided in [EDR-013](./EDR-013-mcl-cascading-and-path-addressing.md): cascaded through a Module Port with path addressing.*
 - **Live measurement stream** at acquisition rate, and asynchronous notification in general: a Module-pushed flow changes what every binding must provide, and is decided with the first binding, as §5.2 already records.
 - **Deletion of stored objects** as a declared operation, and the state rules under which it is refused.
 - **Retrieval during `RUNNING`**: whether the Platform should require it or leave it declared per Module. Left declared; a long field deployment that must be read out without stopping is the case that would change this.

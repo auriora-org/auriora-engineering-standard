@@ -9,21 +9,21 @@ This example walks one closed-loop experiment through the AURIORA Event Link ([I
 ## The bench
 
 ```text
-                     HOST ──(host-facing transport)──┬───────────────────────┐
-                                                     │                       │
-                                              ┌──────┴──────┐         ┌──────┴──────┐
-                                              │  Module Hub │──AEL──►│  Module Hub │
-                                              │     H1      │◄──AEL──│     H2      │
-                                              └─┬─────────┬─┘         └─┬─────────┬─┘
-                                         Port 1 │  Port 2 │      Port 1 │  Port 2 │
-                                              APEM       AAM           US        APBM
+                     HOST ──(host-facing interface)──┐
+                                                     │
+                                              ┌──────┴──────┐  Port 3 ── Link Cable ── link port  ┌─────────────┐
+                                              │  Module Hub │──MCL + AEL─────────────────────────►│  Module Hub │
+                                              │     H1      │◄──AEL──────────────────────────────│     H2      │
+                                              └─┬─────────┬─┘                                    └─┬─────────┬─┘
+                                         Port 1 │  Port 2 │                                 Port 1 │  Port 2 │
+                                              APEM       AAM                                     US        APBM
 ```
 
 - **APEM** — Plant Electrophysiology Module, recording continuously; has a threshold detector on one channel; declares the capability to continue a running Session without the host.
 - **AAM** — Audio Module, plays acoustic bursts; can change playback phase while running.
 - **US** — an ultrasound stimulus Module (hypothetical; no Product Family exists yet), emits a burst on request.
 - **APBM** — Photobiology Module, runs a multi-wavelength light schedule; reports phase completions.
-- **H1, H2** — Module Hubs with an AEL router each, joined by one AURIORA Link Cable between their Hub link ports, which carries one Hub-to-Hub AEL link in each direction. Every Module is on a Module Port (MCL + AEL IN + AEL OUT) over its own Link Cable, and every Module and Hub has its own 12 V power input; nothing on the bench is powered through a Hub.
+- **H1, H2** — Module Hubs with an AEL router each. H1 is the root Hub on the host's host-facing interface; H2 is a downstream Hub, its Hub-to-Hub link port cabled by one AURIORA Link Cable to H1's Module Port 3, which carries cascaded `MCL` and one Hub-to-Hub AEL link in each direction ([AES-HUB-005](../docs/03-architecture.md#aes-hub-005-cascading-and-path-addressing)). The host reaches H2 and its Modules through H1 by path; in the route tables below H1's port 3 is written `LINK→H2` for readability. Every Module is on a Module Port (MCL + AEL IN + AEL OUT) over its own Link Cable, and every Module and Hub has its own 12 V power input; nothing on the bench is powered through a Hub.
 
 ## The experiment, as the researcher wrote it
 

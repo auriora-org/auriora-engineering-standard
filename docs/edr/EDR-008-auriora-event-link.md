@@ -149,7 +149,7 @@ Keeping AES lean is a deliberate part of the decision. Experiment compilation, r
 
 - The normative **electrical profile**: which RS-485-compatible driver/receiver contract AEL follows, and with it driver output requirements, receiver threshold, common-mode range and termination assumptions.
 - **Connector gender, keying and marking** for AEL IN / AEL OUT, decided against the full AURIORA connector inventory (AEL IN, AEL OUT, Module Port, electrode and sensor connectors, every other existing or planned M8 interface) with the cross-mating analysis. *Closed by [EDR-011](./EDR-011-module-external-interfaces-and-power.md): the standalone AEL connectors are withdrawn and AEL is carried in the Module Port, female on every device.*
-- The Hub's **host-facing management contract** (MCI reuse preferred) and its transport. *The transport is decided in [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md); the contract's content remains open.*
+- The Hub's **host-facing management contract** (MCI reuse preferred) and its transport. *The transport is decided in [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md); the contract's content is fixed by [EDR-012](./EDR-012-hub-capability-discovery-and-unit-enumeration.md) (`AES-HUB-004`); its form remains open.*
 
 **Open — measurement-dependent, from the first AEL-capable Modules and a router:**
 

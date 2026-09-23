@@ -23,7 +23,7 @@ Hub, Hub-to-Hub link port ── Link Cable ── Hub, Hub-to-Hub link port   (
 
 - A Module provides **exactly one** Module Port where it provides `MCL`, AEL IN or AEL OUT at all. A Module that provides none — a USB-only Module — has no Module Port and is conformant.
 - A Module Hub provides one Module Port per Module it can connect and, where it provides Hub-to-Hub AEL links, one Module Port connector per link, labeled as such. Port counts are product decisions ([AES-HUB-002](../03-architecture.md#aes-hub-002-port-independence-and-scale-interoperability)).
-- **Hub-less operation is the direct 1:1 link.** Two Modules joined by one Link Cable exchange AEL events in both directions with no infrastructure; each is managed over its own direct local transport, and the `MCL` pair joins two idle responder ends. Three or more Modules in one event exchange use a Module Hub. A chain of Modules without a Hub is not a Platform topology ([AES-AEL-002](../05-interfaces-and-versioning.md#aes-ael-002-point-to-point-links-direct-and-routed-operation)).
+- **Hub-less operation is the direct 1:1 link.** Two Modules joined by one Link Cable exchange AEL events in both directions with no infrastructure; each is managed over its own direct local transport, and the `MCL` pair joins two idle responder ends — a Module is never an `MCL` master ([AES-HUB-005](../03-architecture.md#aes-hub-005-cascading-and-path-addressing)). Three or more Modules in one event exchange use a Module Hub. A chain of Modules without a Hub is not a Platform topology ([AES-AEL-002](../05-interfaces-and-versioning.md#aes-ael-002-point-to-point-links-direct-and-routed-operation)).
 - The **same connector, contact assignment and cable** apply to every Module Port on every device. A Hub-side port is not the mirror image of a Module-side port; the crossover lives in the cable (Section 5).
 
 ## 3. Connector
@@ -104,7 +104,7 @@ A generic **straight-through** M8 8-position cable connects `AEL_OUT` to `AEL_OU
 | Cable | Link Cable wiring of Section 5: AEL crossover with polarity preserved, `MCL`/`GND`/`RESERVED` straight, one twisted pair per link, shield to shell both ends, male-to-male, marked. | Continuity and pair-assignment test of the cable against the table; both orientations verified identical. |
 | Electrical | Signal-only port; no back-drive when unpowered; protection at the connector; survives a straight-through cable indefinitely. | Straight-through cable connected for the product's documented soak time with no damage and zero valid AEL frames; unpowered-device leakage per contact within the AEL and `MCL` transceiver limits. |
 | Behavioral | Live insertion and removal disturb no other port and produce no valid frame; the `RESERVED` contact is open on the device. | 100 insertion/removal cycles with the bench armed: zero valid frames on every link of every port; `RESERVED` measured open. |
-| Topology | Exactly one Module Port per Module; direct 1:1 with the same cable; Hub-to-Hub links on the same connector and cable. | Two Modules exchange events in both directions over one Link Cable with no Hub; the same cable connects each to a Hub port. |
+| Topology | Exactly one Module Port per Module; direct 1:1 with the same cable; Hub-to-Hub links on the same connector and cable; a downstream Hub's link port on an upstream Hub's Module Port carries cascaded `MCL` ([AES-HUB-005](../03-architecture.md#aes-hub-005-cascading-and-path-addressing)). | Two Modules exchange events in both directions over one Link Cable with no Hub; the same cable connects each to a Hub port. |
 
 ## 8. Settled and Open Items
 
@@ -118,6 +118,7 @@ Decided by [EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md); an
 - The AURIORA Link Cable: AEL crossover, everything else straight, non-oriented, one twisted pair per link, shielded to the shells, male-to-male, marked.
 - Generic straight-through cables incompatible; every port survives one indefinitely with no valid frame.
 - Hub-less operation is the direct 1:1 link; Hub-to-Hub links on the same connector and cable.
+- `MCL` roles by port kind: a Module Port's end is the master, a Hub-to-Hub link port's and a Module's end a responder; cascaded `MCL` runs from an upstream Hub's Module Port to a downstream Hub's link port ([AES-HUB-005](../03-architecture.md#aes-hub-005-cascading-and-path-addressing)).
 - No primary power on any contact; signal-only port; live insertion as a normal operation.
 
 ### 8.2 Open
@@ -126,8 +127,8 @@ Decided before this specification reaches `1.0`, from an explicit Platform decis
 
 - **Position numbering** of the eight contacts, under the constraints of Section 4, together with the `MCL` binding's electrical profile.
 - **Cable impedance, conductor size, shield construction and maximum validated length** at the AEL and `MCL` bit rates; **`MCL`-to-AEL crosstalk** limits in the shared cable.
-- **`MCL` electrical profile, termination topology for a bidirectional pair, and line discipline** — line ownership at idle, initiation (the Hub polls), driver- and receiver-enable behavior, turnaround after end of frame and maximum response time, behavior when both ends drive, idle differential state — all from the `MCL` binding specification, none fixed by a constant here; whether a Hub-to-Hub link's `MCL` pair is idle or carries cascaded `MCL` ([Architecture §7](../03-architecture.md#7-module-hub)).
-- **Two `MCL` masters on one pair.** A Link Cable between two Hubs' Module Ports — rather than between a Hub's Module Port and its peer's Hub-to-Hub link port — puts two polling masters on one `MCL` pair. Whether the `MCL` binding's contention rule alone makes this harmless, or the port must detect and report it, is decided with the binding; the survival requirement of Section 5.1 already covers the electrical side.
+- **`MCL` electrical profile, termination topology for a bidirectional pair, and line discipline** — line ownership at idle, initiation (the Hub polls), driver- and receiver-enable behavior, turnaround after end of frame and maximum response time, behavior when both ends drive, idle differential state — all from the `MCL` binding specification, none fixed by a constant here; the path element width and depth that cascading requires ([AES-HUB-005](../03-architecture.md#aes-hub-005-cascading-and-path-addressing)).
+- **Two `MCL` masters on one pair.** A Link Cable between two Hubs' Module Ports — rather than between a Hub's Module Port and its peer's Hub-to-Hub link port — puts two polling masters on one `MCL` pair. Each port detects and reports it as a cabling fault ([AES-HUB-005](../03-architecture.md#aes-hub-005-cascading-and-path-addressing)); by what contention rule the binding detects it is decided with the binding, and the survival requirement of Section 5.1 already covers the electrical side.
 - **`GND` return-current bound.** `GND` is a signal reference, not a power return, yet with several Modules on independent 12 V sources sharing signal ground through a Hub it can carry unintended return current. The bound, and whether it is met by a contact rating, a series impedance or isolation in a later version, is set from bring-up measurement.
 - **Environmental rating** (IP class, temperature) of the connector and cable, as a Platform minimum or a product statement.
 

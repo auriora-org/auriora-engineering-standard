@@ -68,7 +68,7 @@ AOID:<NAMESPACE>:<CLASS>:<DOMAIN>:<FAMILY>:<SERIES>
 ```
 
 - **Namespace:** `PUB` (public), `INT` (internal), `EXP` (experimental), `DEP`/`RET` (deprecated/retired), `TST` (test fixtures).
-- **Class:** `FAM`, `PROD`, `MOD`, `CTRL`, `UNIT`, `HIF`, `UIF`, `DOC`, `TOOL`, `PKG` and similar.
+- **Class:** `FAM`, `PROD`, `MOD`, `HUB`, `CTRL`, `UNIT`, `HIF`, `UIF`, `DOC`, `TOOL`, `PKG` and similar.
 - **Domain:** broad codes such as `GEN`, `MEAS`, `STIM`, `CTRL`, `ENV`, `BIO`, `OPT`, `ACOU`, `MECH`, `DATA`, `MFG`.
 - **Family:** the registered family identifier. **Series:** three-digit sequence.
 

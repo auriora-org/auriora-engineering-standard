@@ -77,3 +77,4 @@ Released artifacts that participate in machine-readable identity need an AOID ([
 | AOID | Artifact | Maturity |
 |---|---|---|
 | `AOID:PUB:UNIT:ENV:AEU:001` | AURIORA Environmental Sensor Unit (AEU-01); Managed Unit, first realization of the `UIF-MI2C-8` profile ([EDR-005](./edr/EDR-005-low-bandwidth-managed-unit-interface.md)) | Pre-Release (provisional) |
+| `AOID:PUB:HUB:GEN:AMH:001` | AURIORA Module Hub (AMH-01); `MCL` concentrator, AEL router, host-facing interface, cascading ([EDR-013](./edr/EDR-013-mcl-cascading-and-path-addressing.md)) | Pre-Release (provisional) |

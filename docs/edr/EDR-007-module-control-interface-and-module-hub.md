@@ -119,9 +119,9 @@ Not resolved here. The first four are blocking for any hardware work:
 - **Module Port physical layer** — contact count, connector family, gender, keying, pinout, cable construction and impedance, maximum length, reference and shield strategy. *Connector family, contact count, gender, contact roles, cable construction and shield strategy are decided in [EDR-011](./EDR-011-module-external-interfaces-and-power.md); position numbering, impedance and maximum length remain open there.*
 - **`MCL`-to-SYNC crosstalk** — the isolation required so that continuous `MCL` traffic does not degrade SYNC edge timing in a shared cable, characterized and specified before the Module Port is fixed.
 - MCI version numbering and its starting version; the direct local transport binding.
-- Whether MCI becomes a MUST for Released Modules, and on what schedule.
+- Whether MCI becomes a MUST for Released Modules, and on what schedule. *Decided in [EDR-013](./EDR-013-mcl-cascading-and-path-addressing.md): `AES-MCI-009`.*
 - Module Hub Product Family identifier, product naming, and its host-facing transport. *The host-facing transport is decided in [EDR-010](./EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md) (host-facing interface); identifier and naming remain open.*
-- Whether a Module Hub needs an AOID interface class of its own.
+- Whether a Module Hub needs an AOID interface class of its own. *Decided in [EDR-013](./EDR-013-mcl-cascading-and-path-addressing.md): AOID class `HUB`, family `AMH`.*
 - Security posture for a Hub with a network-facing upstream transport; authenticated host sessions.
 - Power delivery over the Module Port. Deliberately excluded from this record: it is a separate specification concern and must not be attached to control or synchronization semantics. *[EDR-011](./EDR-011-module-external-interfaces-and-power.md) excludes it normatively and defines the separate Module Power Interface.*
 
