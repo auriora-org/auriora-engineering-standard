@@ -38,6 +38,6 @@ The two external connectors of a Module besides its service connection ([AES-MOD
 | Interface | File | Positions | Status | Intended for |
 |---|---|---:|---|---|
 | `AURIORA Module Port` | [module-port.md](./module-port.md) | 8 | Draft | One connector per Module for `MCL`, AEL IN and AEL OUT, and the AURIORA Link Cable that connects Module Ports to a Hub, to a peer Module and Hub to Hub |
-| `AURIORA Module Power Interface` | [module-power.md](./module-power.md) | 3 | Draft | The primary 12 V DC power input of a Module and the male-to-female power cable that feeds it from a source |
+| `AURIORA Module Power Interface` | [module-power.md](./module-power.md) | 3 | Draft | The primary 12 V DC power input of a Module and of a Module Hub, the source output that feeds it and the male-to-female power cable between them |
 
 [sync.md](./sync.md) is the superseded notice of the former Module Synchronization Interface (`SYNC`, AES `0.6.0`–`0.7.1`); it is not a current interface.

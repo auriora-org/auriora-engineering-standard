@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 0.10.0
+**Version:** 0.11.0
 **Status:** Normative
 **Language:** English
 
@@ -212,7 +212,8 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-008: AURIORA Event Link](./docs/edr/EDR-008-auriora-event-link.md) — supersedes EDR-006; connector items superseded by EDR-011
 - [EDR-009: Autonomous Module Operation and Recovery](./docs/edr/EDR-009-autonomous-module-operation-and-recovery.md)
 - [EDR-010: Hub Host-Facing Interface and Stored Object Retrieval](./docs/edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)
-- [EDR-011: Module External Interfaces — Module Port, Module Power Interface and USB](./docs/edr/EDR-011-module-external-interfaces-and-power.md) — supersedes EDR-008 items 8–9
+- [EDR-011: Module External Interfaces — Module Port, Module Power Interface and USB](./docs/edr/EDR-011-module-external-interfaces-and-power.md) — supersedes EDR-008 items 8–9; power figures closed by EDR-015
 - [EDR-012: Hub Identity and Capability Discovery, and Unit Enumeration through MCI](./docs/edr/EDR-012-hub-capability-discovery-and-unit-enumeration.md)
 - [EDR-013: MCL Cascading and Path Addressing](./docs/edr/EDR-013-mcl-cascading-and-path-addressing.md)
 - [EDR-014: Four-Letter Family Identifiers and the Family Identifier Register](./docs/edr/EDR-014-four-letter-family-identifiers-and-register.md)
+- [EDR-015: Module Power Interface Limits and External Connector Reservation](./docs/edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) — closes the EDR-011 power items

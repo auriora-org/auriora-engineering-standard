@@ -42,12 +42,12 @@ The AURIORA Event Link (see [AES-AEL-001](./05-interfaces-and-versioning.md#aes-
 |---|---|---|---|
 | `AURIORA AEL` | 0.2 | Draft | `docs/interfaces/ael.md` |
 
-The Module Port and the Module Power Interface (see [AES-MOD-005](./03-architecture.md#aes-mod-005-external-interfaces-and-power-separation), [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md)):
+The Module Port and the Module Power Interface (see [AES-MOD-005](./03-architecture.md#aes-mod-005-external-interfaces-and-power-separation), [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md), [EDR-015](./edr/EDR-015-module-power-interface-limits-and-connector-reservation.md)):
 
 | Interface | Version | Status | Source Path |
 |---|---|---|---|
 | `AURIORA Module Port` | 0.1 | Draft | `docs/interfaces/module-port.md` |
-| `AURIORA Module Power Interface` | 0.1 | Draft | `docs/interfaces/module-power.md` |
+| `AURIORA Module Power Interface` | 0.2 | Draft | `docs/interfaces/module-power.md` |
 
 No **MCI transport binding** specification exists yet. The Module Control Interface ([AES-MCI-001](./05-interfaces-and-versioning.md#aes-mci-001-transport-independence)) is defined transport-independently; its bindings — a direct local transport and the Module Control Link (`MCL`) — are recorded as open items in [EDR-007](./edr/EDR-007-module-control-interface-and-module-hub.md) and will be listed here when specified; `MCL`'s connector and half-duplex single-pair model are already fixed by the Module Port specification ([EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md)). The direct local transport binding is also the host-facing interface of a Module Hub ([AES-HUB-003](./03-architecture.md#aes-hub-003-host-facing-interface-and-traffic-separation), [EDR-010](./edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)).
 
@@ -91,6 +91,21 @@ Every Product Family identifier is entered here before it appears in any artifac
 | `ASU` | — | — | Retired 2026-09-23 | collided (Spectral / Soil); never reused |
 | `AAC` | AURIORA Audio Controller | Controller | Retired 2026-09-23 | family discontinued; never reused |
 | `AMH` | — | — | Retired 2026-09-23 | superseded by `AHUB` before any use; never reused |
+
+## External Connector Register
+
+Every external connector form a Platform device may carry is entered here before a design uses it ([AES-MOD-006](./03-architecture.md#aes-mod-006-external-connector-reservation)). *Reserved* forms serve one function only; *controlled* forms serve the listed functions under the listed condition; *unassigned* forms are assigned by EDR before use. Measurement-side connectors of other families are outside the register unless listed.
+
+| Form | Device-side contact | Function | Status | Decided by |
+|---|---|---|---|---|
+| M8 A-coded 3-position | male / pin-contact, panel | Module Power Interface input (12 V DC) on every Module, Module Hub and other Platform device | Reserved — exclusive | [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md), [EDR-015](./edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) |
+| M8 A-coded 3-position | female / socket-contact, panel | Module Power Interface output of a power source; otherwise a measurement-side port (electrode, sensor, actuator) only, with the mis-mating analysis of the specification's Section 8 recorded and the port labeled with its function | Controlled | [EDR-015](./edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) |
+| M8 A-coded 3-position | male / pin-contact at both ends of a cable | None — no Platform cable | Prohibited | [EDR-015](./edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) |
+| M8 A-coded 8-position | female / socket-contact, panel | Module Port (`MCL`, AEL IN, AEL OUT) on a Module, a Hub's Module Ports and its Hub-to-Hub link ports | Reserved — exclusive | [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md) |
+| M8 A-coded 8-position | male / pin-contact, cable | AURIORA Link Cable ends only; never a panel connector | Reserved | [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md) |
+| M8 A-coded 4-position | any | — | Unassigned | — |
+| M12 | any | — ; candidate for a higher-power power profile | Unassigned | — |
+| USB-C | receptacle | Direct local transport of a Module; host-facing interface of a Module Hub | Assigned | [EDR-010](./edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md), [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md) |
 
 ## AOID Assignments
 

@@ -4,6 +4,22 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. While the major version is zero the standard is in pre-Release development, which AES-VER-001 leaves informally versioned: an incompatible normative change increments `MINOR` and says so in its entry, and `1.0.0` follows when the Platform's interface specifications leave Draft. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [0.11.0] - 2026-10-01
+
+### Added
+
+- **Module Power Interface limits and external connector reservation** ([EDR-015](./docs/edr/EDR-015-module-power-interface-limits-and-connector-reservation.md)). Additive and tightening; nothing Released behind it.
+  - Interface specification **`AURIORA Module Power Interface`** ([`docs/interfaces/module-power.md`](./docs/interfaces/module-power.md), `0.1` → `0.2`, Draft): the figures EDR-011 left open are fixed — **12.0 V nominal, 10.0–15.0 V operating, 0–18 V and −18 V no-damage, 2 A continuous and 3 A start-up per input, 3 A / 60 V connector ceiling**; source output 11.4–15.0 V with per-output protection; power cable ≥ 0.25 mm², rated 3 A, length by the voltage rule, never male-to-male; defined brownout; a Module Hub is a device of the interface; *male / pin-contact* and *female / socket-contact* named beside the gender; a mis-mating table for M8 3-position female measurement ports; power sources specified by their output only — a mains adapter, a re-terminated commercial supply, a battery, a solar controller or a distributor is a source if its output conforms. The current limit is a current: a constant-power Module sizes to 2 A at 10.0 V, about 20 W.
+  - `AES-MOD-006` (external connector reservation) in [Architecture §3](./docs/03-architecture.md#aes-mod-006-external-connector-reservation): mis-connection prevented mechanically, marking in addition; the M8 3-position **male / pin-contact panel** form reserved on every Platform device for the Module Power Interface input; the **female / socket-contact** form a source output or a measurement-side port with a recorded mis-mating analysis; the M8 8-position form reserved for the Module Port and Link Cable; assignments by EDR.
+  - [Document Index](./docs/document-index.md#external-connector-register): the **External Connector Register**.
+  - `AES-HUB-001` in [Architecture §7](./docs/03-architecture.md#aes-hub-001-module-hub-scope) tightened: a Module Hub takes its primary operating power through a Module Power Interface input; host-facing powering only as a declared, back-feed-protected option. `AES-MOD-005` rationale, §7 introduction and `AES-HUB-003` updated accordingly.
+  - [Terminology](./docs/02-terminology.md): *Module Power Interface* and *Module Hub* updated. [Module Port specification](./docs/interfaces/module-port.md) and [Interface Specifications README](./docs/interfaces/README.md) point to the register; the superseded [SYNC notice](./docs/interfaces/sync.md) no longer reads as if AEL still used the M8 3-position connector.
+  - Open-item annotations in EDR-011. Open in EDR-015: the inrush figure, measured cable validation, the reserved contact, source fault behavior, environmental rating.
+
+### Decided against
+
+- "AURIORA Power Interface" as the name (EDR-011's *Module Power Interface* stands); 3 A continuous as the Platform limit (outside the Hardware Design Guide's connector derating and the cable budget); a 14.0 V upper bound (excludes a 12 V battery under charge); a power input mandatory on every Module (`AES-MOD-005`'s "where a Module has one" stands); a ban on every other M8 3-position connector (the female form stays available for measurement ports).
+
 ## [0.10.0] - 2026-09-23
 
 ### Added
