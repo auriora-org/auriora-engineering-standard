@@ -46,7 +46,7 @@ Guidance: choose the two function letters so that the identifier reads as the fa
 
 **Rationale:** Public names enter documentation, labels and search; transient details in names become false after normal evolution. Working titles during Experimental and Active Development are unrestricted.
 
-Repository names are lowercase kebab-case and should include the family identifier when family-specific (`auriora-apem`, `auriora-apem-firmware`).
+Repository names are lowercase kebab-case and should include the family identifier when family-specific (`auriora-apem`, `auriora-apem-firmware`). Within a hardware repository, each board project directory is named `<family-id>-<nn>-<role>` — family identifier, product number and board role in lowercase kebab-case, the role present even for a single-board product — and its design files carry the same name; the uppercase form `<FAMILY-ID>-<NN>-<ROLE>` is the board identity in title blocks and markings ([Hardware Design Guide §17](https://github.com/auriora-org/auriora-hardware-design-guide/blob/main/GUIDE.md#17-hardware-repository-and-kicad-project-structure)).
 
 ## 5. Product Numbers and Revisions
 

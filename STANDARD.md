@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 0.11.0
+**Version:** 0.12.0
 **Status:** Normative
 **Language:** English
 
@@ -217,3 +217,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-013: MCL Cascading and Path Addressing](./docs/edr/EDR-013-mcl-cascading-and-path-addressing.md)
 - [EDR-014: Four-Letter Family Identifiers and the Family Identifier Register](./docs/edr/EDR-014-four-letter-family-identifiers-and-register.md)
 - [EDR-015: Module Power Interface Limits and External Connector Reservation](./docs/edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) — closes the EDR-011 power items
+- [EDR-016: Default Hardware License and Hardware Repository Structure](./docs/edr/EDR-016-default-hardware-license-and-repository-structure.md)

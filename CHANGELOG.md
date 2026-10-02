@@ -4,6 +4,22 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. While the major version is zero the standard is in pre-Release development, which AES-VER-001 leaves informally versioned: an incompatible normative change increments `MINOR` and says so in its entry, and `1.0.0` follows when the Platform's interface specifications leave Draft. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [0.12.0] - 2026-10-02
+
+### Added
+
+- **Default hardware license and hardware repository structure** ([EDR-016](./docs/edr/EDR-016-default-hardware-license-and-repository-structure.md)). Additive; records two existing practices and settles the repository layout before more hardware repositories exist.
+  - `AES-OH-004` (default licenses) in [Maturity and Release §2.3](./docs/07-maturity-and-release.md#aes-oh-004-default-licenses): hardware design sources under **CERN-OHL-W-2.0**, normative documents under **CC BY-SA 4.0**, unless an EDR names a different license for a repository; the `LICENSE` file carries the full text; every hardware release package carries the license text and the Source Location. Firmware and software default left to the first such release.
+  - [Naming and Identity §4](./docs/04-naming-and-identity.md#4-public-names): board project directories named `<family-id>-<nn>-<role>`, the role present even for a single board, design files carrying the same name, `<FAMILY-ID>-<NN>-<ROLE>` as the board identity.
+
+### Changed
+
+- [Maturity and Release §6](./docs/07-maturity-and-release.md#6-repositories-and-workflow): the suggested hardware repository layout is now `README.md`, `LICENSE`, `boards/` (always, one EDA project per PCB), `docs/`, `mechanical/`, `tools/` with no empty directories, replacing `hardware/`, `manufacturing/` and `tests/`; generated manufacturing outputs belong to the tagged release, and an immutable tag with its release assets is the "immutable tag (or equivalent)" of `AES-REL-001`. The detailed structure, title block, library and licensing practice are in the [Hardware Design Guide](https://github.com/auriora-org/auriora-hardware-design-guide) 0.9.0 §17.
+
+### Decided against
+
+- A per-repository hardware license with AES silent; CERN-OHL-S-2.0 and CERN-OHL-P-2.0 as the default; `hardware/` kept until a second PCB appears; `tooling/` instead of `tools/`; committed `manufacturing/` or `releases/` directories; board directories named by role alone; the AOID as the title block's primary identity field.
+
 ## [0.11.0] - 2026-10-01
 
 ### Added

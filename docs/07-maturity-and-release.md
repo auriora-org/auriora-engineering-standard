@@ -93,6 +93,12 @@ Requirements are conditional on the nature of the project: a board without calib
 
 **Rationale:** Ambiguity discourages reuse and contribution.
 
+### AES-OH-004: Default Licenses
+
+**Requirement:** AURIORA hardware design sources SHALL be licensed under CERN-OHL-W-2.0 and AURIORA normative documents under CC BY-SA 4.0, unless an EDR records a different license for a named repository. The repository's `LICENSE` file SHALL carry the complete license text, and every hardware release package SHALL carry the license text and the Source Location of its sources.
+
+**Rationale:** One hardware license across the Platform lets symbols, footprints, 3D models and proven circuit blocks move between boards without a license review, and keeps one canonical license wording in title blocks and markings. Weak reciprocity keeps AURIORA designs and their modifications open while a third party's larger design that incorporates an AURIORA block stays its own. The default license for firmware and software is recorded when the first such repository releases ([EDR-016](./edr/EDR-016-default-hardware-license-and-repository-structure.md)).
+
 ## 3. Deprecation and Retirement
 
 ### AES-LIFE-002: Deprecation Policy
@@ -151,7 +157,7 @@ There are no mandatory Concept/Architecture/Interface/Implementation/Manufacturi
 
 All non-normative guidance:
 
-- Suggested layout for hardware/firmware repositories: `README.md`, `docs/`, `hardware/`, `firmware/`, `mechanical/`, `manufacturing/`, `tests/`, `tools/` — use what applies, omit the rest. Very small projects may keep everything at the root. Just don't hide manufacturing files in `misc/final/new/`.
+- Layout of a hardware repository: `README.md`, `LICENSE`, `boards/` (one EDA project per independently manufactured PCB, present even for a single board), `docs/`, `mechanical/`, `tools/` — use what applies, omit the rest, create no empty directories; the [Hardware Design Guide §17](https://github.com/auriora-org/auriora-hardware-design-guide/blob/main/GUIDE.md#17-hardware-repository-and-kicad-project-structure) defines the board project structure. Firmware and software repositories follow their guides; a small one may keep everything at the root. Generated manufacturing outputs belong to the tagged release, not to the source tree — and never to `misc/final/new/`.
 - Direct commits to the main branch are fine for Experimental work and for a single maintainer. Branches and pull requests are recommended for meaningful Active Development changes — they produce a reviewable record — but no approval board, second reviewer or compliance officer is assumed to exist.
 - The maintainer may design, implement, review and document the same change.
-- Releases: freeze the source, regenerate all generated outputs from the tagged revision (never hand-edit outputs), run the release checklist, tag, and verify the tag's links resolve.
+- Releases: freeze the source, regenerate all generated outputs from the tagged revision (never hand-edit outputs), run the release checklist, tag, attach the regenerated outputs to the tag's release — an immutable tag with its release assets is the "immutable tag (or equivalent)" of [AES-REL-001](#aes-rel-001-release-completeness) — and verify the tag's links resolve.
