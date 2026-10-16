@@ -53,6 +53,8 @@ Repository names are lowercase kebab-case and should include the family identifi
 - Products within a family use `<FAMILY-ID>-<NN>` (`APEM-01`), assigned by the maintainer when a product contract becomes real — typically at the start of Active Development toward release. Product numbers never encode revision, firmware version, batch or serial.
 - Hardware revisions use `Rev <LETTER>`. Firmware, interfaces, documents and manufacturing packages version per [Interfaces and Versioning](./05-interfaces-and-versioning.md).
 - The product number distinguishes products *within* a family, and the line between product and revision is compatibility: a variant whose host-visible contract differs — port count, channel count, capability set, connector set — is a new product (`AHUB-02`), while a compatible redesign of the same product is a new hardware revision (`AHUB-01 Rev B`). Neither a hardware generation nor a countable property is encoded in the family identifier or the product number; a host learns a device's ports, channels and capabilities from its declarations ([AES-MCI-003](./05-interfaces-and-versioning.md#aes-mci-003-module-capability-discovery), [AES-HUB-004](./03-architecture.md#aes-hub-004-hub-identity-and-capability-discovery)), never from its name.
+- A product is the whole deliverable, not the electronics alone. Two deliverables that share a fabricated PCB but differ in what the user receives and where it may be used — an indoor and an outdoor build with different enclosures, environmental ratings, external connectors, coatings or cable sets — are two products with two product numbers (`AHUB-01`, `AHUB-03`), not one product with a variant. The Product level is the only identity below the family that a release, a serial-number batch, a manufacturing package, a calibration record and host software can all refer to; an enclosure or environment class has no identity level of its own, and a population or mechanical difference is a variant only *within* one product ([Hardware Design Guide §17.2](https://github.com/auriora-org/auriora-hardware-design-guide/blob/main/GUIDE.md#172-board-projects)). The shared PCB stays one board project consumed by both products.
+- Product numbers are assigned in sequence and carry no meaning: `AHUB-03` says nothing about ports or environment, and no numbering convention — ranges, parity, suffixes — encodes either. The family's product table (Section 8) is the authoritative reading of a product number.
 
 ### AES-ID-008: Serial Numbers
 
@@ -100,3 +102,10 @@ Ordinary project documentation — READMEs, design notes, test notes — does **
 ## 8. Name Mapping
 
 For each Released Product Family, keep the naming surfaces consistent and record them once (README or manifest): family identifier, public name, AOID, repository name, PCB marking prefix, firmware identifier and EEPROM identity fields. This is a SHOULD — the cost is one small table; the benefit is that support and manufacturing records stay reconcilable.
+
+From the moment a family has a second product number — not only at Release — the same README SHOULD also carry a **product table**: one row per product number with its public name or working title, the host-visible contract in one line (ports, channels, capabilities, connector set), its environment class and enclosure, the board projects it consumes, and its maturity. Product numbers encode nothing (Section 5); the product table is where their meaning lives, and it is the one place that says which products share a PCB.
+
+| Product | Name | Contract | Environment / enclosure | Boards | Maturity |
+|---|---|---|---|---|---|
+| `AHUB-01` | AURIORA Hub | 4 Module Ports, 1 host interface | indoor, desktop enclosure | `ahub-01-main` | Active Development |
+| `AHUB-03` | AURIORA Hub | 4 Module Ports, 1 host interface | outdoor, IP-rated enclosure, gland connectors | `ahub-01-main` (shared), `ahub-03-panel` | Experimental |

@@ -4,6 +4,20 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. While the major version is zero the standard is in pre-Release development, which AES-VER-001 leaves informally versioned: an incompatible normative change increments `MINOR` and says so in its entry, and `1.0.0` follows when the Platform's interface specifications leave Draft. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [0.13.0] - 2026-10-16
+
+### Added
+
+- [Naming and Identity §8](./docs/04-naming-and-identity.md#8-name-mapping): a family README SHOULD carry a **product table** from the moment the family has a second product number — one row per product number with name, host-visible contract, environment class and enclosure, consumed board projects and maturity. Additive; no EDR, as it records the reading of product numbers that §5 already defines as meaningless in themselves.
+
+### Changed
+
+- [Naming and Identity §5](./docs/04-naming-and-identity.md#5-product-numbers-and-revisions): clarified that a product is the whole deliverable — two builds that share a fabricated PCB but differ in enclosure, environmental rating, external connectors, coating or cable set are two products with two product numbers, not one product with a variant, because the Product level is the only identity below the family that releases, serial batches, manufacturing packages, calibration records and host software can all refer to; the shared PCB stays one board project consumed by both. Product numbers are sequential and carry no meaning, and no numbering convention encodes ports or environment. Clarification of the existing compatibility rule; nothing Released behind it.
+
+### Decided against
+
+- A variant identity level between Product and Product Revision (`AHUB-01/O`) for environment-class builds; product-number ranges or suffixes by environment class; the enclosure as an independently identified artifact.
+
 ## [0.12.0] - 2026-10-02
 
 ### Added
