@@ -14,7 +14,7 @@ Start with [STANDARD.md](./STANDARD.md).
 4. [Architecture](./docs/03-architecture.md)
 5. [Naming and Identity](./docs/04-naming-and-identity.md)
 6. [Interfaces and Versioning](./docs/05-interfaces-and-versioning.md)
-7. [EEPROM Metadata](./docs/06-eeprom-metadata.md)
+7. [Unit Identity Record](./docs/06-eeprom-metadata.md)
 8. [Maturity and Release](./docs/07-maturity-and-release.md)
 9. [Decisions and Governance](./docs/08-decisions-and-governance.md)
 10. [Review Checklists](./docs/09-review-checklists.md)

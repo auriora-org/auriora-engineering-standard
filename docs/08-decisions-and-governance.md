@@ -35,7 +35,7 @@ Most decisions need no record beyond the work itself. The ladder:
 
 ### AES-EDR-001: EDR Trigger
 
-**Requirement:** An Engineering Decision Record SHALL be created for decisions that are platform-wide: introducing or changing canonical roles or frozen vocabulary, AOID taxonomy values, breaking changes to Released Host or Unit Interfaces, EEPROM schema major versions, Product Family supersession or identifier migration after Release, and changes to AES release or publication policy. These are the decisions that are difficult or expensive to reverse, compatibility-affecting, safety-critical, or shared across repositories and product families.
+**Requirement:** An Engineering Decision Record SHALL be created for decisions that are platform-wide: introducing or changing canonical roles or frozen vocabulary, AOID taxonomy values, breaking changes to Released Host or Unit Interfaces, identity record schema major versions, Product Family supersession or identifier migration after Release, and changes to AES release or publication policy. These are the decisions that are difficult or expensive to reverse, compatibility-affecting, safety-critical, or shared across repositories and product families.
 
 **Rationale:** These decisions outlive the person who made them and affect artifacts beyond the local repository. Everything not on this list needs, at most, a design note.
 

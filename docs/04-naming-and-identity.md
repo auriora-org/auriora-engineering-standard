@@ -64,7 +64,7 @@ Repository names are lowercase kebab-case and should include the family identifi
 
 ## 6. Object Identifiers (AOIDs)
 
-AOIDs give machine-readable identity to design families where tooling, EEPROM metadata or manifests need it:
+AOIDs give machine-readable identity to design families where tooling, Unit identity records or manifests need it:
 
 ```text
 AOID:<NAMESPACE>:<CLASS>:<DOMAIN>:<FAMILY>:<SERIES>
@@ -79,9 +79,9 @@ Example: `AOID:PUB:UNIT:MEAS:AAC:001`.
 
 ### AES-ID-006: AOID Assignment
 
-**Requirement:** Every Released artifact that participates in machine-readable identity — a Unit carrying EEPROM metadata, a versioned Host or Unit Interface contract, a manufacturing package referenced by records — SHALL have an AOID, frozen at Release, using `PUB` namespace unless deprecated or retired. Experimental and internal artifacts do not need AOIDs; when they use one anyway, they SHALL NOT use the `PUB` namespace.
+**Requirement:** Every Released artifact that participates in machine-readable identity — a Unit serving an identity record, a versioned Host or Unit Interface contract, a manufacturing package referenced by records — SHALL have an AOID, frozen at Release, using `PUB` namespace unless deprecated or retired. Experimental and internal artifacts do not need AOIDs; when they use one anyway, they SHALL NOT use the `PUB` namespace.
 
-**Rationale:** Names and repositories move; identity baked into EEPROMs, calibration records and manifests must not. Requiring AOIDs only where machines consume them keeps the mechanism useful without turning it into paperwork.
+**Rationale:** Names and repositories move; identity baked into Unit identity records, calibration records and manifests must not. Requiring AOIDs only where machines consume them keeps the mechanism useful without turning it into paperwork.
 
 AOID bookkeeping is a simple list in the [Document Index](./document-index.md) (or a family repository's README) — enough to prevent collisions. New taxonomy values (a new class or domain code) need an EDR, because they become uninterpretable if invented ad hoc.
 
@@ -101,7 +101,7 @@ Ordinary project documentation — READMEs, design notes, test notes — does **
 
 ## 8. Name Mapping
 
-For each Released Product Family, keep the naming surfaces consistent and record them once (README or manifest): family identifier, public name, AOID, repository name, PCB marking prefix, firmware identifier and EEPROM identity fields. This is a SHOULD — the cost is one small table; the benefit is that support and manufacturing records stay reconcilable.
+For each Released Product Family, keep the naming surfaces consistent and record them once (README or manifest): family identifier, public name, AOID, repository name, PCB marking prefix, firmware identifier and identity record fields. This is a SHOULD — the cost is one small table; the benefit is that support and manufacturing records stay reconcilable.
 
 From the moment a family has a second product number — not only at Release — the same README SHOULD also carry a **product table**: one row per product number with its public name or working title, the host-visible contract in one line (ports, channels, capabilities, connector set), its environment class and enclosure, the board projects it consumes, and its maturity. Product numbers encode nothing (Section 5); the product table is where their meaning lives, and it is the one place that says which products share a PCB.
 

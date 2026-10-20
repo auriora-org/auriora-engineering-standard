@@ -16,7 +16,7 @@ This index records the AES documents and reserved companion document IDs, and ho
 | `AES-ARCH` | Architecture | `docs/03-architecture.md` |
 | `AES-NAME` | Naming and Identity | `docs/04-naming-and-identity.md` |
 | `AES-IF` | Interfaces and Versioning | `docs/05-interfaces-and-versioning.md` |
-| `AES-EEPROM` | EEPROM Metadata | `docs/06-eeprom-metadata.md` |
+| `AES-EEPROM` | Unit Identity Record (identifier and path historical: the record was an EEPROM until AES 0.14.0) | `docs/06-eeprom-metadata.md` |
 | `AES-REL` | Maturity and Release | `docs/07-maturity-and-release.md` |
 | `AES-GOV` | Decisions and Governance | `docs/08-decisions-and-governance.md` |
 | `AES-CHECK` | Review Checklists | `docs/09-review-checklists.md` |
@@ -73,8 +73,6 @@ Identifiers that appeared in a released AES version and were withdrawn. They are
 | `AFSG` | AURIORA Firmware Style Guide | [auriora-firmware-style-guide](https://github.com/auriora-org/auriora-firmware-style-guide) |
 | `ASSG` | AURIORA Software Style Guide | [auriora-software-style-guide](https://github.com/auriora-org/auriora-software-style-guide) |
 | `ADS` | AURIORA Documentation Standard | [auriora-documentation-standard](https://github.com/auriora-org/auriora-documentation-standard) |
-
-**Pending companion alignment.** The AURIORA Firmware Style Guide (`UIF_READY` lifecycle rule, declared execution model) and the AURIORA AI Engineering Knowledge Base (Unit identity and interface modules) still describe the Unit Interface of AES 0.13.0; each is updated in its own release round to [EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md), and this note is removed when both are.
 
 ## Family Identifier Register
 

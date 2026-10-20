@@ -125,7 +125,7 @@ These rules apply to Released artifacts (and to any prototype batch handed to an
 
 ### AES-MFG-003: Production Programming Records
 
-**Requirement:** Production programming of Released artifacts SHALL record firmware version and hash, programmed identity (AOID/serial), and EEPROM CRC verification.
+**Requirement:** Production programming of Released artifacts SHALL record firmware version and hash, programmed identity (AOID/serial), and identity record CRC verification.
 
 **Rationale:** Traceability links physical artifacts to release and calibration evidence.
 

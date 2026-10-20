@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 0.14.0
+**Version:** 0.14.1
 **Status:** Normative
 **Language:** English
 
@@ -70,7 +70,7 @@ There are no conformance certificates, conformance statements or traceability ma
 | [03 Architecture](./docs/03-architecture.md) | Platform structure; Module, Controller and Unit design rules; unattended autonomous operation; default controller platform strategy; the optional Module Hub, its host-facing interface, its identity and capability discovery, Hub cascading with path addressing, and the Module Port; the Module's external interface roles and the separation of communication from primary power. |
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Four-letter family identifiers and their register, product numbers versus revisions, serials, AOIDs, document IDs. |
 | [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI), including autonomous continuation, deployment policy, recovery after reset, stored object retrieval and the Units a Module reports to the host. |
-| [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
+| [06 Unit Identity Record](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units, served over the Unit Link. |
 | [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profile (connector, contacts, cable, electrical layer, link protocol mapping), the AURIORA Event Link (AEL), the Module Port with the AURIORA Link Cable, and the Module Power Interface. |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
 | [08 Decisions and Governance](./docs/08-decisions-and-governance.md) | Fixed historical decisions; when ADRs/EDRs are needed; small-team governance. |

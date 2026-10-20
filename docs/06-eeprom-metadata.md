@@ -1,4 +1,4 @@
-# 06 EEPROM Metadata Specification
+# 06 Unit Identity Record
 
 **Document ID:** AES-EEPROM
 **Status:** Normative
@@ -6,11 +6,11 @@
 
 ## 1. Purpose
 
-AES EEPROM metadata provides machine-readable identity and compatibility data for replaceable Units. It is the default electronic identity contract required by [AES-UNIT-001](./03-architecture.md#aes-unit-001-electronic-identity) for Released replaceable Units.
+The **Unit identity record** provides machine-readable identity and compatibility data for replaceable Units. It is the default electronic identity contract required by [AES-UNIT-001](./03-architecture.md#aes-unit-001-electronic-identity) for Released replaceable Units.
 
-The record is the **Unit identity record**: the Unit controller serves it over the Unit Link in the discovery state ([`UIF-RS485-4` §6–7](./interfaces/uif-rs485-4.md#6-discovery-activation-and-recovery)), and whether the controller holds it in an EEPROM, in its own nonvolatile memory or elsewhere is Unit-internal. The chapter keeps its name and its binary layout from the profiles on which a host read the EEPROM directly ([EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md)).
+The Unit controller serves the record over the Unit Link in the discovery state ([`UIF-RS485-4` §6–7](./interfaces/uif-rs485-4.md#6-discovery-activation-and-recovery)). Where the controller keeps it — a write-protected flash page, OTP, or an EEPROM behind the controller — is Unit-internal and invisible to the host; no EEPROM is required. The document identifier `AES-EEPROM`, the requirement identifiers `AES-EEPROM-*` and the file name date from the profiles on which a host read an EEPROM directly ([EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md)); they are kept because released artifacts cite them ([AES-DOCID-001](./04-naming-and-identity.md#aes-docid-001-document-identifiers-for-standards)), and they name the record, not a part.
 
-**Applicability:** this specification binds Units that carry AES EEPROM identity and the Modules that read it. Experimental Units may omit identity entirely or use a draft layout — marked as such — without any exception paperwork.
+**Applicability:** this chapter binds Units that serve a Unit identity record and the hosts that read it. Experimental Units may omit identity entirely or use a draft layout — marked as such — without any exception paperwork.
 
 ## 2. Logical Data Model
 
@@ -19,7 +19,7 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 | Field | Type | Required | Description |
 |---|---|---:|---|
 | Magic | `u32` | Yes | ASCII `AURM` (`0x4155524D`). |
-| Schema Version | `u16.major`, `u16.minor` | Yes | EEPROM schema version. |
+| Schema Version | `u16.major`, `u16.minor` | Yes | Record schema version. |
 | Header Length | `u16` | Yes | Bytes from start through fixed header. |
 | Total Length | `u16` | Yes | Bytes used by all metadata. |
 | Unit AOID | fixed ASCII | Yes | Unit object identifier. |
@@ -36,7 +36,7 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 
 ### AES-EEPROM-001: Required Identity Fields
 
-**Requirement:** Unit EEPROM metadata SHALL contain magic, schema version, Unit AOID, Unit Interface AOID, Unit Interface version, hardware revision, serial number and CRC.
+**Requirement:** The Unit identity record SHALL contain magic, schema version, Unit AOID, Unit Interface AOID, Unit Interface version, hardware revision, serial number and CRC.
 
 **Rationale:** These are the minimum fields for identity, compatibility and instance traceability.
 
@@ -54,7 +54,7 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 
 ### AES-EEPROM-004: Calibration Reference Integrity
 
-**Requirement:** If Unit behavior depends on calibration, EEPROM metadata SHALL contain either calibration constants with schema version and units, or a calibration record identifier resolving to an immutable calibration record.
+**Requirement:** If Unit behavior depends on calibration, the identity record SHALL contain either calibration constants with schema version and units, or a calibration record identifier resolving to an immutable calibration record.
 
 **Rationale:** Measurements and stimulation values are not credible without traceable calibration.
 
@@ -72,9 +72,11 @@ The metadata SHALL be encoded in a deterministic binary layout or a documented s
 
 ### AES-EEPROM-007: Metadata Trust Model
 
-**Requirement:** Modules SHALL treat EEPROM metadata as unauthenticated input. The CRC is an integrity check, not proof of origin. Module-level safety limits SHALL be enforced regardless of what a Unit declares. Applications where counterfeit or tampered Units are a credible risk SHOULD document additional verification.
+**Requirement:** Modules SHALL treat the identity record as unauthenticated input. The CRC is an integrity check, not proof of origin. Module-level safety limits SHALL be enforced regardless of what a Unit declares. Applications where counterfeit or tampered Units are a credible risk SHOULD document additional verification.
 
-**Rationale:** A corrupted, cloned or maliciously programmed EEPROM can claim anything; the Module must remain safe even when the metadata lies.
+**Rationale:** A corrupted, cloned or maliciously programmed record can claim anything; the Module must remain safe even when the metadata lies.
+
+A factory-programmed unique identifier — an EEPROM EUI, a controller UID — is unique, not secret, and proves nothing about origin: a copy can be read from a genuine part and replayed by any controller, and the record is served by firmware in any case. Where origin matters — a Unit whose calibration, safety limits or warranty depend on who built it — the mechanism is a **signed identity record**: an optional TLV record carrying a signature by an AURIORA manufacturing key over the identity record and the controller's unique identifier, which a host verifies against the Platform's public key and which a copy cannot reproduce without the private key. It is not defined in this version; it is added as a TLV record by EDR when the first Unit needs it, and until then no host SHALL treat any identifier in the record as proof of origin.
 
 ### AES-EEPROM-008: Profile and API Metadata
 
@@ -104,7 +106,7 @@ A host SHALL be able to reject a Unit whose profile or API version it does not s
 
 ## 4. Standard Binary Header
 
-The default layout for small EEPROMs. Multibyte integers are little-endian.
+The default binary layout, sized for a small nonvolatile store. Multibyte integers are little-endian.
 
 | Offset | Size | Field |
 |---:|---:|---|

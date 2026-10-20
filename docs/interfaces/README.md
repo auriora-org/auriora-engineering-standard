@@ -1,7 +1,7 @@
 # Interface Specifications
 
 **Status:** Per-specification status stated in each file (all are currently Draft)
-**Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [EEPROM Metadata](../06-eeprom-metadata.md)
+**Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [Unit Identity Record](../06-eeprom-metadata.md)
 
 This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profile**, the **AURIORA Event Link**, the **Module Port** and the **Module Power Interface**.
 

@@ -3,7 +3,7 @@
 **Profile Identifier:** `UIF-RS485-4`
 **Version:** `0.1`
 **Status:** Draft
-**Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [EEPROM Metadata](../06-eeprom-metadata.md), [Architecture](../03-architecture.md), [Module Power Interface](./module-power.md)
+**Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [Unit Identity Record](../06-eeprom-metadata.md), [Architecture](../03-architecture.md), [Module Power Interface](./module-power.md)
 
 This is a versioned [Unit Interface Profile](../05-interfaces-and-versioning.md#31-unit-interface-signals-and-profiles). The profile-independent rules — the `UIF_` signal set, the *enabled* and *ready* states, discovery and activation ([AES-UNIT-007](../03-architecture.md#aes-unit-007-deterministic-discovery-and-activation-sequence)), one Unit per port ([AES-IF-009](../05-interfaces-and-versioning.md#aes-if-009-one-unit-per-port)), profile declaration ([AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-declaration)) and profile versioning ([AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)) — apply and are not repeated here. This file defines only what is specific to `UIF-RS485-4`.
 
@@ -104,7 +104,7 @@ The profile-independent sequence of [AES-UNIT-007](../03-architecture.md#aes-uni
 
 1. **Port power on.** The host enables the Unit Port's power switch. The Unit's discovery domain starts; its functional domain stays off.
 2. **Identity request.** The host polls the port with an identity request. **Presence is a valid answer**: a port that answers has a Unit, a port that does not has none, and no presence contact exists.
-3. **Identity record.** The Unit answers with its Unit identity record — the field set and binary layout of [EEPROM Metadata](../06-eeprom-metadata.md), served by the Unit controller from nonvolatile memory. Where the controller keeps it in an EEPROM behind it is a Unit-internal matter.
+3. **Identity record.** The Unit answers with its Unit identity record — the field set and binary layout of the [Unit Identity Record](../06-eeprom-metadata.md), served by the Unit controller from nonvolatile memory. Where the controller keeps it in an EEPROM behind it is a Unit-internal matter.
 4. **Validation.** The host validates in the order of [AES-EEPROM-002](../06-eeprom-metadata.md#aes-eeprom-002-deterministic-validation-order): magic, length, CRC, schema, AOID format, profile identifier `UIF-RS485-4` and version, Unit API identifier and version, capability limits, power requirements against the port's capability, calibration validity where applicable.
 5. **Enable.** If the Unit is supported, the host sends *enable*. The Unit switches its functional domain on locally. If the Unit is unsupported, incompatible, invalid or exceeds the port's power capability, the host does not send *enable*; it MAY leave the port powered in the discovery state or de-energize it.
 6. **Ready.** The host polls status until the Unit reports *ready*, within the bound of Section 5.3.
@@ -114,7 +114,7 @@ The profile-independent sequence of [AES-UNIT-007](../03-architecture.md#aes-uni
 
 ## 7. Identity Record
 
-A Unit on this profile serves the [EEPROM Metadata](../06-eeprom-metadata.md) record over the link: the fixed header of its Section 4 and the TLV extension records of [AES-EEPROM-008](../06-eeprom-metadata.md#aes-eeprom-008-profile-and-api-metadata). It SHALL declare profile identifier `UIF-RS485-4`, profile version, Unit API identifier and version, capability flags, and the power fields — required input voltage, maximum start-up current and its duration, maximum operating current, nominal operating current, maximum discovery-state current — that the host validates against its port before *enable*. A Unit API transport address is not declared: the profile has none.
+A Unit on this profile serves the [Unit Identity Record](../06-eeprom-metadata.md) over the link: the fixed header of its Section 4 and the TLV extension records of [AES-EEPROM-008](../06-eeprom-metadata.md#aes-eeprom-008-profile-and-api-metadata). It SHALL declare profile identifier `UIF-RS485-4`, profile version, Unit API identifier and version, capability flags, and the power fields — required input voltage, maximum start-up current and its duration, maximum operating current, nominal operating current, maximum discovery-state current — that the host validates against its port before *enable*. A Unit API transport address is not declared: the profile has none.
 
 The identity record SHALL be readable in the discovery state, SHALL NOT change while the port is powered, and SHOULD be write-protected after manufacturing verification ([AES-EEPROM-005](../06-eeprom-metadata.md#aes-eeprom-005-writable-field-control)).
 
@@ -162,7 +162,7 @@ Decided by [EDR-017](../edr/EDR-017-unit-link-profile-and-family-consolidation.m
 - `UIF_PWR_VIN` in the Module Power Interface band 10.0–15.0 V, locally regulated on the Unit; per-port switch and current limit; discovery domain powered from the port; functional domain switched locally on *enable*.
 - One half-duplex RS-485-class pair, terminated both ends, fail-safe idle owned by the Module end; the Module polls, the Unit answers; one electrical profile and framing shared with `MCL`.
 - Discovery, *enable*, *disable*, *ready* and *events pending* as link protocol; presence is a valid answer; recovery is a port power cycle; no reset, presence, event or enable contact.
-- The EEPROM Metadata record served over the link as the Unit identity record; no transport address.
+- The Unit identity record (AES chapter 06) served over the link; no transport address.
 - Isolation a documented product decision; internal realization with a product-chosen connector, the JST SH 1.00 mm 4-position with the same position assignment recommended; captive cable permitted on the Unit.
 - The same mis-mating logic as the Module Power Interface, by sharing positions 1 and 3.
 
@@ -176,6 +176,7 @@ Decided before this specification reaches `1.0`, by an explicit Platform decisio
 - **Unit input no-damage range**; the Platform's recommended per-port current limit and the Unit cable's recommended conductor size per length.
 - **Sleep and wake**: the maximum wake-up time on line activity, and whether a wake preamble is part of the framing.
 - **Environmental rating** (IP class, temperature) of the connector and cable, as a Platform minimum or a product statement.
+- **Origin assurance.** A signed identity record — a TLV carrying a manufacturing-key signature over the record and the controller's unique identifier ([AES-EEPROM-007](../06-eeprom-metadata.md#aes-eeprom-007-metadata-trust-model)) — is defined by EDR when a Unit needs proof of origin; the profile's discovery exchange is designed so that such a record rides in the same identity answer.
 - **Transceiver supply.** Whether the Unit transceiver runs at 3.3 V or 5 V is a Unit-internal choice as long as the line levels meet the profile; whether the profile constrains it is decided with the electrical figures.
 
 ## 12. Version History
