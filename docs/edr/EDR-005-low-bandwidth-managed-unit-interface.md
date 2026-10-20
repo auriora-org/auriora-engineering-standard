@@ -8,6 +8,8 @@ Proposed
 
 Supersedes the AENU-01 consequence of [EDR-003](./EDR-003-uif-mspi-connector-and-pin-assignment.md) and resolves its open identifier item. EDR-003's connector and pin assignment stand unchanged.
 
+*Decision items 1–6 and 8 are superseded by [EDR-017](./EDR-017-unit-link-profile-and-family-consolidation.md) (AES 0.14.0): `UIF-MI2C-8` is replaced by `UIF-RS485-4`, the Passive execution model and the discrete control signals are withdrawn, and AENU-01 retargets. The separation of management model from transport and the identifier pattern established here stand as reasoning. This record is kept unchanged as the history of that decision.*
+
 ## Context
 
 AES 0.2.0 introduced two Unit execution models (Passive, Managed) and two Unit Interface Profiles: [`UIF-I2C-6`](../interfaces/uif-i2c-6.md), a six-signal profile described as being for "Passive Units and simple I²C-based Units", and [`UIF-MSPI-14`](../interfaces/uif-mspi-14.md), a twelve-signal, fourteen-position profile for "Managed Units requiring a high-level SPI API".

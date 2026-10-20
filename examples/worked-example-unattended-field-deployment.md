@@ -10,7 +10,7 @@ This example walks one Module through an unattended deployment under [AES-MCI-00
 
 ```text
 AURIORA Studio ──── USB (direct local MCI) ──── APEM ──── 8 electrode inputs
-                                                  └─────── Environmental Unit (UIF-MI2C-8)
+                                                  └─────── Environmental Unit (UIF-RS485-4)
 ```
 
 No Module Hub. No AEL: nothing needs to react to anything else. No network. The host is a laptop that will leave with the researcher.
@@ -62,7 +62,7 @@ requested host_loss = continue           declared: yes
 requested recovery = resume              declared: yes
 requested storage_exhaustion = stop      declared: yes
 storage: 8 ch × 3 B × 200 S/s × 21 d ≈ 8.7 GB + environmental + logs   free 60.9 GB   ok
-environmental Unit: discovered, UIF-MI2C-8 0.1, API 1.2, UIF_READY high   ok
+environmental Unit: discovered, UIF-RS485-4 0.1, API 1.2, ready           ok
 ```
 
 Had the host requested `recovery_after_reset = restart`, the Module would have refused with *invalid deployment policy*, naming the behavior, and nothing would have been substituted. A storage estimate is possible here because this Module exposes free space and the Session's rate is known; a Module that exposes less makes a smaller promise, and the host says so.
@@ -95,7 +95,7 @@ recovery  persistent deployment state: present, schema 1, CRC ok
           policy: recovery_after_reset = resume            → recovery is authorized in principle
           configuration 7a10… present, hash matches
           session FIELD-21D 3c9e… present, hash matches
-          environmental Unit: rediscovered, same serial, UIF_READY high
+          environmental Unit: rediscovered, same serial, ready
           storage: mounted, journal replayed, last committed block at sample 155 519 800
           consecutive recoveries: 0 → 1  (bound 3)
           arming checks: pass

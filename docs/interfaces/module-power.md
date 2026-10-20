@@ -13,7 +13,7 @@ Throughout, *device* means a Module or a Module Hub, and *input* means the devic
 
 ## 1. Purpose
 
-Every device generates its own internal rails. What it needs from outside is one standard, safe, unambiguous DC input that a bench supply, a field power source or a future Platform power distributor can provide with one connector and one cable, independent of how many devices share the installation and independent of whether a Module Hub is present. The Module Power Interface is that input. It is not the Unit Interface's managed power (`UIF_PWR_VIN`, `UIF_PWR_EN`), which is a Module-to-Unit contract inside a Module; it is not USB power, which is an optional service convenience; and it is not carried on the [Module Port](./module-port.md).
+Every device generates its own internal rails. What it needs from outside is one standard, safe, unambiguous DC input that a bench supply, a field power source or a future Platform power distributor can provide with one connector and one cable, independent of how many devices share the installation and independent of whether a Module Hub is present. The Module Power Interface is that input. It is not the Unit Interface's managed power (`UIF_PWR_VIN` on a Unit Port), which is a Module-to-Unit contract of its own; it is not USB power, which is an optional service convenience; and it is not carried on the [Module Port](./module-port.md).
 
 The Platform standardizes the DC interface, not the supply behind it. What produces the 12 V — a mains adapter, a laboratory supply, a battery, a solar charge controller, a power distributor — is outside this specification; a source conforms by what it presents at its output (Section 6).
 

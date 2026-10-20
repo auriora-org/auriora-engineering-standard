@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 0.13.0
+**Version:** 0.14.0
 **Status:** Normative
 **Language:** English
 
@@ -71,13 +71,12 @@ There are no conformance certificates, conformance statements or traceability ma
 | [04 Naming and Identity](./docs/04-naming-and-identity.md) | Four-letter family identifiers and their register, product numbers versus revisions, serials, AOIDs, document IDs. |
 | [05 Interfaces and Versioning](./docs/05-interfaces-and-versioning.md) | Interface contracts, compatibility, versioning and evolution; the AURIORA Event Link (AEL); the Module Control Interface (MCI), including autonomous continuation, deployment policy, recovery after reset, stored object retrieval and the Units a Module reports to the host. |
 | [06 EEPROM Metadata](./docs/06-eeprom-metadata.md) | Electronic identity contract for replaceable Units. |
-| [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profiles (connectors, pinouts, electrical limits, selection matrix), the AURIORA Event Link (AEL), the Module Port with the AURIORA Link Cable, and the Module Power Interface. |
+| [Interface Specifications](./docs/interfaces/README.md) | Concrete, versioned interface specifications: the Unit Interface Profile (connector, contacts, cable, electrical layer, link protocol mapping), the AURIORA Event Link (AEL), the Module Port with the AURIORA Link Cable, and the Module Power Interface. |
 | [07 Maturity and Release](./docs/07-maturity-and-release.md) | Maturity levels in detail; documentation minimums; release, manufacturing, testing, calibration and open hardware requirements. |
 | [08 Decisions and Governance](./docs/08-decisions-and-governance.md) | Fixed historical decisions; when ADRs/EDRs are needed; small-team governance. |
 | [09 Review Checklists](./docs/09-review-checklists.md) | One general engineering checklist and a release checklist. |
 | [Document Index](./docs/document-index.md) | Index of AES documents, companion documents, the Family Identifier Register, AOID assignments and retired IDs. |
 | [Worked Example: Module Lifecycle](./examples/worked-example-module-lifecycle.md) | One hypothetical Module from breadboard to release across the maturity levels. |
-| [Worked Example: Profile Selection](./examples/worked-example-unit-interface-profile-selection.md) | Four planned Units assessed against the Unit Interface Profile selection rule. |
 | [Worked Example: Multimodal AEL Experiment](./examples/worked-example-multimodal-ael-experiment.md) | A closed-loop bench of one measurement and three stimulus Modules on two Module Hubs: compiled event identifiers, bindings, routes, arming, a host disconnect, and the record that decodes it all — plus the same frame on a Hub-free pair. |
 | [Worked Example: Unattended Field Deployment](./examples/worked-example-unattended-field-deployment.md) | One Module prepared over a local cable and left alone for three weeks: Session versus deployment policy, validation, host loss, a power loss recovered as a new run segment, a refused recovery, storage exhaustion, and the readback afterwards — no Hub, no AEL, no host. |
 
@@ -204,9 +203,9 @@ Engineering Decision Records (platform-wide engineering decisions):
 
 - [EDR-001: Controllers Are Separated from Modules](./docs/edr/EDR-001-controller-module-separation.md)
 - [EDR-002: Unit Identity Is Electronic and Runtime-Discoverable](./docs/edr/EDR-002-runtime-unit-identity.md)
-- [EDR-003: UIF-MSPI-14 Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md)
+- [EDR-003: UIF-MSPI-14 Connector and Pin Assignment](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md) — connector and pinout superseded by EDR-017
 - [EDR-004: Default Controller Platforms](./docs/edr/EDR-004-default-controller-platforms.md)
-- [EDR-005: A Low-Bandwidth Managed Unit Interface Profile](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md)
+- [EDR-005: A Low-Bandwidth Managed Unit Interface Profile](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md) — profile decisions superseded by EDR-017
 - [EDR-006: Module Synchronization Interface](./docs/edr/EDR-006-module-synchronization-interface.md) — superseded by EDR-008
 - [EDR-007: Module Control Interface and Module Hub](./docs/edr/EDR-007-module-control-interface-and-module-hub.md) — SYNC parts superseded by EDR-008
 - [EDR-008: AURIORA Event Link](./docs/edr/EDR-008-auriora-event-link.md) — supersedes EDR-006; connector items superseded by EDR-011
@@ -218,3 +217,4 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-014: Four-Letter Family Identifiers and the Family Identifier Register](./docs/edr/EDR-014-four-letter-family-identifiers-and-register.md)
 - [EDR-015: Module Power Interface Limits and External Connector Reservation](./docs/edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) — closes the EDR-011 power items
 - [EDR-016: Default Hardware License and Hardware Repository Structure](./docs/edr/EDR-016-default-hardware-license-and-repository-structure.md)
+- [EDR-017: The Unit Link Profile and Unit Interface Family Consolidation](./docs/edr/EDR-017-unit-link-profile-and-family-consolidation.md)

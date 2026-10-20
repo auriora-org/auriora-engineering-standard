@@ -4,6 +4,39 @@ All notable changes to the AURIORA Engineering Standard (AES) are documented in 
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/). AES releases use semantic versioning as required by [AES-VER-001](./docs/05-interfaces-and-versioning.md#aes-ver-001-semantic-versioning-for-released-contracts): `MAJOR` for incompatible normative change, `MINOR` for backward-compatible normative addition, `PATCH` for clarification or defect correction. While the major version is zero the standard is in pre-Release development, which AES-VER-001 leaves informally versioned: an incompatible normative change increments `MINOR` and says so in its entry, and `1.0.0` follows when the Platform's interface specifications leave Draft. Entries record normative changes with their requirement identifiers; editorial changes are either omitted or explicitly marked as editorial, per [AES-GOV-011](./docs/08-decisions-and-governance.md#aes-gov-011-standard-change-record).
 
+## [0.14.0] - 2026-10-20
+
+**Incompatible normative change** (pre-Release, per the versioning note above): the Unit Interface is rebuilt around one differential link profile. Nothing Released stands behind the withdrawn material; AENU-01's rework retargets before hardware.
+
+### Added
+
+- **The Unit Link profile** ([EDR-017](./docs/edr/EDR-017-unit-link-profile-and-family-consolidation.md)).
+  - Interface specification **`AURIORA UIF-RS485-4`** ([`docs/interfaces/uif-rs485-4.md`](./docs/interfaces/uif-rs485-4.md), `0.1`, Draft): the Platform's single Unit Interface Profile — M8 4-position A-coded, female / socket-contact **Unit Port** on the Module, male / pin-contact input or captive cable on the Unit, the generic straight male-to-female cordset as the Unit cable; positions 1 `UIF_PWR_VIN`, 2 `UIF_LINK_P`, 3 `GND`, 4 `UIF_LINK_N`; `UIF_PWR_VIN` in the Module Power Interface band 10.0–15.0 V, switched and current-limited per port, the Unit regulating locally; one half-duplex RS-485-class pair, point to point, the port polling, sharing the `MCL` binding's electrical profile and framing; discovery, *enable*, *disable*, *ready* and *events pending* as link protocol; presence is a valid answer; recovery is a port power cycle; internal realization with the JST SH 1.00 mm 4-position connector recommended on the same position assignment, and captive cable permitted; isolation a documented product decision; mis-mating with the power interface harmless by sharing positions 1 and 3. Framing, bit rate, timing figures, currents and lengths open.
+  - [Terminology](./docs/02-terminology.md): **Unit Port** and **Unit Link**.
+  - [Document Index](./docs/document-index.md#external-connector-register): the M8 4-position A-coded form assigned — female panel to the Unit Port, male panel to a Unit input, male-to-female cable as the Unit cable, same-gender cables prohibited.
+
+### Changed
+
+- `AES-IF-009` is now **One Unit per Port** ([Interfaces and Versioning §3.2](./docs/05-interfaces-and-versioning.md#aes-if-009-one-unit-per-port)): point-to-point only, no transport address, the port index held as topology separate from identity, any Unit on any port. Replaces the I²C address allocation rule.
+- `AES-IF-010` is now **Unit Interface Profile Declaration** ([§3.2](./docs/05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-declaration)): one profile declared; no Unit-specific contacts or side channels; a need beyond the profile — deterministic timing, streaming, sub-millisecond latency, a hardware time reference — is a new profile by EDR. Replaces the selection rule and its criteria table.
+- `AES-UNIT-006` is now **Declared Capabilities and Unit API** ([Architecture §5](./docs/03-architecture.md#aes-unit-006-declared-capabilities-and-unit-api)); the execution-model declaration is withdrawn.
+- `AES-UNIT-007` ([Architecture §5](./docs/03-architecture.md#aes-unit-007-deterministic-discovery-and-activation-sequence)) restated for the link: the same seven steps with port power, identity request, *enable* and *ready* in place of `UIF_PWR_VIN`-only, EEPROM read, `UIF_PWR_EN` and `UIF_READY`; every Unit Port SHALL have its own power switch and current limit.
+- `AES-IF-008`: a rejected Unit is not enabled (was: `UIF_PWR_EN` left LOW). [Interfaces and Versioning §3.1](./docs/05-interfaces-and-versioning.md#31-unit-interface-signals-and-profiles): the `UIF_` signal set is `UIF_PWR_VIN`, `GND`, `UIF_LINK_P`, `UIF_LINK_N`; the *enable*, *ready* and *events pending* states defined; identifier pattern `UIF-<transport>-<positions>`. [§3.2](./docs/05-interfaces-and-versioning.md#32-profile-family): one profile and one recognized empty cell. [§5.1](./docs/05-interfaces-and-versioning.md#51-transport-bindings): the Unit Link shares the `MCL` binding.
+- [Architecture §5.1](./docs/03-architecture.md#51-execution-model-and-transport): every Unit is a Managed Unit; a controller-less board is a subassembly or a Unit's internal device. `AES-UNIT-001` exemption wording; `AES-MOD-005` names Unit Ports among measurement-side connectors.
+- `AES-EEPROM-002`: validation order starts with port power, link availability and an answer to the identity request. `AES-EEPROM-008` is now **Profile and API Metadata**: the execution-model and Unit API transport-address TLV records are withdrawn; the record is served over the Unit Link as the Unit identity record ([EEPROM Metadata §1](./docs/06-eeprom-metadata.md#1-purpose)).
+- [Naming and Identity §5](./docs/04-naming-and-identity.md#5-product-numbers-and-revisions): a Module's Unit Port count named as part of the host-visible contract.
+- `AES-MCI-003` wording: a Module reports each Unit's declared capabilities and Unit API version (was: execution model and capabilities). [Module Power Interface §1](./docs/interfaces/module-power.md): cross-reference to the Unit Port's managed power.
+- [Document Index](./docs/document-index.md): `AENU-01` AOID note; pending companion alignment note for the Firmware Style Guide and the AI Engineering Knowledge Base.
+- [`examples/worked-example-unattended-field-deployment.md`](./examples/worked-example-unattended-field-deployment.md): profile and state names.
+
+### Removed
+
+- **`UIF-I2C-6`**, **`UIF-MI2C-8`** and **`UIF-MSPI-14`** withdrawn ([Retired Identifiers](./docs/document-index.md#retired-identifiers)); their files remain as notices and their full text is in the `v0.13.0` tag. The **Passive execution model** withdrawn. The discrete signals **`UIF_PWR_EN`, `UIF_READY`, `UIF_IRQ_N`, `UIF_RESET_N`, `UIF_I2C_*`, `UIF_SPI_*`** withdrawn in favour of link states. **`AES-EXAMPLE-UIF-SELECTION`** withdrawn; its timing-over-volume finding is carried into `AES-IF-010`. [EDR-003](./docs/edr/EDR-003-uif-mspi-connector-and-pin-assignment.md) and [EDR-005](./docs/edr/EDR-005-low-bandwidth-managed-unit-interface.md) annotated as superseded.
+
+### Decided against
+
+- Keeping I²C and extending its reach; a multidrop RS-485 bus with Unit addresses; CAN; a full-duplex two-pair form in this version; the new profile beside the old ones; `UIF-MI2C-8` as an in-enclosure profile; `UIF-MSPI-14` kept as a placeholder for streaming; keeping the Passive model; M8 4-position B-coded, M12 and M8 8-position for the Unit Port; 5 V at the port; female-on-both-devices gender with a male-to-male cable; mandatory or default isolation.
+
 ## [0.13.0] - 2026-10-16
 
 ### Added

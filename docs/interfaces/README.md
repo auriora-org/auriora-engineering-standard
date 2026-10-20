@@ -3,25 +3,23 @@
 **Status:** Per-specification status stated in each file (all are currently Draft)
 **Depends On:** [Interfaces and Versioning](../05-interfaces-and-versioning.md), [EEPROM Metadata](../06-eeprom-metadata.md)
 
-This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profiles**, the **AURIORA Event Link**, the **Module Port** and the **Module Power Interface**.
+This directory holds the concrete, versioned interface specifications of the Platform: the **Unit Interface Profile**, the **AURIORA Event Link**, the **Module Port** and the **Module Power Interface**.
 
-The **Module Control Interface (MCI)** is defined transport-independently in [Interfaces and Versioning §5](../05-interfaces-and-versioning.md#5-module-control-interface) and has no specification here yet: its transport bindings — a direct local transport and the Module Control Link (`MCL`) — are open items ([EDR-007](../edr/EDR-007-module-control-interface-and-module-hub.md), [EDR-010](../edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)) and will be added as versioned binding specifications when their requirements are settled. `MCL`'s connector and its half-duplex single-pair model are already fixed by the Module Port specification below ([EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md)).
+The **Module Control Interface (MCI)** is defined transport-independently in [Interfaces and Versioning §5](../05-interfaces-and-versioning.md#5-module-control-interface) and has no specification here yet: its transport bindings — a direct local transport and the Module Control Link (`MCL`) — are open items ([EDR-007](../edr/EDR-007-module-control-interface-and-module-hub.md), [EDR-010](../edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md)) and will be added as versioned binding specifications when their requirements are settled. `MCL`'s connector and its half-duplex single-pair model are already fixed by the Module Port specification below ([EDR-011](../edr/EDR-011-module-external-interfaces-and-power.md)), and the Unit Link of `UIF-RS485-4` shares its electrical profile and framing ([EDR-017](../edr/EDR-017-unit-link-profile-and-family-consolidation.md)), so one binding specification will serve both.
 
-## Unit Interface Profiles
+## Unit Interface Profile
 
-The Unit Interface is realized through versioned profiles. The profile-independent rules — the `UIF_` signal set, `UIF_READY` semantics, the discovery and activation sequence, and profile versioning — live in [Interfaces and Versioning](../05-interfaces-and-versioning.md) ([AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)). The files here define the parts that are specific to one profile: connector, pinout, electrical limits and timing.
+The Unit Interface is realized through versioned profiles. The profile-independent rules — the `UIF_` signal set, the *enable*, *ready* and *events pending* link states, the discovery and activation sequence, one Unit per port, and profile versioning — live in [Interfaces and Versioning](../05-interfaces-and-versioning.md) ([AES-IF-008](../05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)). The file here defines the parts that are specific to the profile: connector, contacts, cable, electrical layer, link protocol mapping and mis-mating.
 
-Each profile is versioned independently. A Released Unit and its host declare the profile identifier and version they implement in EEPROM metadata ([AES-EEPROM-008](../06-eeprom-metadata.md#aes-eeprom-008-execution-model-profile-and-api-metadata)).
+Each profile is versioned independently. A Released Unit and its host declare the profile identifier and version they implement in the Unit identity record ([AES-EEPROM-008](../06-eeprom-metadata.md#aes-eeprom-008-profile-and-api-metadata)).
 
 | Profile | File | Positions | Status | Intended for |
 |---|---|---:|---|---|
-| `AURIORA UIF-I2C-6` | [uif-i2c-6.md](./uif-i2c-6.md) | 6 | Draft | Passive Units and simple I²C-based Units |
-| `AURIORA UIF-MI2C-8` | [uif-mi2c-8.md](./uif-mi2c-8.md) | 8 | Draft | Low-bandwidth Managed Units — the default Managed profile |
-| `AURIORA UIF-MSPI-14` | [uif-mspi-14.md](./uif-mspi-14.md) | 14 | Draft | Managed Units bound by throughput, latency, deterministic timing or streaming |
+| `AURIORA UIF-RS485-4` | [uif-rs485-4.md](./uif-rs485-4.md) | 4 | Draft | Every Unit: power in the Module Power Interface band and one half-duplex RS-485-class pair on an M8 4-position connector, point to point, inside the enclosure or metres away |
 
-Two axes select a profile: the **management model** (Passive or Managed) fixes the host contract, and the **transport** fixes the bus. They are independent — a Managed Unit is not required to use SPI. The selection rule is [AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-selection) and the family table is in [Interfaces and Versioning §3.2](../05-interfaces-and-versioning.md#32-profile-family-and-selection).
+The Platform has one profile ([EDR-017](../edr/EDR-017-unit-link-profile-and-family-consolidation.md)). A second cell — deterministic, streaming or time-reference transfer — is recognized and empty; it is filled by a new profile when a Unit needs it ([AES-IF-010](../05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-declaration)), never by a Unit-specific contact. Profile identifiers follow `UIF-<transport>-<positions>`.
 
-Profile identifiers follow `UIF-[M]<transport>-<positions>`. The position counts are deliberately distinct so no two profiles can mate: a host cannot energize or mis-drive a Unit built to a different contract.
+[uif-i2c-6.md](./uif-i2c-6.md), [uif-mi2c-8.md](./uif-mi2c-8.md) and [uif-mspi-14.md](./uif-mspi-14.md) are the withdrawn notices of the board-level profiles of AES `0.2.0`–`0.13.0`; they are not current interfaces.
 
 ## AURIORA Event Link
 

@@ -22,19 +22,18 @@ This index records the AES documents and reserved companion document IDs, and ho
 | `AES-CHECK` | Review Checklists | `docs/09-review-checklists.md` |
 | `AES-REG-DOC` | Document Index | `docs/document-index.md` |
 | `AES-EXAMPLE-MODULE-LIFECYCLE` | Worked Example: Module Lifecycle (informative) | `examples/worked-example-module-lifecycle.md` |
-| `AES-EXAMPLE-UIF-SELECTION` | Worked Example: Choosing a Unit Interface Profile (informative) | `examples/worked-example-unit-interface-profile-selection.md` |
 | `AES-EXAMPLE-AEL` | Worked Example: Multimodal AEL Experiment (informative) | `examples/worked-example-multimodal-ael-experiment.md` |
 | `AES-EXAMPLE-AUTONOMOUS` | Worked Example: Unattended Field Deployment (informative) | `examples/worked-example-unattended-field-deployment.md` |
 
 ## Interface Specifications
 
-Concrete, independently versioned Unit Interface Profiles (see [AES-IF-008](./05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles)):
+The Unit Interface Profile (see [AES-IF-008](./05-interfaces-and-versioning.md#aes-if-008-versioned-unit-interface-profiles), [EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md)):
 
 | Profile | Version | Status | Source Path |
 |---|---|---|---|
-| `AURIORA UIF-I2C-6` | 0.1 | Draft | `docs/interfaces/uif-i2c-6.md` |
-| `AURIORA UIF-MI2C-8` | 0.1 | Draft | `docs/interfaces/uif-mi2c-8.md` |
-| `AURIORA UIF-MSPI-14` | 0.1 | Draft | `docs/interfaces/uif-mspi-14.md` |
+| `AURIORA UIF-RS485-4` | 0.1 | Draft | `docs/interfaces/uif-rs485-4.md` |
+
+The withdrawn board-level profiles `UIF-I2C-6`, `UIF-MI2C-8` and `UIF-MSPI-14` are listed under Retired Identifiers; their files remain as notices.
 
 The AURIORA Event Link (see [AES-AEL-001](./05-interfaces-and-versioning.md#aes-ael-001-ael-is-the-module-level-typed-event-interface)):
 
@@ -60,6 +59,11 @@ Identifiers that appeared in a released AES version and were withdrawn. They are
 | `AES-SYNC-001` – `AES-SYNC-004` | Module Synchronization Interface requirements (Interfaces and Versioning §4, AES 0.6.0–0.7.1) | 0.8.0 | `AES-AEL-001` – `AES-AEL-005` ([EDR-008](./edr/EDR-008-auriora-event-link.md)) |
 | `AES-EXAMPLE-SYNC` | Worked Example: Module Synchronization (informative) | 0.8.0 | `AES-EXAMPLE-AEL` |
 | `AURIORA SYNC` (`docs/interfaces/sync.md`) | Module Synchronization Interface specification, 0.1 Draft | 0.8.0 | `AURIORA AEL` (`docs/interfaces/ael.md`); the file remains as a superseded notice |
+| `AURIORA UIF-I2C-6` (`docs/interfaces/uif-i2c-6.md`) | Passive Unit Interface Profile, 0.1 Draft (AES 0.2.0–0.13.0) | 0.14.0 | `AURIORA UIF-RS485-4`; the Passive execution model withdrawn with it ([EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md)); the file remains as a withdrawn notice |
+| `AURIORA UIF-MI2C-8` (`docs/interfaces/uif-mi2c-8.md`) | Low-bandwidth Managed Unit Interface Profile, 0.1 Draft (AES 0.5.0–0.13.0) | 0.14.0 | `AURIORA UIF-RS485-4` ([EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md)); the file remains as a superseded notice |
+| `AURIORA UIF-MSPI-14` (`docs/interfaces/uif-mspi-14.md`) | Managed SPI Unit Interface Profile, 0.1 Draft (AES 0.2.0–0.13.0) | 0.14.0 | None — the high-bandwidth cell stays open ([AES-IF-010](./05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-declaration)); the file remains as a withdrawn notice |
+| `AES-EXAMPLE-UIF-SELECTION` | Worked Example: Choosing a Unit Interface Profile (informative) | 0.14.0 | None; the file remains as a withdrawn notice |
+| `UIF_PWR_EN`, `UIF_READY`, `UIF_IRQ_N`, `UIF_RESET_N`, `UIF_I2C_*`, `UIF_SPI_*` | Discrete Unit Interface signals | 0.14.0 | The *enable*, *disable*, *ready* and *events pending* link states and the Unit Link `UIF_LINK_P`/`UIF_LINK_N` ([Interfaces and Versioning §3.1](./05-interfaces-and-versioning.md#31-unit-interface-signals-and-profiles)) |
 
 ## Companion Document IDs (reserved)
 
@@ -69,6 +73,8 @@ Identifiers that appeared in a released AES version and were withdrawn. They are
 | `AFSG` | AURIORA Firmware Style Guide | [auriora-firmware-style-guide](https://github.com/auriora-org/auriora-firmware-style-guide) |
 | `ASSG` | AURIORA Software Style Guide | [auriora-software-style-guide](https://github.com/auriora-org/auriora-software-style-guide) |
 | `ADS` | AURIORA Documentation Standard | [auriora-documentation-standard](https://github.com/auriora-org/auriora-documentation-standard) |
+
+**Pending companion alignment.** The AURIORA Firmware Style Guide (`UIF_READY` lifecycle rule, declared execution model) and the AURIORA AI Engineering Knowledge Base (Unit identity and interface modules) still describe the Unit Interface of AES 0.13.0; each is updated in its own release round to [EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md), and this note is removed when both are.
 
 ## Family Identifier Register
 
@@ -103,7 +109,10 @@ Every external connector form a Platform device may carry is entered here before
 | M8 A-coded 3-position | male / pin-contact at both ends of a cable | None — no Platform cable | Prohibited | [EDR-015](./edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) |
 | M8 A-coded 8-position | female / socket-contact, panel | Module Port (`MCL`, AEL IN, AEL OUT) on a Module, a Hub's Module Ports and its Hub-to-Hub link ports | Reserved — exclusive | [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md) |
 | M8 A-coded 8-position | male / pin-contact, cable | AURIORA Link Cable ends only; never a panel connector | Reserved | [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md) |
-| M8 A-coded 4-position | any | — | Unassigned | — |
+| M8 A-coded 4-position | female / socket-contact, panel | Unit Port (`UIF_PWR_VIN`, `GND`, Unit Link) on a Module or other Unit Interface Host | Assigned — exclusive | [EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md) |
+| M8 A-coded 4-position | male / pin-contact, panel | Unit input on a Unit; never energized from inside | Assigned | [EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md) |
+| M8 A-coded 4-position | male / pin-contact at the Module end, female / socket-contact at the Unit end, straight | Unit cable — the generic M8 4-position cordset | Assigned | [EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md) |
+| M8 A-coded 4-position | same gender at both ends of a cable | None — no Platform cable | Prohibited | [EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md) |
 | M12 | any | — ; candidate for a higher-power power profile | Unassigned | — |
 | USB-C | receptacle | Direct local transport of a Module; host-facing interface of a Module Hub | Assigned | [EDR-010](./edr/EDR-010-hub-host-facing-interface-and-stored-object-retrieval.md), [EDR-011](./edr/EDR-011-module-external-interfaces-and-power.md) |
 
@@ -113,5 +122,5 @@ Released artifacts that participate in machine-readable identity need an AOID ([
 
 | AOID | Artifact | Maturity |
 |---|---|---|
-| `AOID:PUB:UNIT:ENV:AENU:001` | AURIORA Environmental Sensor Unit (AENU-01); Managed Unit, first realization of the `UIF-MI2C-8` profile ([EDR-005](./edr/EDR-005-low-bandwidth-managed-unit-interface.md)); re-registered from `AEU` ([EDR-014](./edr/EDR-014-four-letter-family-identifiers-and-register.md)) | Pre-Release (provisional) |
+| `AOID:PUB:UNIT:ENV:AENU:001` | AURIORA Environmental Sensor Unit (AENU-01); first realization of the `UIF-RS485-4` profile ([EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md), superseding [EDR-005](./edr/EDR-005-low-bandwidth-managed-unit-interface.md)); re-registered from `AEU` ([EDR-014](./edr/EDR-014-four-letter-family-identifiers-and-register.md)) | Pre-Release (provisional) |
 | `AOID:PUB:HUB:GEN:AHUB:001` | AURIORA Hub (AHUB-01); `MCL` concentrator, AEL router, host-facing interface, cascading ([EDR-013](./edr/EDR-013-mcl-cascading-and-path-addressing.md)) | Pre-Release (provisional) |

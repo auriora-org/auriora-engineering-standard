@@ -26,7 +26,7 @@ A dedicated controller designed for a Module. A Controller implements control, s
 
 A replaceable functional building block connected to a Module. A Unit may provide sensing, stimulation, optical, acoustic, environmental, mechanical, electrical or identity functionality. A Unit SHALL be identifiable electronically when replaceability or compatibility matters (see [Architecture](./03-architecture.md) for the scope of this rule).
 
-A Unit is realized as one of two *execution models* — Passive Unit or Managed Unit (defined in Section 3). These are implementation models of a Unit, not separate top-level objects: both remain Units and use the same vocabulary, identity and interface rules.
+Every Unit is a Managed Unit (Section 3): it contains a controller and exposes a versioned Unit API. The Passive execution model — a Unit without firmware, driven directly by its host — was withdrawn in AES `0.14.0` ([EDR-017](./edr/EDR-017-unit-link-profile-and-family-consolidation.md)).
 
 ### Host Interface
 
@@ -34,7 +34,7 @@ The standard developer and integration interface exposed by Modules. A Host Inte
 
 ### Unit Interface
 
-The standard interface connecting Units to a Module. A Unit Interface includes physical connection, electrical behavior, communication, identity, compatibility and replacement rules. A Unit Interface is realized through one or more versioned Unit Interface Profiles (defined in Section 3); externally visible Unit Interface signals use the `UIF_` prefix ([Interfaces and Versioning](./05-interfaces-and-versioning.md)).
+The standard interface connecting Units to a Module. A Unit Interface includes physical connection, electrical behavior, communication, identity, compatibility and replacement rules. A Unit Interface is realized through one or more versioned Unit Interface Profiles (defined in Section 3); externally visible Unit Interface signals use the `UIF_` prefix ([Interfaces and Versioning](./05-interfaces-and-versioning.md)). A host connects one Unit at each Unit Port over the Unit Link (Section 3).
 
 ### Product Family
 
@@ -44,9 +44,10 @@ A durable AURIORA engineering family identified by a stable family identifier su
 
 | Term | Definition |
 |---|---|
-| Passive Unit | A Unit execution model in which the Unit has no independently executing application firmware; the host Module drives the Unit's sensors, actuators, converters or other functional circuits directly through the Unit Interface. A Passive Unit is not required to contain a microcontroller. |
-| Managed Unit | A Unit execution model in which the Unit contains one or more programmable controllers and exposes a versioned, high-level Unit API. The host Module operates the Unit through that API and is not required to know or control the Unit's internal components, register-level interfaces or radio/GNSS/sensor configuration. The model does not imply a transport: a Managed Unit may use an I²C or an SPI Unit Interface Profile. |
+| Managed Unit | A Unit execution model in which the Unit contains one or more programmable controllers and exposes a versioned, high-level Unit API. The host Module operates the Unit through that API and is not required to know or control the Unit's internal components, register-level interfaces or radio/GNSS/sensor configuration. Since AES `0.14.0` the only Unit execution model; the qualifier is kept because the identity record, the companion guides and earlier decisions use it. |
 | Unit API | The versioned, high-level application interface a Managed Unit exposes to its host Module: capabilities, operations, status and errors — not internal component types or register-level protocols. |
+| Unit Port | The connector on a Unit Interface Host at which one Unit is connected: the host end of a point-to-point Unit Interface Profile, with its own switched, current-limited `UIF_PWR_VIN`. Its index is topology metadata a host may report, never part of the Unit's identity ([AES-IF-009](./05-interfaces-and-versioning.md#aes-if-009-one-unit-per-port)). |
+| Unit Link | The half-duplex differential pair of a Unit Interface Profile (`UIF_LINK_P`/`UIF_LINK_N`) carrying discovery, the *enable*, *disable*, *ready* and *events pending* states and the Unit API between a Unit Port and its Unit. The port polls; the Unit answers. Shares its electrical profile and framing with `MCL`. |
 | Unit Interface Host | Whatever implements the host side of a Unit Interface port. Normally a Module, but also an adapter, test fixture or third-party host that implements the published profile and Unit API. Unit Interface obligations bind the Unit Interface Host; product-level safety policy remains a Module responsibility. |
 | AURIORA Event Link (AEL) | The Module-level interface that carries deterministic *typed events* between Modules: a point-to-point differential link carrying a small, fixed four-byte, integrity-protected event frame whose only semantic content is a numeric event identifier — no command, address, payload or timestamp. Works directly Module-to-Module or through an AEL router. Not part of the Unit Interface. Defined in [Interfaces and Versioning §4](./05-interfaces-and-versioning.md#4-auriora-event-link) and [`docs/interfaces/ael.md`](./interfaces/ael.md). |
 | AEL event | One AEL event frame: "configured event *N* occurred now", where *N* is the event identifier. Its consequence is defined by the receiving Module's receive bindings and state, and its meaning to the experiment by the deployment record — never by the frame beyond the identifier. |
@@ -78,7 +79,7 @@ A durable AURIORA engineering family identified by a stable family identifier su
 | Stored object retrieval | An optional MCI function ([AES-MCI-008](./05-interfaces-and-versioning.md#aes-mci-008-stored-object-retrieval)): a host enumerates a Module's stored objects and reads them by identity, offset and length in bounded chunks. Stateless, host-paced and read-only; a retrieval is complete when the assembled object matches its integrity value. |
 | Bulk transfer | The movement of an Asset, Session, firmware image or stored object over MCI in bounded chunks — throughput-oriented and latency-tolerant. One of the two classes of MCI traffic; the other is control. A bulk transfer never holds a link for longer than one chunk and never uses AEL. |
 | Live measurement stream | Continuous delivery of measurement data to a host while acquisition runs. Distinguished from an AEL event, from polled telemetry and from a recording read back afterwards. No Platform mechanism exists for it in this version of AES; a Module that offers one declares it. |
-| Unit Interface Profile | A versioned realization of the Unit Interface with a defined connector, pinout, signal set and electrical/timing behavior (for example `UIF-I2C-6`, `UIF-MI2C-8`, `UIF-MSPI-14`). Multiple profiles may exist concurrently; each is versioned independently. The profile is selected by transport requirements and is independent of the Unit's execution model. |
+| Unit Interface Profile | A versioned realization of the Unit Interface with a defined connector, pinout, signal set and electrical/timing behavior (`UIF-RS485-4`). Multiple profiles may exist concurrently; each is versioned independently. The profile is selected by transport requirements ([AES-IF-010](./05-interfaces-and-versioning.md#aes-if-010-unit-interface-profile-declaration)). |
 | Artifact | Any designed object governed by AES, including hardware, firmware, documents, tools and release packages. |
 | Family Identifier | A short stable AURIORA architectural identifier assigned to a Product Family and used across documents, PCB markings, firmware, repositories and manufacturing. |
 | Product | A released or release-intended realization within a Product Family. |
