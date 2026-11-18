@@ -86,7 +86,7 @@ The far end of a Hub-to-Hub link is left out on purpose, and with it loop recogn
 - **`MCL` cascading and addressing**: whether a Module Port may feed another Hub's management path, flat or hierarchical addressing in the binding, and with it a Module as bridge to a directly connected peer, host-side discovery of the device at the far end of a Hub-to-Hub link, run-time recognition of a cycle, and the name of the Hub-to-Hub link port. *Decided in [EDR-013](./EDR-013-mcl-cascading-and-path-addressing.md).*
 - **The form of the Hub's management contract** — MCI reuse preferred — decided with the direct local transport binding.
 
-**Open — product decisions, recorded with each product:** a Hub's Module Port and Hub-to-Hub link counts and whether its ports differ in capability; which Modules host Units and how many Unit Interfaces they present.
+**Open — product decisions, recorded with each product:** a Hub's Module Port and Hub-to-Hub link counts and whether its ports differ in capability; which Modules host Units and how many Unit Interfaces they present. *The count — of Unit Ports, since EDR-017 — is reported by the Module under [EDR-019](./EDR-019-hub-upstream-reporting-and-unit-port-declaration.md).*
 
 ## Affected Requirements / Documents
 

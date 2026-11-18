@@ -1,7 +1,7 @@
 # AURIORA Engineering Standard
 
 **Document ID:** AES-INDEX
-**Version:** 0.14.1
+**Version:** 0.15.0
 **Status:** Normative
 **Language:** English
 
@@ -218,3 +218,6 @@ Engineering Decision Records (platform-wide engineering decisions):
 - [EDR-015: Module Power Interface Limits and External Connector Reservation](./docs/edr/EDR-015-module-power-interface-limits-and-connector-reservation.md) — closes the EDR-011 power items
 - [EDR-016: Default Hardware License and Hardware Repository Structure](./docs/edr/EDR-016-default-hardware-license-and-repository-structure.md)
 - [EDR-017: The Unit Link Profile and Unit Interface Family Consolidation](./docs/edr/EDR-017-unit-link-profile-and-family-consolidation.md)
+- [EDR-018: Module Wall Clock and Time-Reference Status](./docs/edr/EDR-018-module-wall-clock-and-time-reference-status.md) — the absolute-time half of the clock item; alignment between Modules stays open
+- [EDR-019: Hub Upstream Reporting and Unit Port Declaration](./docs/edr/EDR-019-hub-upstream-reporting-and-unit-port-declaration.md)
+- [EDR-020: Retrieval by Removable Medium](./docs/edr/EDR-020-retrieval-by-removable-medium.md)

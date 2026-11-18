@@ -112,7 +112,7 @@ The four items closed alongside share one property: each needed a decision, not 
 
 **Open — decided with the `MCL` binding specification:** path element width and maximum depth; the per-hop MCI latency budget and the resulting response-time rule; how a master detects another master on the pair; the tag space and lifetime of request correlation; whether a downstream Hub may hold responses for a slow upstream beyond the outstanding-requests bound; host-loss supervision across a cascade. **Decided with the first Hub's bring-up:** every electrical, cable and timing figure already listed open in the Module Port and AEL specifications.
 
-**Open — Platform decisions not touched here:** cross-Module clock alignment and absolute time (EDR-005, EDR-008, EDR-009), the next architectural record; redundant uplinks, if a use case ever asks for them; the security posture of a network-facing Hub (EDR-007).
+**Open — Platform decisions not touched here:** cross-Module clock alignment and absolute time (EDR-005, EDR-008, EDR-009), the next architectural record; redundant uplinks, if a use case ever asks for them; the security posture of a network-facing Hub (EDR-007). *Absolute time on one Module is decided in [EDR-018](./EDR-018-module-wall-clock-and-time-reference-status.md); alignment between Modules remains open.*
 
 **Open — product decisions, recorded with each product:** the number of Module Ports and link ports and which Module Port, if any, is labelled for a downstream Hub; whether a Hub supports *reinstate*; the recommended maximum depth of a product's Hubs from its measured per-hop figures.
 

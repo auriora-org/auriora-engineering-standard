@@ -100,7 +100,7 @@ Deferring `MCL` cascading costs nothing because retrieval was specified end-to-e
 - The EDR-009 statement that the bulk-data path lies outside MCI is superseded by this record; EDR-009 is otherwise unchanged and its open-item list is annotated.
 - The [Software Style Guide](https://github.com/auriora-org/auriora-software-style-guide) gains host-side retrieval rules; the [Firmware Style Guide](https://github.com/auriora-org/auriora-firmware-style-guide) gains Module-side retrieval rules and Hub forwarding rules; the [Hardware Design Guide](https://github.com/auriora-org/auriora-hardware-design-guide) gains the Hub's host-facing USB interface. The private engineering knowledge base is re-derived afterwards.
 - The direct local transport binding, when written, must now cover both a single Module and a Hub with several Modules behind it, must define the chunk bound and the interleaving of control and bulk traffic, and must record the USB device class it chooses.
-- A Module that declares local recording without retrieval is conformant but hands its data over by other means — a removable medium, a product-specific path — and says so; the Platform path is retrieval.
+- A Module that declares local recording without retrieval is conformant but hands its data over by other means — a removable medium, a product-specific path — and says so; the Platform path is retrieval. *A removable medium became a second declared Platform path in [EDR-020](./EDR-020-retrieval-by-removable-medium.md).*
 - This is a self-authored decision; the self-review is recorded per AES-GOV-010.
 
 ## Scope and Remaining Open Items
@@ -114,7 +114,7 @@ Deferring `MCL` cascading costs nothing because retrieval was specified end-to-e
 - **Live measurement stream** at acquisition rate, and asynchronous notification in general: a Module-pushed flow changes what every binding must provide, and is decided with the first binding, as §5.2 already records.
 - **Deletion of stored objects** as a declared operation, and the state rules under which it is refused.
 - **Retrieval during `RUNNING`**: whether the Platform should require it or leave it declared per Module. Left declared; a long field deployment that must be read out without stopping is the case that would change this.
-- **Throughput**: no figure is required of a Module, a Hub or a binding. A field Module returning with gigabytes will decide whether one is needed.
+- **Throughput**: no figure is required of a Module, a Hub or a binding. A field Module returning with gigabytes will decide whether one is needed. *It returned: answered by medium retrieval rather than by a figure — [EDR-020](./EDR-020-retrieval-by-removable-medium.md).*
 
 **Open — product decisions, recorded with each product:** whether a Hub may be powered from its host-facing interface and with what limits; a Hub's Module Port and Hub-to-Hub link counts; which Modules offer in-progress reads; the data format identifiers each Module's recordings carry.
 

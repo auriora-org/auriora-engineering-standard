@@ -156,7 +156,7 @@ Keeping AES lean is a deliberate part of the decision. Experiment compilation, r
 - Validated cable length at 1 Mbit/s; actual cable impedance and termination behavior; signal integrity; insertion/removal characterization and false-frame immunity; EMC/ESD behavior where product validation requires it.
 - Module source-event-to-frame and frame-to-action latency and jitter; router input-SOF-to-output-SOF latency (min/typ/max), jitter and measured fan-out skew; event-rate saturation and queue behavior under worst-case load.
 
-**Separate architectural or product concerns, not closed here:** the AEL-to-trigger adapter as a product; Module Hub Product Family identifier and naming; long-duration cross-Module clock alignment and absolute time (the PPS-class need of EDR-005 also remains open); bulk measurement-data transport — explicitly not AEL; the experiment description language (informative working name `AEDL`) — no grammar, syntax or file format is standardized.
+**Separate architectural or product concerns, not closed here:** the AEL-to-trigger adapter as a product; Module Hub Product Family identifier and naming; long-duration cross-Module clock alignment and absolute time (the PPS-class need of EDR-005 also remains open); bulk measurement-data transport — explicitly not AEL; the experiment description language (informative working name `AEDL`) — no grammar, syntax or file format is standardized. *Absolute time on one Module is decided in [EDR-018](./EDR-018-module-wall-clock-and-time-reference-status.md); alignment between Modules remains open.*
 
 ## Affected Requirements / Documents
 

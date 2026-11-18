@@ -107,5 +107,5 @@ From the moment a family has a second product number — not only at Release —
 
 | Product | Name | Contract | Environment / enclosure | Boards | Maturity |
 |---|---|---|---|---|---|
-| `AHUB-01` | AURIORA Hub | 4 Module Ports, 1 host interface | indoor, desktop enclosure | `ahub-01-main` | Active Development |
-| `AHUB-03` | AURIORA Hub | 4 Module Ports, 1 host interface | outdoor, IP-rated enclosure, gland connectors | `ahub-01-main` (shared), `ahub-03-panel` | Experimental |
+| `AHUB-01` | AURIORA Hub | 4 Module Ports, 2 Hub-to-Hub link ports, 1 host-facing interface | indoor, desktop enclosure | `ahub-01-main` | Active Development |
+| `AHUB-03` | AURIORA Hub | 4 Module Ports, 2 Hub-to-Hub link ports, 1 host-facing interface | outdoor, IP-rated enclosure, gland connectors | `ahub-01-main` (shared), `ahub-03-panel` | Experimental |
